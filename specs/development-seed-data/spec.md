@@ -1,6 +1,6 @@
 # Feature: Development seed data
 
-- Status: Implemented
+- Status: Approved
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -11,7 +11,9 @@ portfolio content derived from Igor Sobral's generated resume.
 
 ## In scope
 
-- A profile and LinkedIn social link.
+- A profile with LinkedIn and GitHub social links.
+- Availability text expressing openness to global mid-level and senior backend
+  opportunities without presenting senior roles as a requirement.
 - Five professional experiences and their resume highlights.
 - Canonical technology and skill catalogs with ordered skill categories.
 - Featured portfolio projects derived from the resume's described initiatives.
@@ -38,7 +40,8 @@ portfolio content derived from Igor Sobral's generated resume.
 ## Security and privacy
 
 - Seed content includes only information present in the supplied resume.
-- The email and LinkedIn URL are intentionally public profile fields.
+- The email, LinkedIn URL, GitHub URL, and role availability are intentionally
+  public profile fields.
 - No admin key, credentials, local file path, or source PDF content is logged.
 
 ## Failure and operational behavior
@@ -75,7 +78,7 @@ portfolio content derived from Igor Sobral's generated resume.
 - Automated tests for complete content, ordering, relationship wiring,
   idempotence, preservation of existing content, and environment/configuration
   gating.
-- Evidence (2026-08-24): four automated seed scenarios pass, covering 1
+- Previous evidence (2026-08-24): four automated seed scenarios passed, covering 1
   profile, 5 experiences, 29 highlights, 4 projects, 5 categories, 23 skills,
   21 technologies, all relationships, API validation, UUIDv7/version defaults,
   idempotence, existing-data preservation, public ordering, and Production
