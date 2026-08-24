@@ -1,7 +1,7 @@
 # Feature specifications
 
 Create one directory per independently deliverable API behavior. Current
-specifications are:
+implemented specifications are:
 
 ```text
 specs/

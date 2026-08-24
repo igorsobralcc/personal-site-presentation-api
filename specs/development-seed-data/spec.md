@@ -1,6 +1,6 @@
 # Feature: Development seed data
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -75,6 +75,11 @@ portfolio content derived from Igor Sobral's generated resume.
 - Automated tests for complete content, ordering, relationship wiring,
   idempotence, preservation of existing content, and environment/configuration
   gating.
+- Evidence (2026-08-24): four automated seed scenarios pass, covering 1
+  profile, 5 experiences, 29 highlights, 4 projects, 5 categories, 23 skills,
+  21 technologies, all relationships, API validation, UUIDv7/version defaults,
+  idempotence, existing-data preservation, public ordering, and Production
+  exclusion.
 
 ## Decisions and open questions
 
