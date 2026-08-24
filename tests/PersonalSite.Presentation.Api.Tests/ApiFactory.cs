@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PersonalSite.Presentation.Api.Data;
 
@@ -19,6 +20,7 @@ public sealed class ApiFactory(bool failingReadiness = false) : WebApplicationFa
     {
         builder.UseEnvironment("Development");
         builder.UseSetting("Admin:Key", "integration-secret");
+        builder.ConfigureLogging(logging => logging.ClearProviders());
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<DbContextOptions<PresentationDbContext>>();
