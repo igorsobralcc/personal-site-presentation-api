@@ -55,7 +55,7 @@ public static class DevelopmentSeedData
             Biography = "Senior Software Developer with 5+ years of experience designing, modernizing, and delivering high-availability backend systems. Specialized in .NET and C#, backend APIs, microservices, event-driven systems, AWS, and cloud architecture. Experienced in leading technically challenging initiatives, coordinating backend teams, and collaborating with database, product, security, and business teams. Key results include reducing image storage by 60%, removing up to 3 TB of database usage, cutting image publishing time from as much as 36 hours to approximately 5 minutes, reducing product-platform errors by 80%, eliminating more than 50 monthly production incidents, and delivering payment and product-registration platforms with measurable cost savings.",
             ShortSummary = "Senior backend engineer focused on .NET, distributed systems, event-driven architecture, and cloud platforms, combining hands-on delivery with technical leadership.",
             Email = "igorsobral.cc@gmail.com",
-            Availability = "Open to senior backend engineering and technical leadership opportunities.",
+            Availability = "Open to mid-level backend software engineering opportunities worldwide.",
             CurrentFocus = "Distributed backend systems, cloud architecture, and secure, scalable software.",
         }, clock.Next());
         profile.SocialLinks.Add(new ProfileSocialLink
@@ -63,6 +63,13 @@ public static class DevelopmentSeedData
             ProfileId = profile.Id,
             Label = "LinkedIn",
             Url = "https://www.linkedin.com/in/igor-sobral-m",
+            CreatedAt = clock.Next()
+        });
+        profile.SocialLinks.Add(new ProfileSocialLink
+        {
+            ProfileId = profile.Id,
+            Label = "GitHub",
+            Url = "https://github.com/igorsobralcc",
             CreatedAt = clock.Next()
         });
         return profile;

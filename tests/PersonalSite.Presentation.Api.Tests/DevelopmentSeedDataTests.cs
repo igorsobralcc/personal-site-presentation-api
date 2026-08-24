@@ -19,7 +19,10 @@ public sealed class DevelopmentSeedDataTests
         var profile = await db.Profiles.Include(x => x.SocialLinks).SingleAsync();
         Assert.Equal("Igor Sobral", profile.FullName);
         Assert.Equal("igorsobral.cc@gmail.com", profile.Email);
-        Assert.Equal("LinkedIn", Assert.Single(profile.SocialLinks).Label);
+        Assert.Equal("Open to mid-level backend software engineering opportunities worldwide.", profile.Availability);
+        Assert.Collection(profile.SocialLinks.OrderBy(x => x.CreatedAt),
+            link => { Assert.Equal("LinkedIn", link.Label); Assert.Equal("https://www.linkedin.com/in/igor-sobral-m", link.Url); },
+            link => { Assert.Equal("GitHub", link.Label); Assert.Equal("https://github.com/igorsobralcc", link.Url); });
         Assert.Equal(5, await db.Experiences.CountAsync());
         Assert.Equal(29, await db.ExperienceHighlights.CountAsync());
         Assert.Equal(24, await db.ExperienceTechnologies.CountAsync());

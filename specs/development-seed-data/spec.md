@@ -12,8 +12,8 @@ portfolio content derived from Igor Sobral's generated resume.
 ## In scope
 
 - A profile with LinkedIn and GitHub social links.
-- Availability text expressing openness to global mid-level and senior backend
-  opportunities without presenting senior roles as a requirement.
+- Availability text expressing openness to mid-level backend opportunities
+  worldwide without presenting senior roles as a requirement.
 - Five professional experiences and their resume highlights.
 - Canonical technology and skill catalogs with ordered skill categories.
 - Featured portfolio projects derived from the resume's described initiatives.
