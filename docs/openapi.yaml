@@ -1,0 +1,430 @@
+openapi: 3.1.0
+info:
+  title: Personal Site Presentation API
+  version: 1.0.0
+  description: Public portfolio read model and protected presentation-content CRUD.
+servers:
+  - url: http://localhost:5080
+    description: Local development
+tags:
+  - name: Presentation
+  - name: Profile admin
+  - name: Experience admin
+  - name: Project admin
+  - name: Skill admin
+paths:
+  /api/v1/presentation:
+    get:
+      operationId: getPresentation
+      tags: [Presentation]
+      summary: Get the complete published portfolio
+      responses:
+        '200':
+          description: Published portfolio content
+          headers:
+            ETag:
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Presentation'
+        '304':
+          description: The client's cached representation is current
+        '500':
+          $ref: '#/components/responses/Problem'
+  /api/v1/admin/profile:
+    get:
+      operationId: getAdminProfile
+      tags: [Profile admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '200':
+          description: Profile including draft state
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Profile' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+    put:
+      operationId: updateProfile
+      tags: [Profile admin]
+      security: [{ AdminKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProfileInput' }
+      responses:
+        '200':
+          description: Updated profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Profile' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/experiences:
+    get:
+      operationId: listAdminExperiences
+      tags: [Experience admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '200':
+          description: All experience entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Experience' }
+        '401': { $ref: '#/components/responses/Problem' }
+    post:
+      operationId: createExperience
+      tags: [Experience admin]
+      security: [{ AdminKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ExperienceInput' }
+      responses:
+        '201':
+          description: Created experience
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Experience' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/experiences/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      operationId: getAdminExperience
+      tags: [Experience admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '200':
+          description: Experience entry
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Experience' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+    put:
+      operationId: updateExperience
+      tags: [Experience admin]
+      security: [{ AdminKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ExperienceInput' }
+      responses:
+        '200':
+          description: Updated experience
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Experience' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+    delete:
+      operationId: deleteExperience
+      tags: [Experience admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '204': { description: Experience deleted }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/projects:
+    get:
+      operationId: listAdminProjects
+      tags: [Project admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '200':
+          description: All projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Project' }
+        '401': { $ref: '#/components/responses/Problem' }
+    post:
+      operationId: createProject
+      tags: [Project admin]
+      security: [{ AdminKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProjectInput' }
+      responses:
+        '201':
+          description: Created project
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Project' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/projects/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      operationId: getAdminProject
+      tags: [Project admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '200':
+          description: Project
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Project' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+    put:
+      operationId: updateProject
+      tags: [Project admin]
+      security: [{ AdminKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProjectInput' }
+      responses:
+        '200':
+          description: Updated project
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Project' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+    delete:
+      operationId: deleteProject
+      tags: [Project admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '204': { description: Project deleted }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/skills:
+    get:
+      operationId: listAdminSkills
+      tags: [Skill admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '200':
+          description: All skills
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Skill' }
+        '401': { $ref: '#/components/responses/Problem' }
+    post:
+      operationId: createSkill
+      tags: [Skill admin]
+      security: [{ AdminKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SkillInput' }
+      responses:
+        '201':
+          description: Created skill
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Skill' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/skills/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      operationId: getAdminSkill
+      tags: [Skill admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '200':
+          description: Skill
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Skill' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+    put:
+      operationId: updateSkill
+      tags: [Skill admin]
+      security: [{ AdminKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SkillInput' }
+      responses:
+        '200':
+          description: Updated skill
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Skill' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+    delete:
+      operationId: deleteSkill
+      tags: [Skill admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '204': { description: Skill deleted }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+components:
+  securitySchemes:
+    AdminKey:
+      type: apiKey
+      in: header
+      name: X-Admin-Key
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+  responses:
+    Problem:
+      description: Request failed
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    ValidationProblem:
+      description: Request validation failed
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ValidationProblemDetails' }
+  schemas:
+    Presentation:
+      type: object
+      required: [profile, experiences, projects, skills, updatedAt]
+      properties:
+        profile: { $ref: '#/components/schemas/Profile' }
+        experiences:
+          type: array
+          items: { $ref: '#/components/schemas/Experience' }
+        projects:
+          type: array
+          items: { $ref: '#/components/schemas/Project' }
+        skills:
+          type: array
+          items: { $ref: '#/components/schemas/Skill' }
+        updatedAt: { type: string, format: date-time }
+    ProfileInput:
+      type: object
+      required: [fullName, headline, summary, isPublished]
+      properties:
+        fullName: { type: string, minLength: 1, maxLength: 120 }
+        headline: { type: string, minLength: 1, maxLength: 160 }
+        summary: { type: string, minLength: 1, maxLength: 4000 }
+        location: { type: [string, 'null'], maxLength: 160 }
+        email: { type: [string, 'null'], format: email, maxLength: 320 }
+        avatarUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
+        socialLinks:
+          type: array
+          maxItems: 12
+          items: { $ref: '#/components/schemas/SocialLink' }
+        isPublished: { type: boolean }
+    Profile:
+      allOf:
+        - $ref: '#/components/schemas/ProfileInput'
+        - type: object
+          required: [id, updatedAt]
+          properties:
+            id: { type: string, format: uuid }
+            updatedAt: { type: string, format: date-time }
+    SocialLink:
+      type: object
+      required: [label, url]
+      properties:
+        label: { type: string, minLength: 1, maxLength: 40 }
+        url: { type: string, format: uri, maxLength: 2048 }
+    ExperienceInput:
+      type: object
+      required: [company, role, startDate, summary, sortOrder, isPublished]
+      properties:
+        company: { type: string, minLength: 1, maxLength: 160 }
+        role: { type: string, minLength: 1, maxLength: 160 }
+        location: { type: [string, 'null'], maxLength: 160 }
+        startDate: { type: string, format: date }
+        endDate: { type: [string, 'null'], format: date }
+        summary: { type: string, minLength: 1, maxLength: 4000 }
+        highlights:
+          type: array
+          maxItems: 20
+          items: { type: string, minLength: 1, maxLength: 500 }
+        technologies:
+          type: array
+          maxItems: 40
+          items: { type: string, minLength: 1, maxLength: 80 }
+        sortOrder: { type: integer, minimum: 0 }
+        isPublished: { type: boolean }
+    Experience:
+      allOf:
+        - $ref: '#/components/schemas/ExperienceInput'
+        - $ref: '#/components/schemas/ResourceMetadata'
+    ProjectInput:
+      type: object
+      required: [name, summary, sortOrder, isFeatured, isPublished]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 160 }
+        summary: { type: string, minLength: 1, maxLength: 1000 }
+        description: { type: [string, 'null'], maxLength: 5000 }
+        repositoryUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
+        liveUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
+        imageUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
+        technologies:
+          type: array
+          maxItems: 40
+          items: { type: string, minLength: 1, maxLength: 80 }
+        sortOrder: { type: integer, minimum: 0 }
+        isFeatured: { type: boolean }
+        isPublished: { type: boolean }
+    Project:
+      allOf:
+        - $ref: '#/components/schemas/ProjectInput'
+        - $ref: '#/components/schemas/ResourceMetadata'
+    SkillInput:
+      type: object
+      required: [name, category, sortOrder, isPublished]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        category: { type: string, minLength: 1, maxLength: 80 }
+        proficiency:
+          type: [string, 'null']
+          enum: [learning, working, advanced, expert, null]
+        sortOrder: { type: integer, minimum: 0 }
+        isPublished: { type: boolean }
+    Skill:
+      allOf:
+        - $ref: '#/components/schemas/SkillInput'
+        - $ref: '#/components/schemas/ResourceMetadata'
+    ResourceMetadata:
+      type: object
+      required: [id, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        updatedAt: { type: string, format: date-time }
+    ProblemDetails:
+      type: object
+      properties:
+        type: { type: string, format: uri-reference }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string, format: uri-reference }
+        traceId: { type: string }
+    ValidationProblemDetails:
+      allOf:
+        - $ref: '#/components/schemas/ProblemDetails'
+        - type: object
+          properties:
+            errors:
+              type: object
+              additionalProperties:
+                type: array
+                items: { type: string }
