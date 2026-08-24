@@ -128,3 +128,15 @@ profile, experience, skill, technology, and featured-project content. Seeding
 is controlled by `SeedData:Enabled`, is disabled outside Development, and skips
 the complete operation when any managed content already exists. Set
 `SeedData__Enabled=false` to run Development without applying the seed.
+
+Development uses the `presentation_migrator` role because the seeder applies
+EF Core migrations. Store its real local connection string outside Git:
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:Presentation" "Host=localhost;Port=5432;Database=personal_site;Username=presentation_migrator;Password=<password>" --project src/PersonalSite.Presentation.Api
+```
+
+Normal runtime configuration uses the least-privilege `presentation_app` role.
+Supply its production connection string through the
+`ConnectionStrings__Presentation` environment variable or the deployment
+platform's secret store.
