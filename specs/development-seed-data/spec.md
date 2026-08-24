@@ -1,6 +1,6 @@
 # Feature: Development seed data
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -83,6 +83,9 @@ portfolio content derived from Igor Sobral's generated resume.
   21 technologies, all relationships, API validation, UUIDv7/version defaults,
   idempotence, existing-data preservation, public ordering, and Production
   exclusion.
+- Updated evidence (2026-08-24): the seed validation test confirms ordered
+  LinkedIn and GitHub links plus worldwide mid-level availability; the complete
+  suite passes with 16 tests and one opt-in PostgreSQL test skipped.
 
 ## Decisions and open questions
 
