@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: Immediate public portfolio projection and protected content management.
 servers:
-  - url: http://localhost:5080
+  - url: https://localhost:7211
     description: Local development
 tags:
   - { name: Presentation }
