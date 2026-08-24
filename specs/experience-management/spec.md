@@ -1,6 +1,6 @@
 # Feature: Experience management
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -71,6 +71,8 @@ them in professional chronology rather than insertion order.
 
 - Integration tests for CRUD, pagination headers, date ordering, validation,
   aggregate replacement, deletion, restoration, and concurrency.
+- Evidence (2026-08-24): automated HTTP tests cover date ordering, date
+  validation, hidden aggregate replacement, projection privacy, and ETags.
 
 ## Decisions and open questions
 

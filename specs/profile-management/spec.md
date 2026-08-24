@@ -1,6 +1,6 @@
 # Feature: Profile management
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -72,6 +72,8 @@ its ordered social links.
 
 - Integration tests for initialization, singleton enforcement, patch semantics,
   social-link replacement, validation, and concurrency.
+- Evidence (2026-08-24): automated HTTP tests cover authentication, singleton
+  initialization, merge-patch preservation, validation, and stale ETags.
 
 ## Decisions and open questions
 

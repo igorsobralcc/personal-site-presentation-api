@@ -1,6 +1,6 @@
 # Feature: Platform foundation
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -101,6 +101,8 @@ without coupling their feature-specific behavior.
   restricted foreign keys, transactions, and concurrency.
 - API integration tests for authentication, headers, pagination, merge patch,
   and Problem Details.
+- Evidence (2026-08-24): the full solution builds without warnings; 12 HTTP and
+  contract tests pass; the idempotent PostgreSQL migration script generates.
 
 ## Decisions and open questions
 

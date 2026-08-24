@@ -1,6 +1,6 @@
 # Feature: Technology management
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -62,6 +62,8 @@ Presentation experiences and projects.
 
 - Integration tests for normalization, uniqueness, reference protection,
   pagination, deletion, restoration, and concurrency.
+- Evidence (2026-08-24): automated HTTP tests cover case-insensitive
+  uniqueness, reference protection, pagination, idempotent deletion, and ETags.
 
 ## Decisions and open questions
 

@@ -1,6 +1,6 @@
 # Feature: Project management
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -71,6 +71,8 @@ in the public composite presentation.
 - Integration tests for CRUD, featured projection, media validation,
   technology replacement, ordering, pagination, deletion, restoration, and
   concurrency.
+- Evidence (2026-08-24): automated HTTP tests cover featured filtering,
+  accessible media validation, technology references, and public ordering.
 
 ## Decisions and open questions
 

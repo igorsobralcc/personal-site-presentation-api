@@ -1,6 +1,6 @@
 # Feature: Skill management
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -63,6 +63,8 @@ public display.
 
 - Integration tests for category assignment, grouped ordering, uniqueness,
   pagination, deletion, restoration, and concurrency.
+- Evidence (2026-08-24): automated HTTP tests cover category assignment and
+  creation-ordered public grouping.
 
 ## Decisions and open questions
 

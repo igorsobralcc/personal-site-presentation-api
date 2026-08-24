@@ -1,6 +1,6 @@
 # Feature: Skill-category management
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -62,6 +62,8 @@ skills.
 
 - Integration tests for uniqueness, ordering, reference conflicts, pagination,
   deletion, restoration, and concurrency.
+- Evidence (2026-08-24): automated HTTP tests cover assignment, paging,
+  soft-deletion visibility, and protected references.
 
 ## Decisions and open questions
 

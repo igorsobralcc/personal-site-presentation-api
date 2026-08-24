@@ -1,6 +1,6 @@
 # Feature: Operational health
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -53,6 +53,9 @@ of serving database-backed traffic.
 
 - Integration tests for healthy responses and a substituted failing readiness
   check.
+- Evidence (2026-08-24): automated HTTP tests cover anonymous liveness, named
+  readiness output, and an isolated readiness failure while liveness remains
+  healthy; the database check is bounded to three seconds.
 
 ## Decisions and open questions
 

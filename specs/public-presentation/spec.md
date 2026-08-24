@@ -1,6 +1,6 @@
 # Feature: Public presentation
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-24
 
@@ -81,6 +81,9 @@ request without receiving deleted or administrative-only data.
 
 - PostgreSQL-backed integration tests for projection fields, featured filtering,
   soft deletion, every ordering rule, missing profile, ETag, and `304`.
+- Evidence (2026-08-24): automated HTTP tests cover projection fields,
+  filtering, ordering, cache headers, stable visible-representation ETags, and
+  `304`; generated and checked-in route sets match.
 
 ## Decisions and open questions
 
