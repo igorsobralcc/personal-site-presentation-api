@@ -112,3 +112,11 @@ DELETE is idempotent for an already deleted resource. Creates return `201` with
 5. Implement the public composite projection, caching, and ETag behavior.
 6. Verify generated OpenAPI, PostgreSQL integration tests, health checks, and
    the production build.
+
+## Verification
+
+Run the fast HTTP and contract suite with `dotnet test`. PostgreSQL persistence
+verification is enabled by setting `PRESENTATION_TEST_CONNECTION_STRING` to a
+disposable test database; the test applies Presentation migrations and verifies
+schema isolation and restricted foreign keys. It is skipped when that variable
+is absent.
