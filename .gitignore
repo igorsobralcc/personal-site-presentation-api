@@ -31,6 +31,9 @@ artifacts/
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
+# Local ASP.NET Core launch profiles (may contain development secrets)
+src/PersonalSite.Presentation.Api/Properties/launchSettings.json
+
 # NuGet Packages
 *.nupkg
 # NuGet Symbol Packages
