@@ -1,0 +1,101 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Optional published image tag; defaults to sha-<selected main commit>
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: presentation-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy production container
+    environment: production
+    runs-on: [self-hosted, linux, presentation-production]
+    timeout-minutes: 15
+    steps:
+      - name: Log in to GHCR
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Validate deployment secrets
+        env:
+          ConnectionStrings__Presentation: ${{ secrets.PRESENTATION_CONNECTION_STRING }}
+          Admin__Key: ${{ secrets.PRESENTATION_ADMIN_KEY }}
+        run: |
+          test -n "$ConnectionStrings__Presentation" || { echo "PRESENTATION_CONNECTION_STRING is not configured." >&2; exit 1; }
+          test -n "$Admin__Key" || { echo "PRESENTATION_ADMIN_KEY is not configured." >&2; exit 1; }
+          case "$ConnectionStrings__Presentation" in
+            *Password=change-me*) echo "The production connection string still uses the placeholder password." >&2; exit 1 ;;
+          esac
+      - name: Deploy verified image
+        env:
+          ConnectionStrings__Presentation: ${{ secrets.PRESENTATION_CONNECTION_STRING }}
+          Admin__Key: ${{ secrets.PRESENTATION_ADMIN_KEY }}
+          REQUESTED_TAG: ${{ inputs.image_tag }}
+        run: |
+          set -euo pipefail
+
+          app_name='personal-site-presentation-api'
+          previous_name="${app_name}-previous"
+          image_name="ghcr.io/${GITHUB_REPOSITORY,,}"
+          image_tag="${REQUESTED_TAG:-sha-${GITHUB_SHA}}"
+          image_ref="${image_name}:${image_tag}"
+          had_previous='false'
+
+          docker pull "$image_ref"
+          docker rm --force "$previous_name" >/dev/null 2>&1 || true
+
+          rollback() {
+            docker rm --force "$app_name" >/dev/null 2>&1 || true
+            if [[ "$had_previous" == 'true' ]]; then
+              docker rename "$previous_name" "$app_name"
+              docker start "$app_name"
+            fi
+          }
+          trap rollback ERR
+
+          if docker container inspect "$app_name" >/dev/null 2>&1; then
+            docker stop "$app_name"
+            docker rename "$app_name" "$previous_name"
+            had_previous='true'
+          fi
+
+          docker run --detach \
+            --name "$app_name" \
+            --restart unless-stopped \
+            --publish 8080:8080 \
+            --env ASPNETCORE_ENVIRONMENT=Production \
+            --env ConnectionStrings__Presentation \
+            --env Admin__Key \
+            "$image_ref"
+
+          for attempt in $(seq 1 30); do
+            health="$(docker inspect --format '{{.State.Health.Status}}' "$app_name")"
+            if [[ "$health" == 'healthy' ]]; then
+              trap - ERR
+              docker rm --force "$previous_name" >/dev/null 2>&1 || true
+              echo "Deployment succeeded with image tag $image_tag."
+              exit 0
+            fi
+            if [[ "$health" == 'unhealthy' ]]; then
+              docker logs --tail 100 "$app_name"
+              false
+            fi
+            sleep 2
+          done
+
+          docker logs --tail 100 "$app_name"
+          echo "Container did not become healthy before the timeout." >&2
+          false
