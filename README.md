@@ -1,69 +1,77 @@
 # Personal Site Presentation API
 
-ASP.NET Core API that owns the public presentation content for the personal
-site. It provides one read-optimized public representation and protected CRUD
-operations for profile, experience, projects, and skills.
+ASP.NET Core API that owns the current public presentation content for the
+personal site. It provides one read-optimized public representation and
+protected management operations for profile, experience, projects, skill
+categories, skills, and a shared technology catalog.
 
-## Scope
-
-The MVP owns:
-
-- A singleton profile with headline, biography, location, contact, and links
-- Ordered experience entries
-- Ordered skills grouped by category
-- Ordered projects, including featured status and external links
-- Publication state so unfinished content is never exposed publicly
-
-Blog posts do not belong in this service. They will be owned by the separate
-Blog API when that phase begins.
+Blog articles and article series belong to the separate Blog API.
 
 ## Architecture
 
-This API is a modular monolith using vertical slices. The domain is small, so
-the design avoids distributed services, a generic repository layer, MediatR,
-and other ceremony that would not currently protect a real boundary.
+The API is a modular monolith organized as vertical slices:
 
 ```text
 src/
   PersonalSite.Presentation.Api/
-    Common/          cross-cutting HTTP, auth, errors, observability
+    Common/          HTTP, auth, errors, observability
     Data/            EF Core context, mappings, migrations, seed data
     Features/
       Presentation/  public composite read model
-      Profile/       admin singleton queries and update
-      Experiences/   admin CRUD
-      Projects/      admin CRUD
-      Skills/        admin CRUD
+      Profile/       singleton initialization and update
+      Experiences/   aggregate management
+      Projects/      aggregate management
+      SkillCategories/
+      Skills/
+      Technologies/  shared Presentation catalog
 tests/
   PersonalSite.Presentation.Api.Tests/
 ```
 
-Each feature contains its endpoint mapping, request/response contracts,
-validation, and handler. Endpoints depend directly on the EF Core context when
-that is the simplest honest abstraction. Domain behavior is extracted only
-when it is reused or has meaningful invariants.
+Each feature owns its endpoints, contracts, validation, lightweight command and
+query handlers, and persistence mappings. Handlers use the EF Core context
+directly. The design intentionally has no MediatR, generic repository, or
+duplicated persistence/domain model.
 
 ## Development method
 
-Every feature and behavior change uses spec-driven development. The feature
-specification and, when applicable, the OpenAPI contract and database migration
-are reviewed before production implementation begins. Development is committed
-incrementally using Conventional Commits so each coherent change can be
-reverted safely. See
-[CONTRIBUTING.md](CONTRIBUTING.md).
+Every behavior change uses spec-driven development. Specifications under
+[`specs`](specs/README.md) and the checked-in
+[`docs/openapi.yaml`](docs/openapi.yaml) contract are reviewed before production
+implementation. Development uses incremental Conventional Commits; see
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Planned stack
 
 - .NET 10 and ASP.NET Core Minimal APIs
 - Entity Framework Core with PostgreSQL
-- Built-in OpenAPI generation and Scalar for local API exploration
-- Built-in Problem Details for consistent errors
-- xUnit plus `WebApplicationFactory` for integration tests
+- Built-in OpenAPI generation and Scalar for local exploration
+- Problem Details for consistent failures
+- xUnit and `WebApplicationFactory` with PostgreSQL integration tests
 - Health checks and structured logging
 
-## HTTP contract
+## Database boundary
 
-The source-of-truth contract is [docs/openapi.yaml](docs/openapi.yaml).
+The Presentation and Blog APIs share one logical PostgreSQL database while
+remaining operationally independent:
+
+```text
+database
+  presentation schema   Presentation API principal and migrations
+  blog schema           Blog API principal and migrations
+```
+
+There are no cross-schema foreign keys, shared tables, shared migrations, or
+direct cross-API database reads. Tables may be shared by features inside the
+Presentation schema. All foreign keys use `RESTRICT` or `NO ACTION`; database
+delete cascades are forbidden.
+
+Presentation records use UUIDv7 identifiers, immutable UTC creation timestamps,
+soft deletion, and explicit concurrency versions. Database identifiers use
+`snake_case`; JSON uses `camelCase`. Presentation changes become public
+immediately and do not have publication states or revision history.
+
+## HTTP contract
 
 ### Public read
 
@@ -71,57 +79,36 @@ The source-of-truth contract is [docs/openapi.yaml](docs/openapi.yaml).
 GET /api/v1/presentation
 ```
 
-The response is a page-shaped read model containing only published records. It
-is ordered by the API and designed to render the first page without additional
-requests.
+The response contains the required profile, experiences ordered by professional
+start date, skills grouped under creation-ordered categories, and featured
+projects ordered newest first. Deleted records, non-featured projects,
+administrative metadata, and experience highlights/technologies are omitted.
+The operation supports ETag conditional requests and public caching. A missing
+profile returns `404`.
 
 ### Protected management
 
-```text
-GET, PUT             /api/v1/admin/profile
-GET, POST            /api/v1/admin/experiences
-GET, PUT, DELETE     /api/v1/admin/experiences/{id}
-GET, POST            /api/v1/admin/projects
-GET, PUT, DELETE     /api/v1/admin/projects/{id}
-GET, POST            /api/v1/admin/skills
-GET, PUT, DELETE     /api/v1/admin/skills/{id}
-```
+Management routes use collection `GET`/`POST`, item `GET`/`PATCH`/`DELETE`, and
+`POST /{id}/restore` conventions. Profile is a database-enforced singleton and
+uses `GET`, initialization `PUT`, and update `PATCH`.
 
-Administrative routes require `X-Admin-Key` over HTTPS in the first release.
-The key is a server-side secret and must not be embedded in the public React
-bundle. This deliberately small authentication boundary can later be replaced
-with OIDC without changing the public contract.
+Administrative routes require `X-Admin-Key` over HTTPS. Collection pagination
+uses the `X-Page`, `X-Page-Size`, and `X-Include-Deleted` request headers.
+Deleted records are excluded by default and administrative representations
+include `isDeleted`.
 
-## API conventions
-
-- JSON properties use `camelCase`.
-- Dates use ISO 8601 calendar dates (`YYYY-MM-DD`); `endDate: null` means current.
-- Resource identifiers are UUIDs represented as strings.
-- Create returns `201 Created` with a `Location` header.
-- Update returns `200 OK`; delete returns `204 No Content`.
-- Validation uses `application/problem+json` with field errors.
-- Missing resources return `404`; malformed requests return `400`.
-- Public responses emit `ETag` and a short `Cache-Control` policy.
-- The public DTO is separate from persistence entities and never exposes draft
-  records or administrative metadata.
-- CORS uses an explicit configured origin list; wildcard origins are not used.
-
-## Data and change strategy
-
-PostgreSQL is the system of record. Schema changes are made through reviewed EF
-Core migrations. The API seeds useful local development content only in the
-development environment. Production content is managed through protected CRUD
-operations.
-
-API additions should be backward compatible inside `/api/v1`. Breaking field
-or behavior changes require `/api/v2`; database migrations alone do not imply
-an HTTP API version change.
+PATCH uses `application/merge-patch+json`. PATCH, DELETE, and restore require
+`If-Match`; a missing precondition returns `428` and a stale ETag returns `412`.
+DELETE is idempotent for an already deleted resource. Creates return `201` with
+`Location`; successful deletes and restores return `204`.
 
 ## Delivery order
 
-1. Scaffold the solution and vertical-slice folders.
-2. Add persistence models, mappings, migrations, and development seed data.
-3. Implement protected CRUD endpoints and validation.
-4. Implement the public composite projection, caching, and ETag behavior.
-5. Generate and verify OpenAPI against the checked-in contract.
-6. Add integration tests, health checks, and deployment configuration.
+1. Approve the feature specifications and OpenAPI contract.
+2. Scaffold the solution and vertical-slice folders.
+3. Add schema-isolated persistence, mappings, migrations, and development seed
+   data.
+4. Implement authentication and protected management slices.
+5. Implement the public composite projection, caching, and ETag behavior.
+6. Verify generated OpenAPI, PostgreSQL integration tests, health checks, and
+   the production build.

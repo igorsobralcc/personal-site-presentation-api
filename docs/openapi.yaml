@@ -2,36 +2,39 @@ openapi: 3.1.0
 info:
   title: Personal Site Presentation API
   version: 1.0.0
-  description: Public portfolio read model and protected presentation-content CRUD.
+  description: Immediate public portfolio projection and protected content management.
 servers:
   - url: http://localhost:5080
     description: Local development
 tags:
-  - name: Presentation
-  - name: Profile admin
-  - name: Experience admin
-  - name: Project admin
-  - name: Skill admin
+  - { name: Presentation }
+  - { name: Profile admin }
+  - { name: Experience admin }
+  - { name: Project admin }
+  - { name: Skill category admin }
+  - { name: Skill admin }
+  - { name: Technology admin }
+  - { name: Health }
 paths:
   /api/v1/presentation:
     get:
       operationId: getPresentation
       tags: [Presentation]
-      summary: Get the complete published portfolio
+      summary: Get the current public portfolio
+      parameters:
+        - $ref: '#/components/parameters/IfNoneMatch'
       responses:
         '200':
-          description: Published portfolio content
+          description: Current presentation
           headers:
-            ETag:
-              schema: { type: string }
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Presentation'
-        '304':
-          description: The client's cached representation is current
-        '500':
-          $ref: '#/components/responses/Problem'
+              schema: { $ref: '#/components/schemas/Presentation' }
+        '304': { description: Cached representation is current }
+        '404': { $ref: '#/components/responses/Problem' }
+        '500': { $ref: '#/components/responses/Problem' }
   /api/v1/admin/profile:
     get:
       operationId: getAdminProfile
@@ -39,42 +42,72 @@ paths:
       security: [{ AdminKey: [] }]
       responses:
         '200':
-          description: Profile including draft state
+          description: Profile aggregate
+          headers: { ETag: { $ref: '#/components/headers/ETag' } }
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Profile' }
+              schema: { $ref: '#/components/schemas/AdminProfile' }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
     put:
-      operationId: updateProfile
+      operationId: initializeProfile
       tags: [Profile admin]
       security: [{ AdminKey: [] }]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/ProfileInput' }
+            schema: { $ref: '#/components/schemas/ProfileCreate' }
+      responses:
+        '201':
+          description: Profile initialized
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Location: { schema: { type: string, format: uri-reference } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminProfile' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+    patch:
+      operationId: patchProfile
+      tags: [Profile admin]
+      security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema: { $ref: '#/components/schemas/ProfilePatch' }
       responses:
         '200':
           description: Updated profile
+          headers: { ETag: { $ref: '#/components/headers/ETag' } }
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Profile' }
+              schema: { $ref: '#/components/schemas/AdminProfile' }
         '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
   /api/v1/admin/experiences:
     get:
       operationId: listAdminExperiences
       tags: [Experience admin]
       security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/IncludeDeleted'
       responses:
         '200':
-          description: All experience entries
+          description: Paged experiences
           content:
             application/json:
-              schema:
-                type: array
-                items: { $ref: '#/components/schemas/Experience' }
+              schema: { $ref: '#/components/schemas/ExperiencePage' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
     post:
       operationId: createExperience
@@ -84,13 +117,9 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/ExperienceInput' }
+            schema: { $ref: '#/components/schemas/ExperienceCreate' }
       responses:
-        '201':
-          description: Created experience
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Experience' }
+        '201': { $ref: '#/components/responses/ExperienceCreated' }
         '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
   /api/v1/admin/experiences/{id}:
@@ -101,51 +130,72 @@ paths:
       security: [{ AdminKey: [] }]
       responses:
         '200':
-          description: Experience entry
+          description: Experience aggregate
+          headers: { ETag: { $ref: '#/components/headers/ETag' } }
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Experience' }
+              schema: { $ref: '#/components/schemas/AdminExperience' }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
-    put:
-      operationId: updateExperience
+    patch:
+      operationId: patchExperience
       tags: [Experience admin]
       security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
       requestBody:
         required: true
         content:
-          application/json:
-            schema: { $ref: '#/components/schemas/ExperienceInput' }
+          application/merge-patch+json:
+            schema: { $ref: '#/components/schemas/ExperiencePatch' }
       responses:
-        '200':
-          description: Updated experience
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Experience' }
+        '200': { $ref: '#/components/responses/ExperienceUpdated' }
         '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
     delete:
       operationId: deleteExperience
       tags: [Experience admin]
       security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
       responses:
-        '204': { description: Experience deleted }
+        '204': { description: Experience deleted or already deleted }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/experiences/{id}/restore:
+    post:
+      operationId: restoreExperience
+      tags: [Experience admin]
+      security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      responses:
+        '204': { description: Experience restored }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
   /api/v1/admin/projects:
     get:
       operationId: listAdminProjects
       tags: [Project admin]
       security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/IncludeDeleted'
       responses:
         '200':
-          description: All projects
+          description: Paged projects
           content:
             application/json:
-              schema:
-                type: array
-                items: { $ref: '#/components/schemas/Project' }
+              schema: { $ref: '#/components/schemas/ProjectPage' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
     post:
       operationId: createProject
@@ -155,13 +205,9 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/ProjectInput' }
+            schema: { $ref: '#/components/schemas/ProjectCreate' }
       responses:
-        '201':
-          description: Created project
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Project' }
+        '201': { $ref: '#/components/responses/ProjectCreated' }
         '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
   /api/v1/admin/projects/{id}:
@@ -172,51 +218,158 @@ paths:
       security: [{ AdminKey: [] }]
       responses:
         '200':
-          description: Project
+          description: Project aggregate
+          headers: { ETag: { $ref: '#/components/headers/ETag' } }
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Project' }
+              schema: { $ref: '#/components/schemas/AdminProject' }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
-    put:
-      operationId: updateProject
+    patch:
+      operationId: patchProject
       tags: [Project admin]
+      security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema: { $ref: '#/components/schemas/ProjectPatch' }
+      responses:
+        '200': { $ref: '#/components/responses/ProjectUpdated' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+    delete:
+      operationId: deleteProject
+      tags: [Project admin]
+      security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      responses:
+        '204': { description: Project deleted or already deleted }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/projects/{id}/restore:
+    post:
+      operationId: restoreProject
+      tags: [Project admin]
+      security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      responses:
+        '204': { description: Project restored }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/skill-categories:
+    get:
+      operationId: listAdminSkillCategories
+      tags: [Skill category admin]
+      security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/IncludeDeleted'
+      responses:
+        '200':
+          description: Paged skill categories
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SkillCategoryPage' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+    post:
+      operationId: createSkillCategory
+      tags: [Skill category admin]
       security: [{ AdminKey: [] }]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/ProjectInput' }
+            schema: { $ref: '#/components/schemas/NamedResourceCreate' }
       responses:
-        '200':
-          description: Updated project
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Project' }
+        '201': { $ref: '#/components/responses/SkillCategoryCreated' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/skill-categories/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      operationId: getAdminSkillCategory
+      tags: [Skill category admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/SkillCategoryFound' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+    patch:
+      operationId: patchSkillCategory
+      tags: [Skill category admin]
+      security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema: { $ref: '#/components/schemas/NamedResourcePatch' }
+      responses:
+        '200': { $ref: '#/components/responses/SkillCategoryFound' }
         '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
     delete:
-      operationId: deleteProject
-      tags: [Project admin]
+      operationId: deleteSkillCategory
+      tags: [Skill category admin]
       security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
       responses:
-        '204': { description: Project deleted }
+        '204': { description: Category deleted or already deleted }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/skill-categories/{id}/restore:
+    post:
+      operationId: restoreSkillCategory
+      tags: [Skill category admin]
+      security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      responses:
+        '204': { description: Category restored }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
   /api/v1/admin/skills:
     get:
       operationId: listAdminSkills
       tags: [Skill admin]
       security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/IncludeDeleted'
       responses:
         '200':
-          description: All skills
+          description: Paged skills
           content:
             application/json:
-              schema:
-                type: array
-                items: { $ref: '#/components/schemas/Skill' }
+              schema: { $ref: '#/components/schemas/SkillPage' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
     post:
       operationId: createSkill
@@ -226,15 +379,12 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/SkillInput' }
+            schema: { $ref: '#/components/schemas/SkillCreate' }
       responses:
-        '201':
-          description: Created skill
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Skill' }
+        '201': { $ref: '#/components/responses/SkillCreated' }
         '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
   /api/v1/admin/skills/{id}:
     parameters: [{ $ref: '#/components/parameters/Id' }]
     get:
@@ -242,39 +392,152 @@ paths:
       tags: [Skill admin]
       security: [{ AdminKey: [] }]
       responses:
-        '200':
-          description: Skill
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Skill' }
+        '200': { $ref: '#/components/responses/SkillFound' }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
-    put:
-      operationId: updateSkill
+    patch:
+      operationId: patchSkill
       tags: [Skill admin]
+      security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema: { $ref: '#/components/schemas/SkillPatch' }
+      responses:
+        '200': { $ref: '#/components/responses/SkillFound' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+    delete:
+      operationId: deleteSkill
+      tags: [Skill admin]
+      security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      responses:
+        '204': { description: Skill deleted or already deleted }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/skills/{id}/restore:
+    post:
+      operationId: restoreSkill
+      tags: [Skill admin]
+      security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      responses:
+        '204': { description: Skill restored }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/technologies:
+    get:
+      operationId: listAdminTechnologies
+      tags: [Technology admin]
+      security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/IncludeDeleted'
+      responses:
+        '200':
+          description: Paged technologies
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TechnologyPage' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+    post:
+      operationId: createTechnology
+      tags: [Technology admin]
       security: [{ AdminKey: [] }]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/SkillInput' }
+            schema: { $ref: '#/components/schemas/NamedResourceCreate' }
       responses:
-        '200':
-          description: Updated skill
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Skill' }
+        '201': { $ref: '#/components/responses/TechnologyCreated' }
+        '400': { $ref: '#/components/responses/ValidationProblem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/technologies/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      operationId: getAdminTechnology
+      tags: [Technology admin]
+      security: [{ AdminKey: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/TechnologyFound' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+    patch:
+      operationId: patchTechnology
+      tags: [Technology admin]
+      security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema: { $ref: '#/components/schemas/NamedResourcePatch' }
+      responses:
+        '200': { $ref: '#/components/responses/TechnologyFound' }
         '400': { $ref: '#/components/responses/ValidationProblem' }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
     delete:
-      operationId: deleteSkill
-      tags: [Skill admin]
+      operationId: deleteTechnology
+      tags: [Technology admin]
       security: [{ AdminKey: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
       responses:
-        '204': { description: Skill deleted }
+        '204': { description: Technology deleted or already deleted }
         '401': { $ref: '#/components/responses/Problem' }
         '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+  /api/v1/admin/technologies/{id}/restore:
+    post:
+      operationId: restoreTechnology
+      tags: [Technology admin]
+      security: [{ AdminKey: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      responses:
+        '204': { description: Technology restored }
+        '401': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+        '428': { $ref: '#/components/responses/Problem' }
+  /health/live:
+    get:
+      operationId: getLiveness
+      tags: [Health]
+      responses:
+        '200': { $ref: '#/components/responses/Health' }
+  /health/ready:
+    get:
+      operationId: getReadiness
+      tags: [Health]
+      responses:
+        '200': { $ref: '#/components/responses/Health' }
+        '503': { $ref: '#/components/responses/Health' }
 components:
   securitySchemes:
     AdminKey:
@@ -287,6 +550,38 @@ components:
       in: path
       required: true
       schema: { type: string, format: uuid }
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      schema: { type: string }
+    IfNoneMatch:
+      name: If-None-Match
+      in: header
+      required: false
+      schema: { type: string }
+    Page:
+      name: X-Page
+      in: header
+      required: false
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: X-Page-Size
+      in: header
+      required: false
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    IncludeDeleted:
+      name: X-Include-Deleted
+      in: header
+      required: false
+      schema: { type: boolean, default: false }
+  headers:
+    ETag:
+      description: Opaque representation or resource version identifier
+      schema: { type: string }
+    CacheControl:
+      description: Public cache policy
+      schema: { type: string }
   responses:
     Problem:
       description: Request failed
@@ -298,54 +593,149 @@ components:
       content:
         application/problem+json:
           schema: { $ref: '#/components/schemas/ValidationProblemDetails' }
+    Health:
+      description: Health status
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/HealthStatus' }
+    ExperienceCreated:
+      description: Experience created
+      headers:
+        ETag: { $ref: '#/components/headers/ETag' }
+        Location: { schema: { type: string, format: uri-reference } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminExperience' }
+    ExperienceUpdated:
+      description: Experience updated
+      headers: { ETag: { $ref: '#/components/headers/ETag' } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminExperience' }
+    ProjectCreated:
+      description: Project created
+      headers:
+        ETag: { $ref: '#/components/headers/ETag' }
+        Location: { schema: { type: string, format: uri-reference } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminProject' }
+    ProjectUpdated:
+      description: Project updated
+      headers: { ETag: { $ref: '#/components/headers/ETag' } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminProject' }
+    SkillCategoryCreated:
+      description: Skill category created
+      headers:
+        ETag: { $ref: '#/components/headers/ETag' }
+        Location: { schema: { type: string, format: uri-reference } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminSkillCategory' }
+    SkillCategoryFound:
+      description: Skill category
+      headers: { ETag: { $ref: '#/components/headers/ETag' } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminSkillCategory' }
+    SkillCreated:
+      description: Skill created
+      headers:
+        ETag: { $ref: '#/components/headers/ETag' }
+        Location: { schema: { type: string, format: uri-reference } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminSkill' }
+    SkillFound:
+      description: Skill
+      headers: { ETag: { $ref: '#/components/headers/ETag' } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminSkill' }
+    TechnologyCreated:
+      description: Technology created
+      headers:
+        ETag: { $ref: '#/components/headers/ETag' }
+        Location: { schema: { type: string, format: uri-reference } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminTechnology' }
+    TechnologyFound:
+      description: Technology
+      headers: { ETag: { $ref: '#/components/headers/ETag' } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/AdminTechnology' }
   schemas:
     Presentation:
       type: object
-      required: [profile, experiences, projects, skills, updatedAt]
+      required: [profile, experiences, projects, skillCategories, updatedAt]
       properties:
-        profile: { $ref: '#/components/schemas/Profile' }
+        profile: { $ref: '#/components/schemas/PublicProfile' }
         experiences:
           type: array
-          items: { $ref: '#/components/schemas/Experience' }
+          items: { $ref: '#/components/schemas/PublicExperience' }
         projects:
           type: array
-          items: { $ref: '#/components/schemas/Project' }
-        skills:
+          items: { $ref: '#/components/schemas/PublicProject' }
+        skillCategories:
           type: array
-          items: { $ref: '#/components/schemas/Skill' }
+          items: { $ref: '#/components/schemas/PublicSkillCategory' }
         updatedAt: { type: string, format: date-time }
-    ProfileInput:
+    ProfileFields:
       type: object
-      required: [fullName, headline, summary, isPublished]
+      required: [fullName, headline, biography, socialLinks]
       properties:
         fullName: { type: string, minLength: 1, maxLength: 120 }
         headline: { type: string, minLength: 1, maxLength: 160 }
-        summary: { type: string, minLength: 1, maxLength: 4000 }
+        biography: { type: string, minLength: 1, maxLength: 4000 }
+        shortSummary: { type: [string, 'null'], maxLength: 500 }
         location: { type: [string, 'null'], maxLength: 160 }
         email: { type: [string, 'null'], format: email, maxLength: 320 }
-        avatarUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
+        availability: { type: [string, 'null'], maxLength: 240 }
+        currentFocus: { type: [string, 'null'], maxLength: 500 }
         socialLinks:
           type: array
-          maxItems: 12
+          maxItems: 20
           items: { $ref: '#/components/schemas/SocialLink' }
-        isPublished: { type: boolean }
-    Profile:
+    ProfileCreate:
+      allOf: [{ $ref: '#/components/schemas/ProfileFields' }]
+    ProfilePatch:
+      type: object
+      properties:
+        fullName: { type: string, minLength: 1, maxLength: 120 }
+        headline: { type: string, minLength: 1, maxLength: 160 }
+        biography: { type: string, minLength: 1, maxLength: 4000 }
+        shortSummary: { type: [string, 'null'], maxLength: 500 }
+        location: { type: [string, 'null'], maxLength: 160 }
+        email: { type: [string, 'null'], format: email, maxLength: 320 }
+        availability: { type: [string, 'null'], maxLength: 240 }
+        currentFocus: { type: [string, 'null'], maxLength: 500 }
+        socialLinks:
+          type: array
+          maxItems: 20
+          items: { $ref: '#/components/schemas/SocialLink' }
+    PublicProfile:
       allOf:
-        - $ref: '#/components/schemas/ProfileInput'
+        - $ref: '#/components/schemas/ProfileFields'
         - type: object
-          required: [id, updatedAt]
-          properties:
-            id: { type: string, format: uuid }
-            updatedAt: { type: string, format: date-time }
+          required: [id]
+          properties: { id: { type: string, format: uuid } }
+    AdminProfile:
+      allOf:
+        - $ref: '#/components/schemas/PublicProfile'
+        - $ref: '#/components/schemas/ResourceMetadata'
     SocialLink:
       type: object
       required: [label, url]
       properties:
         label: { type: string, minLength: 1, maxLength: 40 }
         url: { type: string, format: uri, maxLength: 2048 }
-    ExperienceInput:
+    ExperienceCreate:
       type: object
-      required: [company, role, startDate, summary, sortOrder, isPublished]
+      required: [company, role, startDate, summary, highlights, technologyIds]
       properties:
         company: { type: string, minLength: 1, maxLength: 160 }
         role: { type: string, minLength: 1, maxLength: 160 }
@@ -353,78 +743,224 @@ components:
         startDate: { type: string, format: date }
         endDate: { type: [string, 'null'], format: date }
         summary: { type: string, minLength: 1, maxLength: 4000 }
-        highlights:
-          type: array
-          maxItems: 20
-          items: { type: string, minLength: 1, maxLength: 500 }
-        technologies:
-          type: array
-          maxItems: 40
-          items: { type: string, minLength: 1, maxLength: 80 }
-        sortOrder: { type: integer, minimum: 0 }
-        isPublished: { type: boolean }
-    Experience:
-      allOf:
-        - $ref: '#/components/schemas/ExperienceInput'
-        - $ref: '#/components/schemas/ResourceMetadata'
-    ProjectInput:
+        highlights: { $ref: '#/components/schemas/Highlights' }
+        technologyIds: { $ref: '#/components/schemas/TechnologyIds' }
+    ExperiencePatch:
       type: object
-      required: [name, summary, sortOrder, isFeatured, isPublished]
+      properties:
+        company: { type: string, minLength: 1, maxLength: 160 }
+        role: { type: string, minLength: 1, maxLength: 160 }
+        location: { type: [string, 'null'], maxLength: 160 }
+        startDate: { type: string, format: date }
+        endDate: { type: [string, 'null'], format: date }
+        summary: { type: string, minLength: 1, maxLength: 4000 }
+        highlights: { $ref: '#/components/schemas/Highlights' }
+        technologyIds: { $ref: '#/components/schemas/TechnologyIds' }
+    AdminExperience:
+      allOf:
+        - $ref: '#/components/schemas/ExperienceCreate'
+        - $ref: '#/components/schemas/ResourceMetadata'
+    PublicExperience:
+      type: object
+      required: [id, company, role, startDate, summary]
+      properties:
+        id: { type: string, format: uuid }
+        company: { type: string }
+        role: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: [string, 'null'], format: date }
+        summary: { type: string }
+    Highlights:
+      type: array
+      maxItems: 20
+      items: { type: string, minLength: 1, maxLength: 500 }
+    TechnologyIds:
+      type: array
+      maxItems: 40
+      uniqueItems: true
+      items: { type: string, format: uuid }
+    ProjectCreate:
+      type: object
+      required: [name, summary, technologyIds, isFeatured]
       properties:
         name: { type: string, minLength: 1, maxLength: 160 }
         summary: { type: string, minLength: 1, maxLength: 1000 }
-        description: { type: [string, 'null'], maxLength: 5000 }
         repositoryUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
         liveUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
-        imageUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
-        technologies:
-          type: array
-          maxItems: 40
-          items: { type: string, minLength: 1, maxLength: 80 }
-        sortOrder: { type: integer, minimum: 0 }
+        technologyIds: { $ref: '#/components/schemas/TechnologyIds' }
         isFeatured: { type: boolean }
-        isPublished: { type: boolean }
-    Project:
-      allOf:
-        - $ref: '#/components/schemas/ProjectInput'
-        - $ref: '#/components/schemas/ResourceMetadata'
-    SkillInput:
+        image:
+          anyOf: [{ $ref: '#/components/schemas/ProjectImage' }, { type: 'null' }]
+    ProjectPatch:
       type: object
-      required: [name, category, sortOrder, isPublished]
       properties:
-        name: { type: string, minLength: 1, maxLength: 80 }
-        category: { type: string, minLength: 1, maxLength: 80 }
-        proficiency:
-          type: [string, 'null']
-          enum: [learning, working, advanced, expert, null]
-        sortOrder: { type: integer, minimum: 0 }
-        isPublished: { type: boolean }
-    Skill:
+        name: { type: string, minLength: 1, maxLength: 160 }
+        summary: { type: string, minLength: 1, maxLength: 1000 }
+        repositoryUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
+        liveUrl: { type: [string, 'null'], format: uri, maxLength: 2048 }
+        technologyIds: { $ref: '#/components/schemas/TechnologyIds' }
+        isFeatured: { type: boolean }
+        image:
+          anyOf: [{ $ref: '#/components/schemas/ProjectImage' }, { type: 'null' }]
+    AdminProject:
       allOf:
-        - $ref: '#/components/schemas/SkillInput'
+        - $ref: '#/components/schemas/ProjectCreate'
         - $ref: '#/components/schemas/ResourceMetadata'
-    ResourceMetadata:
+    PublicProject:
       type: object
-      required: [id, updatedAt]
+      required: [id, name, summary, technologies]
       properties:
         id: { type: string, format: uuid }
-        updatedAt: { type: string, format: date-time }
+        name: { type: string }
+        summary: { type: string }
+        repositoryUrl: { type: [string, 'null'], format: uri }
+        liveUrl: { type: [string, 'null'], format: uri }
+        technologies:
+          type: array
+          items: { $ref: '#/components/schemas/TechnologySummary' }
+        image:
+          anyOf: [{ $ref: '#/components/schemas/ProjectImage' }, { type: 'null' }]
+    ProjectImage:
+      type: object
+      required: [url, alt, width, height]
+      properties:
+        url: { type: string, format: uri, maxLength: 2048 }
+        alt: { type: string, minLength: 1, maxLength: 500 }
+        width: { type: integer, minimum: 1 }
+        height: { type: integer, minimum: 1 }
+    NamedResourceCreate:
+      type: object
+      required: [name]
+      properties: { name: { type: string, minLength: 1, maxLength: 80 } }
+    NamedResourcePatch:
+      type: object
+      properties: { name: { type: string, minLength: 1, maxLength: 80 } }
+    AdminSkillCategory:
+      allOf:
+        - $ref: '#/components/schemas/NamedResourceCreate'
+        - $ref: '#/components/schemas/ResourceMetadata'
+    SkillCreate:
+      type: object
+      required: [name, categoryId]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        categoryId: { type: string, format: uuid }
+    SkillPatch:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        categoryId: { type: string, format: uuid }
+    AdminSkill:
+      allOf:
+        - $ref: '#/components/schemas/SkillCreate'
+        - $ref: '#/components/schemas/ResourceMetadata'
+    AdminTechnology:
+      allOf:
+        - $ref: '#/components/schemas/NamedResourceCreate'
+        - $ref: '#/components/schemas/ResourceMetadata'
+    TechnologySummary:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+    PublicSkillCategory:
+      type: object
+      required: [id, name, skills]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        skills:
+          type: array
+          items:
+            type: object
+            required: [id, name]
+            properties:
+              id: { type: string, format: uuid }
+              name: { type: string }
+    ResourceMetadata:
+      type: object
+      required: [id, createdAt, updatedAt, version, isDeleted]
+      properties:
+        id: { type: string, format: uuid }
+        createdAt: { type: string, format: date-time, readOnly: true }
+        updatedAt: { type: string, format: date-time, readOnly: true }
+        version: { type: integer, format: int64, minimum: 1, readOnly: true }
+        isDeleted: { type: boolean, readOnly: true }
+    PageMetadata:
+      type: object
+      required: [page, pageSize, totalItems, totalPages]
+      properties:
+        page: { type: integer, minimum: 1 }
+        pageSize: { type: integer, minimum: 1, maximum: 100 }
+        totalItems: { type: integer, minimum: 0 }
+        totalPages: { type: integer, minimum: 0 }
+    ExperiencePage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [items]
+          properties:
+            items: { type: array, items: { $ref: '#/components/schemas/AdminExperience' } }
+    ProjectPage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [items]
+          properties:
+            items: { type: array, items: { $ref: '#/components/schemas/AdminProject' } }
+    SkillCategoryPage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [items]
+          properties:
+            items: { type: array, items: { $ref: '#/components/schemas/AdminSkillCategory' } }
+    SkillPage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [items]
+          properties:
+            items: { type: array, items: { $ref: '#/components/schemas/AdminSkill' } }
+    TechnologyPage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [items]
+          properties:
+            items: { type: array, items: { $ref: '#/components/schemas/AdminTechnology' } }
     ProblemDetails:
       type: object
+      required: [type, title, status, traceId]
       properties:
         type: { type: string, format: uri-reference }
         title: { type: string }
         status: { type: integer }
-        detail: { type: string }
-        instance: { type: string, format: uri-reference }
+        detail: { type: [string, 'null'] }
+        instance: { type: [string, 'null'], format: uri-reference }
         traceId: { type: string }
     ValidationProblemDetails:
       allOf:
         - $ref: '#/components/schemas/ProblemDetails'
         - type: object
+          required: [errors]
           properties:
             errors:
               type: object
               additionalProperties:
                 type: array
                 items: { type: string }
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [Healthy, Unhealthy] }
+        checks:
+          type: array
+          items:
+            type: object
+            required: [name, status]
+            properties:
+              name: { type: string }
+              status: { type: string, enum: [Healthy, Unhealthy] }
