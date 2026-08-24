@@ -30,6 +30,8 @@ public sealed class AcceptanceTests
         var updated = await client.SendAsync(patch); Assert.Equal(HttpStatusCode.OK, updated.StatusCode);
         var body = await updated.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal("Igor", body.GetProperty("fullName").GetString()); Assert.Equal("Distributed systems", body.GetProperty("currentFocus").GetString()); Assert.Single(body.GetProperty("socialLinks").EnumerateArray());
+        using var replace = Patch("{\"socialLinks\":[{\"label\":\"LinkedIn\",\"url\":\"https://linkedin.com/in/igor\"}]}"); replace.Headers.TryAddWithoutValidation("If-Match", updated.Headers.ETag!.Tag);
+        var replaced = await client.SendAsync(replace); Assert.Equal(HttpStatusCode.OK, replaced.StatusCode); var replacedBody = await replaced.Content.ReadFromJsonAsync<JsonElement>(); Assert.Single(replacedBody.GetProperty("socialLinks").EnumerateArray()); Assert.Equal("LinkedIn", replacedBody.GetProperty("socialLinks")[0].GetProperty("label").GetString());
     }
 
     [Fact]
@@ -118,6 +120,14 @@ public sealed class AcceptanceTests
         Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/health/live")).StatusCode);
         var ready = await client.GetAsync("/health/ready"); Assert.Equal(HttpStatusCode.OK, ready.StatusCode); var body = await ready.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal("Healthy", body.GetProperty("status").GetString()); Assert.Equal("presentation_database", body.GetProperty("checks")[0].GetProperty("name").GetString());
+    }
+
+    [Fact]
+    public async Task Database_outage_fails_readiness_but_not_liveness()
+    {
+        await using var factory = new ApiFactory(failingReadiness: true); using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, (await client.GetAsync("/health/ready")).StatusCode);
+        Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/health/live")).StatusCode);
     }
 
     private static HttpRequestMessage Patch(string json, string uri = "/api/v1/admin/profile") => new(HttpMethod.Patch, uri) { Content = new StringContent(json, Encoding.UTF8, "application/merge-patch+json") };

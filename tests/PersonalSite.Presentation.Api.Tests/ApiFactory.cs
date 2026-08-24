@@ -5,11 +5,13 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using PersonalSite.Presentation.Api.Data;
 
 namespace PersonalSite.Presentation.Api.Tests;
 
-public sealed class ApiFactory : WebApplicationFactory<Program>
+public sealed class ApiFactory(bool failingReadiness = false) : WebApplicationFactory<Program>
 {
     private readonly InMemoryDatabaseRoot _root = new();
     private readonly string _databaseName = Guid.NewGuid().ToString();
@@ -23,6 +25,14 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
             services.RemoveAll<IDbContextOptionsConfiguration<PresentationDbContext>>();
             services.RemoveAll<PresentationDbContext>();
             services.AddDbContext<PresentationDbContext>(options => options.UseInMemoryDatabase(_databaseName, _root));
+            if (failingReadiness)
+            {
+                services.Configure<HealthCheckServiceOptions>(options =>
+                {
+                    options.Registrations.Clear();
+                    options.Registrations.Add(new HealthCheckRegistration("presentation_database", _ => new FailingHealthCheck(), null, ["ready"]));
+                });
+            }
         });
     }
     public HttpClient CreateApiClient()
@@ -31,4 +41,10 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         client.DefaultRequestHeaders.Add("X-Admin-Key", "integration-secret");
         return client;
     }
+}
+
+internal sealed class FailingHealthCheck : IHealthCheck
+{
+    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default) =>
+        Task.FromResult(HealthCheckResult.Unhealthy("Unavailable for test."));
 }
