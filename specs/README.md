@@ -15,6 +15,7 @@ specs/
   technology-management/spec.md
   operational-health/spec.md
   development-seed-data/spec.md
+  secure-container-delivery/spec.md
 ```
 
 Use `_template/spec.md`. Specifications are permanent product documentation,
