@@ -120,3 +120,11 @@ verification is enabled by setting `PRESENTATION_TEST_CONNECTION_STRING` to a
 disposable test database; the test applies Presentation migrations and verifies
 schema isolation and restricted foreign keys. It is skipped when that variable
 is absent.
+
+## Development seed data
+
+Development startup seeds an empty Presentation schema with resume-derived
+profile, experience, skill, technology, and featured-project content. Seeding
+is controlled by `SeedData:Enabled`, is disabled outside Development, and skips
+the complete operation when any managed content already exists. Set
+`SeedData__Enabled=false` to run Development without applying the seed.

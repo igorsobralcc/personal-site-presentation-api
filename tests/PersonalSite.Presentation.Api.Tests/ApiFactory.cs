@@ -12,14 +12,15 @@ using PersonalSite.Presentation.Api.Data;
 
 namespace PersonalSite.Presentation.Api.Tests;
 
-public sealed class ApiFactory(bool failingReadiness = false) : WebApplicationFactory<Program>
+public sealed class ApiFactory(bool failingReadiness = false, bool seedDataEnabled = false, string environment = "Development") : WebApplicationFactory<Program>
 {
     private readonly InMemoryDatabaseRoot _root = new();
     private readonly string _databaseName = Guid.NewGuid().ToString();
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment(environment);
         builder.UseSetting("Admin:Key", "integration-secret");
+        builder.UseSetting("SeedData:Enabled", seedDataEnabled.ToString());
         builder.ConfigureLogging(logging => logging.ClearProviders());
         builder.ConfigureServices(services =>
         {

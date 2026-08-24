@@ -26,6 +26,11 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
         .AllowAnyHeader().AllowAnyMethod()));
 
 var app = builder.Build();
+if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("SeedData:Enabled"))
+{
+    await using var scope = app.Services.CreateAsyncScope();
+    await DevelopmentSeedData.SeedAsync(scope.ServiceProvider.GetRequiredService<PresentationDbContext>());
+}
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors();
