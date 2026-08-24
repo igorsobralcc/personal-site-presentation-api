@@ -1,7 +1,7 @@
 # Feature specifications
 
 Create one directory per independently deliverable API behavior. Current
-implemented specifications are:
+specifications are:
 
 ```text
 specs/
@@ -14,6 +14,7 @@ specs/
   skill-management/spec.md
   technology-management/spec.md
   operational-health/spec.md
+  development-seed-data/spec.md
 ```
 
 Use `_template/spec.md`. Specifications are permanent product documentation,
