@@ -40,6 +40,7 @@ public static class SkillEndpoints
     }
     private static async Task<IResult> Patch(Guid id, JsonElement document, PresentationDbContext db, HttpContext http, CancellationToken ct)
     {
+        if (document.ValueKind != JsonValueKind.Object) return ApiProblems.Validation(http, new() { ["document"] = ["A JSON object is required."] });
         var value = await db.Skills.FindAsync([id], ct); if (value is null) return NotFound(http);
         var precondition = HttpConcurrency.Validate(http, value); if (precondition is not null) return precondition;
         var patch = new MergePatch(document);

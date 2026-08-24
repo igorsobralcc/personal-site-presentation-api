@@ -27,6 +27,7 @@ public static class ProjectEndpoints
     }
     private static async Task<IResult> Patch(Guid id, JsonElement document, PresentationDbContext db, HttpContext http, CancellationToken ct)
     {
+        if (document.ValueKind != JsonValueKind.Object) return ApiProblems.Validation(http, new() { ["document"] = ["A JSON object is required."] });
         var value = await db.Projects.Include(x => x.Technologies).SingleOrDefaultAsync(x => x.Id == id, ct); if (value is null) return NotFound(http); var precondition = HttpConcurrency.Validate(http, value); if (precondition is not null) return precondition; var patch = new MergePatch(document);
         ProjectImageRequest? currentImage = value.ImageUrl is null ? null : new(value.ImageUrl, value.ImageAlt, value.ImageWidth, value.ImageHeight);
         var request = new ProjectRequest(patch.Has("name") ? patch.Read<string>("name") : value.Name, patch.Has("summary") ? patch.Read<string>("summary") : value.Summary,
@@ -34,7 +35,7 @@ public static class ProjectEndpoints
             patch.Has("technologyIds") ? patch.Read<List<Guid>>("technologyIds") : value.Technologies.Select(x => x.TechnologyId).ToList(), patch.Has("isFeatured") ? patch.Read<bool?>("isFeatured") : value.IsFeatured,
             patch.Has("image") ? patch.Read<ProjectImageRequest?>("image") : currentImage);
         var errors = InputValidation.Project(request); if (errors.Count > 0) return ApiProblems.Validation(http, errors); if (!await ExperienceEndpoints.TechnologyIdsAreActive(db, request.TechnologyIds!, ct)) return TechnologyError(http);
-        Apply(value, request); if (patch.Has("technologyIds")) { db.ProjectTechnologies.RemoveRange(value.Technologies); value.Technologies = request.TechnologyIds!.Select(x => new ProjectTechnology { TechnologyId = x }).ToList(); }
+        Apply(value, request); if (patch.Has("technologyIds")) { db.ProjectTechnologies.RemoveRange(value.Technologies.ToList()); db.ProjectTechnologies.AddRange(request.TechnologyIds!.Select(x => new ProjectTechnology { ProjectId = value.Id, TechnologyId = x })); }
         value.Version++; value.PublicUpdatedAt = DateTimeOffset.UtcNow; await db.SaveChangesAsync(ct); HttpConcurrency.Set(http.Response, value.Version); return Results.Ok(value.ToResponse());
     }
     private static async Task<IResult> Delete(Guid id, PresentationDbContext db, HttpContext http, CancellationToken ct)

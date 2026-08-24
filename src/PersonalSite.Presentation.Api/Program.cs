@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using PersonalSite.Presentation.Api.Common;
 using PersonalSite.Presentation.Api.Data;
 using PersonalSite.Presentation.Api.Features;
@@ -13,6 +13,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = context =>
     context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier);
+builder.Services.AddExceptionHandler<DatabaseExceptionHandler>();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PresentationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Presentation"), npgsql =>
@@ -32,10 +33,11 @@ if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
 app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy", checks = Array.Empty<object>() }))
     .AllowAnonymous();
-app.MapHealthChecks("/health/ready", new HealthCheckOptions
+app.MapGet("/health/ready", async (HealthCheckService healthChecks, HttpContext http, CancellationToken ct) =>
 {
-    Predicate = check => check.Tags.Contains("ready"),
-    ResponseWriter = HealthResponseWriter.WriteAsync
+    var report = await healthChecks.CheckHealthAsync(check => check.Tags.Contains("ready"), ct);
+    http.Response.StatusCode = report.Status == HealthStatus.Healthy ? StatusCodes.Status200OK : StatusCodes.Status503ServiceUnavailable;
+    await HealthResponseWriter.WriteAsync(http, report);
 }).AllowAnonymous();
 
 app.MapPresentationApi();

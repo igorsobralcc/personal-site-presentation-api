@@ -28,6 +28,7 @@ public sealed class PresentationDbContext(DbContextOptions<PresentationDbContext
 
         modelBuilder.Entity<Profile>(entity =>
         {
+            entity.ToTable("profiles", table => table.HasCheckConstraint("ck_profiles_singleton_key", "singleton_key = 'profile'"));
             entity.HasIndex(x => x.SingletonKey).IsUnique();
             entity.Property(x => x.SingletonKey).HasMaxLength(20);
             entity.Property(x => x.FullName).HasMaxLength(120);
@@ -111,7 +112,7 @@ public sealed class PresentationDbContext(DbContextOptions<PresentationDbContext
     {
         modelBuilder.Entity<TEntity>(entity =>
         {
-            entity.ToTable(table);
+            entity.ToTable(table, mapping => mapping.HasCheckConstraint($"ck_{table}_version_positive", "version > 0"));
             entity.HasKey(x => x.Id);
             entity.HasQueryFilter(x => x.DeletedAt == null);
             entity.Property(x => x.Version).IsConcurrencyToken();

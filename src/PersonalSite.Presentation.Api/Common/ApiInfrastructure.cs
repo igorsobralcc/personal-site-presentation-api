@@ -1,8 +1,12 @@
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Npgsql;
 using PersonalSite.Presentation.Api.Data;
 
 namespace PersonalSite.Presentation.Api.Common;
@@ -27,6 +31,56 @@ public sealed class AdminKeyFilter(IConfiguration configuration, IWebHostEnviron
         var left = SHA256.HashData(Encoding.UTF8.GetBytes(expected));
         var right = SHA256.HashData(Encoding.UTF8.GetBytes(actual));
         return CryptographicOperations.FixedTimeEquals(left, right);
+    }
+}
+
+public sealed class OperationLoggingFilter(ILogger<OperationLoggingFilter> logger) : IEndpointFilter
+{
+    public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+    {
+        var started = Stopwatch.GetTimestamp();
+        var http = context.HttpContext;
+        try
+        {
+            var result = await next(context);
+            var outcome = result is IStatusCodeHttpResult { StatusCode: { } statusCode } ? statusCode : http.Response.StatusCode;
+            logger.LogInformation("Management operation {Operation} on {ResourceType} {ResourceId} completed with {Outcome} in {DurationMs}ms; trace {TraceId}",
+                http.Request.Method, ResourceType(http.Request.Path), http.Request.RouteValues["id"], outcome,
+                Stopwatch.GetElapsedTime(started).TotalMilliseconds, http.TraceIdentifier);
+            return result;
+        }
+        catch (Exception exception)
+        {
+            var concurrencyEntries = exception is DbUpdateConcurrencyException concurrency
+                ? string.Join(',', concurrency.Entries.Select(x => x.Metadata.ClrType.Name))
+                : null;
+            logger.LogError(exception, "Management operation {Operation} on {ResourceType} {ResourceId} failed in {DurationMs}ms; trace {TraceId}",
+                http.Request.Method, ResourceType(http.Request.Path), http.Request.RouteValues["id"],
+                Stopwatch.GetElapsedTime(started).TotalMilliseconds, http.TraceIdentifier);
+            if (concurrencyEntries is not null) logger.LogWarning("Concurrency conflict involved {EntityTypes}; trace {TraceId}", concurrencyEntries, http.TraceIdentifier);
+            throw;
+        }
+    }
+
+    private static string ResourceType(PathString path) =>
+        path.Value?.Split('/', StringSplitOptions.RemoveEmptyEntries).ElementAtOrDefault(3) ?? "unknown";
+}
+
+public sealed class DatabaseExceptionHandler : IExceptionHandler
+{
+    public async ValueTask<bool> TryHandleAsync(HttpContext http, Exception exception, CancellationToken cancellationToken)
+    {
+        var status = exception switch
+        {
+            DbUpdateConcurrencyException => StatusCodes.Status412PreconditionFailed,
+            DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation or PostgresErrorCodes.ForeignKeyViolation } } => StatusCodes.Status409Conflict,
+            _ => 0
+        };
+        if (status == 0) return false;
+        http.Response.StatusCode = status;
+        await Results.Problem(statusCode: status, title: status == 409 ? "Persistence conflict" : "Precondition Failed",
+            extensions: new Dictionary<string, object?> { ["traceId"] = http.TraceIdentifier }).ExecuteAsync(http);
+        return true;
     }
 }
 

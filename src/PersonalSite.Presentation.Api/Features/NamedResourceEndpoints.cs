@@ -70,6 +70,7 @@ public static class NamedResourceEndpoints
     private static Task<IResult> PatchTechnology(Guid id, JsonElement document, PresentationDbContext db, HttpContext http, CancellationToken ct) => Patch(id, document, db, http, false, ct);
     private static async Task<IResult> Patch(Guid id, JsonElement document, PresentationDbContext db, HttpContext http, bool category, CancellationToken ct)
     {
+        if (document.ValueKind != JsonValueKind.Object) return ApiProblems.Validation(http, new() { ["document"] = ["A JSON object is required."] });
         ManagedEntity? entity = category ? await db.SkillCategories.FindAsync([id], ct) : await db.Technologies.FindAsync([id], ct);
         if (entity is null) return NotFound(http); var precondition = HttpConcurrency.Validate(http, entity); if (precondition is not null) return precondition;
         var patch = new MergePatch(document); var current = category ? ((SkillCategory)entity).Name : ((Technology)entity).Name;

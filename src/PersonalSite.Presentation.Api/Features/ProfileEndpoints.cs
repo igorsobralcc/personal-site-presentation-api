@@ -44,6 +44,7 @@ public static class ProfileEndpoints
 
     private static async Task<IResult> Patch(JsonElement document, PresentationDbContext db, HttpContext http, CancellationToken ct)
     {
+        if (document.ValueKind != JsonValueKind.Object) return ApiProblems.Validation(http, new() { ["document"] = ["A JSON object is required."] });
         var profile = await db.Profiles.Include(x => x.SocialLinks).SingleOrDefaultAsync(ct);
         if (profile is null) return ApiProblems.Create(http, 404, "Profile not found");
         var precondition = HttpConcurrency.Validate(http, profile);
@@ -66,8 +67,8 @@ public static class ProfileEndpoints
         profile.Availability = Trim(request.Availability); profile.CurrentFocus = Trim(request.CurrentFocus);
         if (patch.Has("socialLinks"))
         {
-            db.ProfileSocialLinks.RemoveRange(profile.SocialLinks);
-            profile.SocialLinks = request.SocialLinks!.Select(x => new ProfileSocialLink { Label = x.Label!.Trim(), Url = x.Url! }).ToList();
+            db.ProfileSocialLinks.RemoveRange(profile.SocialLinks.ToList());
+            db.ProfileSocialLinks.AddRange(request.SocialLinks!.Select(x => new ProfileSocialLink { ProfileId = profile.Id, Label = x.Label!.Trim(), Url = x.Url! }));
         }
         profile.Version++; profile.PublicUpdatedAt = DateTimeOffset.UtcNow;
         try { await db.SaveChangesAsync(ct); }

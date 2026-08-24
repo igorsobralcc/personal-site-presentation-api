@@ -66,8 +66,8 @@ public static class InputValidation
         else
         {
             if (request.SocialLinks.Count > 20) errors["socialLinks"] = ["Must contain at most 20 items."];
-            if (request.SocialLinks.Any(x => string.IsNullOrWhiteSpace(x.Label) || x.Label.Length > 40 || !IsAbsoluteHttps(x.Url)))
-                errors["socialLinks"] = ["Each link requires a label up to 40 characters and an absolute HTTPS URL."];
+            if (request.SocialLinks.Any(x => string.IsNullOrWhiteSpace(x.Label) || x.Label.Length > 40 || !IsAbsoluteHttp(x.Url)))
+                errors["socialLinks"] = ["Each link requires a label up to 40 characters and an absolute HTTP or HTTPS URL."];
             if (request.SocialLinks.Where(x => x.Label is not null).GroupBy(x => x.Label!.Trim(), StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
                 errors["socialLinks"] = ["Link labels must be unique."];
         }
@@ -119,6 +119,7 @@ public static class InputValidation
     }
 
     public static bool IsAbsoluteHttps(string? value) => Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps;
+    public static bool IsAbsoluteHttp(string? value) => Uri.TryCreate(value, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     public static string Normalize(string value) => value.Trim().ToUpperInvariant();
     private static void Required(string? value, string field, int max, Dictionary<string, string[]> errors)
     {

@@ -34,6 +34,7 @@ public static class ExperienceEndpoints
     }
     private static async Task<IResult> Patch(Guid id, JsonElement document, PresentationDbContext db, HttpContext http, CancellationToken ct)
     {
+        if (document.ValueKind != JsonValueKind.Object) return ApiProblems.Validation(http, new() { ["document"] = ["A JSON object is required."] });
         var value = await Expanded(db).SingleOrDefaultAsync(x => x.Id == id, ct); if (value is null) return NotFound(http);
         var precondition = HttpConcurrency.Validate(http, value); if (precondition is not null) return precondition; var patch = new MergePatch(document);
         var request = new ExperienceRequest(patch.Has("company") ? patch.Read<string>("company") : value.Company, patch.Has("role") ? patch.Read<string>("role") : value.Role,
@@ -44,8 +45,8 @@ public static class ExperienceEndpoints
         var errors = InputValidation.Experience(request); if (errors.Count > 0) return ApiProblems.Validation(http, errors);
         if (!await TechnologyIdsAreActive(db, request.TechnologyIds!, ct)) return TechnologyError(http);
         value.Company = request.Company!.Trim(); value.Role = request.Role!.Trim(); value.Location = request.Location?.Trim(); value.StartDate = request.StartDate!.Value; value.EndDate = request.EndDate; value.Summary = request.Summary!.Trim();
-        if (patch.Has("highlights")) { db.ExperienceHighlights.RemoveRange(value.Highlights); value.Highlights = request.Highlights!.Select(x => new ExperienceHighlight { Text = x.Trim() }).ToList(); }
-        if (patch.Has("technologyIds")) { db.ExperienceTechnologies.RemoveRange(value.Technologies); value.Technologies = request.TechnologyIds!.Select(x => new ExperienceTechnology { TechnologyId = x }).ToList(); }
+        if (patch.Has("highlights")) { db.ExperienceHighlights.RemoveRange(value.Highlights.ToList()); db.ExperienceHighlights.AddRange(request.Highlights!.Select(x => new ExperienceHighlight { ExperienceId = value.Id, Text = x.Trim() })); }
+        if (patch.Has("technologyIds")) { db.ExperienceTechnologies.RemoveRange(value.Technologies.ToList()); db.ExperienceTechnologies.AddRange(request.TechnologyIds!.Select(x => new ExperienceTechnology { ExperienceId = value.Id, TechnologyId = x })); }
         value.Version++;
         if (patch.Has("company") || patch.Has("role") || patch.Has("startDate") || patch.Has("endDate") || patch.Has("summary")) value.PublicUpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(ct); HttpConcurrency.Set(http.Response, value.Version); return Results.Ok(value.ToResponse());

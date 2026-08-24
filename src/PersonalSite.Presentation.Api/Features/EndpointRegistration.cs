@@ -6,7 +6,7 @@ public static class EndpointRegistration
 {
     public static IEndpointRouteBuilder MapPresentationApi(this IEndpointRouteBuilder endpoints)
     {
-        var admin = endpoints.MapGroup("/api/v1/admin").AddEndpointFilter<AdminKeyFilter>();
+        var admin = endpoints.MapGroup("/api/v1/admin").AddEndpointFilter<AdminKeyFilter>().AddEndpointFilter<OperationLoggingFilter>();
         ProfileEndpoints.Map(admin);
         NamedResourceEndpoints.Map(admin);
         SkillEndpoints.Map(admin);
