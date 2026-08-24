@@ -67,6 +67,59 @@ public sealed class AcceptanceTests
         using var all = new HttpRequestMessage(HttpMethod.Get, "/api/v1/admin/technologies"); all.Headers.Add("X-Include-Deleted", "true"); var allBody = await (await client.SendAsync(all)).Content.ReadFromJsonAsync<JsonElement>(); Assert.Equal(2, allBody.GetProperty("totalItems").GetInt32());
     }
 
+    [Fact]
+    public async Task Referenced_technology_is_protected_and_names_are_case_insensitively_unique()
+    {
+        await using var factory = new ApiFactory(); using var client = factory.CreateApiClient();
+        var technology = await client.PostAsJsonAsync("/api/v1/admin/technologies", new { name = ".NET" });
+        Assert.Equal(HttpStatusCode.Conflict, (await client.PostAsJsonAsync("/api/v1/admin/technologies", new { name = ".net" })).StatusCode);
+        var technologyId = (await technology.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid();
+        Assert.Equal(HttpStatusCode.Created, (await client.PostAsJsonAsync("/api/v1/admin/projects", new { name = "API", summary = "Service", repositoryUrl = (string?)null, liveUrl = (string?)null, technologyIds = new[] { technologyId }, isFeatured = true, image = (object?)null })).StatusCode);
+        using var delete = new HttpRequestMessage(HttpMethod.Delete, $"/api/v1/admin/technologies/{technologyId}"); delete.Headers.TryAddWithoutValidation("If-Match", technology.Headers.ETag!.Tag);
+        Assert.Equal(HttpStatusCode.Conflict, (await client.SendAsync(delete)).StatusCode);
+    }
+
+    [Fact]
+    public async Task Delete_requires_precondition_and_is_idempotent_after_deletion()
+    {
+        await using var factory = new ApiFactory(); using var client = factory.CreateApiClient();
+        var created = await client.PostAsJsonAsync("/api/v1/admin/technologies", new { name = "PostgreSQL" }); var id = (await created.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid();
+        Assert.Equal((HttpStatusCode)428, (await client.DeleteAsync($"/api/v1/admin/technologies/{id}")).StatusCode);
+        using var first = new HttpRequestMessage(HttpMethod.Delete, $"/api/v1/admin/technologies/{id}"); first.Headers.TryAddWithoutValidation("If-Match", created.Headers.ETag!.Tag); var deleted = await client.SendAsync(first); Assert.Equal(HttpStatusCode.NoContent, deleted.StatusCode);
+        using var again = new HttpRequestMessage(HttpMethod.Delete, $"/api/v1/admin/technologies/{id}"); again.Headers.TryAddWithoutValidation("If-Match", "\"stale\""); Assert.Equal(HttpStatusCode.NoContent, (await client.SendAsync(again)).StatusCode);
+    }
+
+    [Fact]
+    public async Task Hidden_experience_changes_do_not_invalidate_public_etag()
+    {
+        await using var factory = new ApiFactory(); using var client = factory.CreateApiClient(); await InitializeProfile(client);
+        var created = await client.PostAsJsonAsync("/api/v1/admin/experiences", new { company = "Company", role = "Engineer", location = "Private office", startDate = "2024-01-01", endDate = (string?)null, summary = "Public", highlights = new[] { "Hidden one" }, technologyIds = Array.Empty<Guid>() });
+        var id = (await created.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid(); client.DefaultRequestHeaders.Remove("X-Admin-Key");
+        var before = await client.GetAsync("/api/v1/presentation"); var publicBody = await before.Content.ReadFromJsonAsync<JsonElement>(); var experience = publicBody.GetProperty("experiences")[0]; Assert.False(experience.TryGetProperty("location", out _)); Assert.False(experience.TryGetProperty("highlights", out _));
+        client.DefaultRequestHeaders.Add("X-Admin-Key", "integration-secret"); var current = await client.GetAsync($"/api/v1/admin/experiences/{id}"); Assert.Equal(created.Headers.ETag!.Tag, current.Headers.ETag!.Tag);
+        using var patch = Patch("{\"highlights\":[\"Hidden two\"]}", $"/api/v1/admin/experiences/{id}"); patch.Headers.TryAddWithoutValidation("If-Match", current.Headers.ETag.Tag); Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(patch)).StatusCode);
+        client.DefaultRequestHeaders.Remove("X-Admin-Key"); using var cached = new HttpRequestMessage(HttpMethod.Get, "/api/v1/presentation"); cached.Headers.TryAddWithoutValidation("If-None-Match", before.Headers.ETag!.Tag); Assert.Equal(HttpStatusCode.NotModified, (await client.SendAsync(cached)).StatusCode);
+    }
+
+    [Fact]
+    public async Task Aggregate_validation_rejects_invalid_dates_and_incomplete_media()
+    {
+        await using var factory = new ApiFactory(); using var client = factory.CreateApiClient();
+        var experience = await client.PostAsJsonAsync("/api/v1/admin/experiences", new { company = "Company", role = "Role", location = (string?)null, startDate = "2024-01-01", endDate = "2023-01-01", summary = "Summary", highlights = Array.Empty<string>(), technologyIds = Array.Empty<Guid>() });
+        Assert.Equal(HttpStatusCode.BadRequest, experience.StatusCode);
+        var project = await client.PostAsJsonAsync("/api/v1/admin/projects", new { name = "Project", summary = "Summary", repositoryUrl = (string?)null, liveUrl = (string?)null, technologyIds = Array.Empty<Guid>(), isFeatured = true, image = new { url = "https://example.com/image.png", alt = "Image", width = 0, height = 100 } });
+        Assert.Equal(HttpStatusCode.BadRequest, project.StatusCode);
+    }
+
+    [Fact]
+    public async Task Health_endpoints_are_anonymous_and_report_named_readiness()
+    {
+        await using var factory = new ApiFactory(); using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/health/live")).StatusCode);
+        var ready = await client.GetAsync("/health/ready"); Assert.Equal(HttpStatusCode.OK, ready.StatusCode); var body = await ready.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal("Healthy", body.GetProperty("status").GetString()); Assert.Equal("presentation_database", body.GetProperty("checks")[0].GetProperty("name").GetString());
+    }
+
     private static HttpRequestMessage Patch(string json, string uri = "/api/v1/admin/profile") => new(HttpMethod.Patch, uri) { Content = new StringContent(json, Encoding.UTF8, "application/merge-patch+json") };
     private static Task<HttpResponseMessage> InitializeProfile(HttpClient client) => client.PutAsJsonAsync("/api/v1/admin/profile", new { fullName = "Igor", headline = "Engineer", biography = "Bio", shortSummary = (string?)null, location = (string?)null, email = (string?)null, availability = (string?)null, currentFocus = (string?)null, socialLinks = Array.Empty<object>() });
 }
