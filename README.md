@@ -148,3 +148,67 @@ Normal runtime configuration uses the least-privilege `presentation_app` role.
 Supply its production connection string through the
 `ConnectionStrings__Presentation` environment variable or the deployment
 platform's secret store.
+
+## Secure CI and container delivery
+
+[`CI`](.github/workflows/ci.yml) runs for pull requests and `main` pushes. It
+validates every introduced Conventional Commit, scans Git history for secrets,
+builds in Release mode, runs all tests against an ephemeral PostgreSQL 18
+service, and builds the production container. A successful `main` run publishes
+the same source revision to GHCR as `sha-<full-commit>` and `latest`.
+
+The image runs as a non-root user, listens on container port `8080`, and exposes
+a Docker health check through `/health/live`. Database and admin credentials are
+runtime environment variables and are not Docker build arguments or image
+layers.
+
+### Configure the production secrets
+
+First authenticate GitHub CLI and create the protected environment:
+
+```powershell
+gh auth login --hostname github.com
+gh api --method PUT repos/igorsobralcc/personal-site-presentation-api/environments/production
+```
+
+Then add both environment secrets. These commands prompt for values and do not
+put them in shell history:
+
+```powershell
+gh secret set PRESENTATION_CONNECTION_STRING --env production --repo igorsobralcc/personal-site-presentation-api
+gh secret set PRESENTATION_ADMIN_KEY --env production --repo igorsobralcc/personal-site-presentation-api
+```
+
+`PRESENTATION_CONNECTION_STRING` must use the least-privilege
+`presentation_app` login and a database host reachable from the deployment
+container. Do not use `localhost` unless PostgreSQL runs inside that same
+container. `PRESENTATION_ADMIN_KEY` should be a separate random value, for
+example a 32-byte cryptographically random secret.
+
+In the GitHub `production` environment, configure required reviewers and allow
+deployments only from `main`. Register a persistent Linux self-hosted runner on
+the Docker host with the label `presentation-production`. The runner must use
+version `2.327.1` or newer and its service account must be allowed to manage the
+Presentation container.
+
+### Protect main and deploy
+
+Configure a branch ruleset for `main` that requires pull requests, blocks force
+pushes and deletions, and requires these status checks:
+
+- `Commit policy`
+- `Secret scan`
+- `Build and test`
+- `Build container`
+
+After CI publishes an image, run the `Deploy production` workflow. Leaving
+`image_tag` empty deploys the immutable image for the selected `main` commit;
+enter another published `sha-<full-commit>` tag to deploy a specific revision.
+The deploy workflow injects `ConnectionStrings__Presentation` and `Admin__Key`
+only at container startup, waits for Docker health, and restores the previous
+container if the replacement fails.
+
+Production migrations are intentionally separate from application deployment.
+Apply them with `presentation_migrator` before deploying a release that contains
+new migrations. Place TLS termination and public routing in front of port
+`8080`; the container itself serves HTTP.

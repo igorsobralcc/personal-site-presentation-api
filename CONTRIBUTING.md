@@ -87,3 +87,17 @@ Each commit must:
 
 Use a `revert:` commit to undo shared history. Do not rewrite published history
 to conceal intermediate development.
+
+### Automated enforcement
+
+The CI `Commit policy` job validates every commit introduced by a pull request
+or push with [`scripts/validate-commits.sh`](scripts/validate-commits.sh). Keep
+pull request titles Conventional Commit-compatible when using squash merge.
+
+Repository administrators must protect `main` and require the `Commit policy`,
+`Secret scan`, `Build and test`, and `Build container` checks. CI configuration
+cannot prevent an administrator from bypassing an unprotected branch.
+
+GitHub Actions dependencies must be pinned to immutable 40-character commit
+SHAs with a version comment. Never make production secrets available to pull
+request jobs or use them as Docker build arguments.

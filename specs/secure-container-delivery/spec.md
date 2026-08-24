@@ -1,6 +1,6 @@
 # Feature: Secure container delivery
 
-- Status: Approved
+- Status: Implemented
 - Owner: Igor Sobral
 - Last updated: 2026-08-24
 
@@ -124,12 +124,22 @@ runtime connection string and does not apply migrations outside Development.
 
 ## Test evidence
 
-- Commit-policy script fixtures cover valid and invalid subjects.
-- `dotnet test --configuration Release` covers fast and PostgreSQL integration
-  suites in CI.
-- The CI container job builds the production Docker target.
-- Shell and structural validation cover workflow syntax, pinned actions,
-  permissions, secret references, and deployment rollback commands.
+- `bash scripts/validate-commits.sh --self-test` passed valid and invalid
+  Conventional Commit fixtures on 2026-08-24.
+- Actionlint 1.7.12 passed both workflow files on 2026-08-24.
+- `dotnet test --configuration Release --no-build --no-restore` passed all 17
+  tests, including the PostgreSQL migration test against a disposable local
+  PostgreSQL 18 database, on 2026-08-24.
+- `dotnet publish` completed in Release on 2026-08-24.
+- Structural validation confirmed all 14 action references use immutable SHAs,
+  the final image selects `$APP_UID`, and the production connection secret is
+  referenced only by the deployment workflow.
+- Microsoft Container Registry returned `200` for both digest-pinned .NET 10
+  Alpine base-image manifests on 2026-08-24.
+- Docker Hub returned `200` for the digest-pinned PostgreSQL 18 Alpine CI
+  service manifest on 2026-08-24.
+- The CI `Build container` job is the authoritative Docker build verification;
+  Docker is not installed in the local development environment.
 
 ## Decisions and open questions
 
