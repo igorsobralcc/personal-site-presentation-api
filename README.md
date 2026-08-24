@@ -102,6 +102,14 @@ PATCH uses `application/merge-patch+json`. PATCH, DELETE, and restore require
 DELETE is idempotent for an already deleted resource. Creates return `201` with
 `Location`; successful deletes and restores return `204`.
 
+## Postman collection
+
+Import [`docs/PersonalSite.Presentation.Api.postman_collection.json`](docs/PersonalSite.Presentation.Api.postman_collection.json)
+into Postman to exercise all public, administrative, and health endpoints. Set
+the collection's `baseUrl` and `adminKey` variables before running protected
+requests. Create and get requests capture resource IDs and ETags for subsequent
+update, delete, and restore requests.
+
 ## Delivery order
 
 1. Approve the feature specifications and OpenAPI contract.

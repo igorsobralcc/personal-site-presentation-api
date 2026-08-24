@@ -1,0 +1,230 @@
+{
+  "info": {
+    "_postman_id": "89ccf769-c34f-4c89-a1a4-2f0195698926",
+    "name": "Personal Site Presentation API",
+    "description": "Postman collection for every operation in docs/openapi.yaml. Set adminKey before using administrative requests. Create and get requests capture resource IDs and ETags for subsequent operations.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5080", "type": "string" },
+    { "key": "adminKey", "value": "", "type": "string" },
+    { "key": "page", "value": "1", "type": "string" },
+    { "key": "pageSize", "value": "20", "type": "string" },
+    { "key": "includeDeleted", "value": "false", "type": "string" },
+    { "key": "presentationEtag", "value": "", "type": "string" },
+    { "key": "profileEtag", "value": "", "type": "string" },
+    { "key": "experienceId", "value": "00000000-0000-0000-0000-000000000000", "type": "string" },
+    { "key": "experienceEtag", "value": "", "type": "string" },
+    { "key": "projectId", "value": "00000000-0000-0000-0000-000000000000", "type": "string" },
+    { "key": "projectEtag", "value": "", "type": "string" },
+    { "key": "skillCategoryId", "value": "00000000-0000-0000-0000-000000000000", "type": "string" },
+    { "key": "skillCategoryEtag", "value": "", "type": "string" },
+    { "key": "skillId", "value": "00000000-0000-0000-0000-000000000000", "type": "string" },
+    { "key": "skillEtag", "value": "", "type": "string" },
+    { "key": "technologyId", "value": "00000000-0000-0000-0000-000000000000", "type": "string" },
+    { "key": "technologyEtag", "value": "", "type": "string" }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const etag = pm.response.headers.get('ETag');",
+          "if (etag) {",
+          "  const path = pm.request.url.getPath();",
+          "  if (path.includes('/experiences/')) pm.collectionVariables.set('experienceEtag', etag);",
+          "  else if (path.includes('/projects/')) pm.collectionVariables.set('projectEtag', etag);",
+          "  else if (path.includes('/skill-categories/')) pm.collectionVariables.set('skillCategoryEtag', etag);",
+          "  else if (path.includes('/skills/')) pm.collectionVariables.set('skillEtag', etag);",
+          "  else if (path.includes('/technologies/')) pm.collectionVariables.set('technologyEtag', etag);",
+          "  else if (path.endsWith('/admin/profile')) pm.collectionVariables.set('profileEtag', etag);",
+          "  else if (path.endsWith('/presentation')) pm.collectionVariables.set('presentationEtag', etag);",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Presentation",
+      "item": [
+        {
+          "name": "Get current public portfolio",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "If-None-Match", "value": "{{presentationEtag}}", "disabled": true }],
+            "url": "{{baseUrl}}/api/v1/presentation",
+            "description": "Returns the current public presentation. Enable If-None-Match to exercise conditional caching."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('presentationEtag', etag);"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Profile admin",
+      "item": [
+        {
+          "name": "Get profile",
+          "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }], "url": "{{baseUrl}}/api/v1/admin/profile" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('profileEtag', etag);"] } }]
+        },
+        {
+          "name": "Initialize profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Igor Sobral\",\n  \"headline\": \"Software Engineer | .NET | Distributed Systems | AWS & Azure\",\n  \"biography\": \"Backend software engineer specializing in reliable distributed systems.\",\n  \"shortSummary\": \"Open to mid-level opportunities worldwide.\",\n  \"location\": \"Brazil\",\n  \"email\": null,\n  \"availability\": \"Open to mid-level backend software engineering opportunities worldwide.\",\n  \"currentFocus\": \"Building scalable backend platforms with .NET.\",\n  \"socialLinks\": [\n    { \"label\": \"GitHub\", \"url\": \"https://github.com/igorsobralcc\" },\n    { \"label\": \"LinkedIn\", \"url\": \"https://www.linkedin.com/in/igor-sobral-m\" }\n  ]\n}" },
+            "url": "{{baseUrl}}/api/v1/admin/profile"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('profileEtag', etag);"] } }]
+        },
+        {
+          "name": "Patch profile",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{profileEtag}}" }, { "key": "Content-Type", "value": "application/merge-patch+json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"availability\": \"Open to mid-level backend software engineering opportunities worldwide.\"\n}" },
+            "url": "{{baseUrl}}/api/v1/admin/profile"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('profileEtag', etag);"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Experience admin",
+      "item": [
+        {
+          "name": "List experiences",
+          "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "X-Page", "value": "{{page}}" }, { "key": "X-Page-Size", "value": "{{pageSize}}" }, { "key": "X-Include-Deleted", "value": "{{includeDeleted}}" }], "url": "{{baseUrl}}/api/v1/admin/experiences" }
+        },
+        {
+          "name": "Create experience",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"company\": \"Example Company\",\n  \"role\": \"Software Engineer\",\n  \"location\": \"Remote\",\n  \"startDate\": \"2024-01-01\",\n  \"endDate\": null,\n  \"summary\": \"Built reliable backend services and integrations.\",\n  \"highlights\": [\"Delivered measurable platform improvements.\"],\n  \"technologyIds\": [\"{{technologyId}}\"]\n}" },
+            "url": "{{baseUrl}}/api/v1/admin/experiences"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201) {", "  const body = pm.response.json();", "  pm.collectionVariables.set('experienceId', body.id);", "  const etag = pm.response.headers.get('ETag');", "  if (etag) pm.collectionVariables.set('experienceEtag', etag);", "}"] } }]
+        },
+        {
+          "name": "Get experience",
+          "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }], "url": "{{baseUrl}}/api/v1/admin/experiences/{{experienceId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('experienceEtag', etag);"] } }]
+        },
+        {
+          "name": "Patch experience",
+          "request": { "method": "PATCH", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{experienceEtag}}" }, { "key": "Content-Type", "value": "application/merge-patch+json" }], "body": { "mode": "raw", "raw": "{\n  \"summary\": \"Updated experience summary.\"\n}" }, "url": "{{baseUrl}}/api/v1/admin/experiences/{{experienceId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('experienceEtag', etag);"] } }]
+        },
+        { "name": "Delete experience", "request": { "method": "DELETE", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{experienceEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/experiences/{{experienceId}}" } },
+        { "name": "Restore experience", "request": { "method": "POST", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{experienceEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/experiences/{{experienceId}}/restore" } }
+      ]
+    },
+    {
+      "name": "Project admin",
+      "item": [
+        { "name": "List projects", "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "X-Page", "value": "{{page}}" }, { "key": "X-Page-Size", "value": "{{pageSize}}" }, { "key": "X-Include-Deleted", "value": "{{includeDeleted}}" }], "url": "{{baseUrl}}/api/v1/admin/projects" } },
+        {
+          "name": "Create project",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Example Project\",\n  \"summary\": \"A representative backend platform project.\",\n  \"repositoryUrl\": \"https://github.com/igorsobralcc\",\n  \"liveUrl\": null,\n  \"technologyIds\": [\"{{technologyId}}\"],\n  \"isFeatured\": true,\n  \"image\": null\n}" },
+            "url": "{{baseUrl}}/api/v1/admin/projects"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201) {", "  const body = pm.response.json();", "  pm.collectionVariables.set('projectId', body.id);", "  const etag = pm.response.headers.get('ETag');", "  if (etag) pm.collectionVariables.set('projectEtag', etag);", "}"] } }]
+        },
+        {
+          "name": "Get project",
+          "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }], "url": "{{baseUrl}}/api/v1/admin/projects/{{projectId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('projectEtag', etag);"] } }]
+        },
+        {
+          "name": "Patch project",
+          "request": { "method": "PATCH", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{projectEtag}}" }, { "key": "Content-Type", "value": "application/merge-patch+json" }], "body": { "mode": "raw", "raw": "{\n  \"isFeatured\": false\n}" }, "url": "{{baseUrl}}/api/v1/admin/projects/{{projectId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('projectEtag', etag);"] } }]
+        },
+        { "name": "Delete project", "request": { "method": "DELETE", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{projectEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/projects/{{projectId}}" } },
+        { "name": "Restore project", "request": { "method": "POST", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{projectEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/projects/{{projectId}}/restore" } }
+      ]
+    },
+    {
+      "name": "Skill category admin",
+      "item": [
+        { "name": "List skill categories", "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "X-Page", "value": "{{page}}" }, { "key": "X-Page-Size", "value": "{{pageSize}}" }, { "key": "X-Include-Deleted", "value": "{{includeDeleted}}" }], "url": "{{baseUrl}}/api/v1/admin/skill-categories" } },
+        {
+          "name": "Create skill category",
+          "request": { "method": "POST", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Postman Category\"\n}" }, "url": "{{baseUrl}}/api/v1/admin/skill-categories" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201) {", "  const body = pm.response.json();", "  pm.collectionVariables.set('skillCategoryId', body.id);", "  const etag = pm.response.headers.get('ETag');", "  if (etag) pm.collectionVariables.set('skillCategoryEtag', etag);", "}"] } }]
+        },
+        {
+          "name": "Get skill category",
+          "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }], "url": "{{baseUrl}}/api/v1/admin/skill-categories/{{skillCategoryId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('skillCategoryEtag', etag);"] } }]
+        },
+        {
+          "name": "Patch skill category",
+          "request": { "method": "PATCH", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{skillCategoryEtag}}" }, { "key": "Content-Type", "value": "application/merge-patch+json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Postman Category\"\n}" }, "url": "{{baseUrl}}/api/v1/admin/skill-categories/{{skillCategoryId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('skillCategoryEtag', etag);"] } }]
+        },
+        { "name": "Delete skill category", "request": { "method": "DELETE", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{skillCategoryEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/skill-categories/{{skillCategoryId}}" } },
+        { "name": "Restore skill category", "request": { "method": "POST", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{skillCategoryEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/skill-categories/{{skillCategoryId}}/restore" } }
+      ]
+    },
+    {
+      "name": "Skill admin",
+      "item": [
+        { "name": "List skills", "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "X-Page", "value": "{{page}}" }, { "key": "X-Page-Size", "value": "{{pageSize}}" }, { "key": "X-Include-Deleted", "value": "{{includeDeleted}}" }], "url": "{{baseUrl}}/api/v1/admin/skills" } },
+        {
+          "name": "Create skill",
+          "request": { "method": "POST", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Postman Skill\",\n  \"categoryId\": \"{{skillCategoryId}}\"\n}" }, "url": "{{baseUrl}}/api/v1/admin/skills" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201) {", "  const body = pm.response.json();", "  pm.collectionVariables.set('skillId', body.id);", "  const etag = pm.response.headers.get('ETag');", "  if (etag) pm.collectionVariables.set('skillEtag', etag);", "}"] } }]
+        },
+        {
+          "name": "Get skill",
+          "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }], "url": "{{baseUrl}}/api/v1/admin/skills/{{skillId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('skillEtag', etag);"] } }]
+        },
+        {
+          "name": "Patch skill",
+          "request": { "method": "PATCH", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{skillEtag}}" }, { "key": "Content-Type", "value": "application/merge-patch+json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Postman Skill\",\n  \"categoryId\": \"{{skillCategoryId}}\"\n}" }, "url": "{{baseUrl}}/api/v1/admin/skills/{{skillId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('skillEtag', etag);"] } }]
+        },
+        { "name": "Delete skill", "request": { "method": "DELETE", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{skillEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/skills/{{skillId}}" } },
+        { "name": "Restore skill", "request": { "method": "POST", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{skillEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/skills/{{skillId}}/restore" } }
+      ]
+    },
+    {
+      "name": "Technology admin",
+      "item": [
+        { "name": "List technologies", "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "X-Page", "value": "{{page}}" }, { "key": "X-Page-Size", "value": "{{pageSize}}" }, { "key": "X-Include-Deleted", "value": "{{includeDeleted}}" }], "url": "{{baseUrl}}/api/v1/admin/technologies" } },
+        {
+          "name": "Create technology",
+          "request": { "method": "POST", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Postman Technology\"\n}" }, "url": "{{baseUrl}}/api/v1/admin/technologies" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201) {", "  const body = pm.response.json();", "  pm.collectionVariables.set('technologyId', body.id);", "  const etag = pm.response.headers.get('ETag');", "  if (etag) pm.collectionVariables.set('technologyEtag', etag);", "}"] } }]
+        },
+        {
+          "name": "Get technology",
+          "request": { "method": "GET", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }], "url": "{{baseUrl}}/api/v1/admin/technologies/{{technologyId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('technologyEtag', etag);"] } }]
+        },
+        {
+          "name": "Patch technology",
+          "request": { "method": "PATCH", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{technologyEtag}}" }, { "key": "Content-Type", "value": "application/merge-patch+json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Postman Technology\"\n}" }, "url": "{{baseUrl}}/api/v1/admin/technologies/{{technologyId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const etag = pm.response.headers.get('ETag');", "if (etag) pm.collectionVariables.set('technologyEtag', etag);"] } }]
+        },
+        { "name": "Delete technology", "request": { "method": "DELETE", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{technologyEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/technologies/{{technologyId}}" } },
+        { "name": "Restore technology", "request": { "method": "POST", "header": [{ "key": "X-Admin-Key", "value": "{{adminKey}}" }, { "key": "If-Match", "value": "{{technologyEtag}}" }], "url": "{{baseUrl}}/api/v1/admin/technologies/{{technologyId}}/restore" } }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        { "name": "Liveness", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/health/live" } },
+        { "name": "Readiness", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/health/ready" } }
+      ]
+    }
+  ]
+}
