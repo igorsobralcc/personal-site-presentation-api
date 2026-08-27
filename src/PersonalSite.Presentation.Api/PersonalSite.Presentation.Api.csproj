@@ -5,6 +5,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
     <UserSecretsId>personal-site-presentation-api-local</UserSecretsId>
+
+    <!-- Run Roslyn/code-style analyzers during builds and fail on findings. -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Program is instantiated by WebApplicationFactory; domain types use project namespaces. -->
+    <NoWarn>$(NoWarn);S1118;S3903;S8969</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="EFCore.NamingConventions" Version="10.0.1" />
@@ -17,5 +26,9 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageReference Include="Microsoft.OpenApi" Version="2.12.2" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.33.0.1635">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>
