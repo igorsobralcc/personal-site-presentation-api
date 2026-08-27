@@ -48,6 +48,8 @@ public sealed class ApiFactory(bool failingReadiness = false, bool seedDataEnabl
 
 internal sealed class FailingHealthCheck : IHealthCheck
 {
-    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default) =>
-        Task.FromResult(HealthCheckResult.Unhealthy("Unavailable for test."));
+    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(HealthCheckResult.Unhealthy("Unavailable for test."));
+    }
 }

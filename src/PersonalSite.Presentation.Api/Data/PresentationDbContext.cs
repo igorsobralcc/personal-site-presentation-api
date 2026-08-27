@@ -122,7 +122,10 @@ public sealed class PresentationDbContext(DbContextOptions<PresentationDbContext
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         foreach (var entry in ChangeTracker.Entries<ManagedEntity>().Where(x => x.State == EntityState.Modified))
+        {
             entry.Entity.UpdatedAt = DateTimeOffset.UtcNow;
+        }
+
         return base.SaveChangesAsync(cancellationToken);
     }
 }

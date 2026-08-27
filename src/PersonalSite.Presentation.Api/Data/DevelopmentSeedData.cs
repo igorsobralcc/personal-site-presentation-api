@@ -8,8 +8,14 @@ public static class DevelopmentSeedData
 {
     public static async Task SeedAsync(PresentationDbContext db, CancellationToken ct = default)
     {
-        if (db.Database.IsRelational()) await db.Database.MigrateAsync(ct);
-        else await db.Database.EnsureCreatedAsync(ct);
+        if (db.Database.IsRelational())
+        {
+            await db.Database.MigrateAsync(ct);
+        }
+        else
+        {
+            await db.Database.EnsureCreatedAsync(ct);
+        }
 
         await using IDbContextTransaction? transaction = db.Database.IsRelational()
             ? await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct)
@@ -17,7 +23,11 @@ public static class DevelopmentSeedData
 
         if (await HasManagedContentAsync(db, ct))
         {
-            if (transaction is not null) await transaction.CommitAsync(ct);
+            if (transaction is not null)
+            {
+                await transaction.CommitAsync(ct);
+            }
+
             return;
         }
 
@@ -35,16 +45,21 @@ public static class DevelopmentSeedData
         db.AddRange(experiences);
         db.AddRange(projects);
         await db.SaveChangesAsync(ct);
-        if (transaction is not null) await transaction.CommitAsync(ct);
+        if (transaction is not null)
+        {
+            await transaction.CommitAsync(ct);
+        }
     }
 
-    private static async Task<bool> HasManagedContentAsync(PresentationDbContext db, CancellationToken ct) =>
-        await db.Profiles.IgnoreQueryFilters().AnyAsync(ct) ||
+    private static async Task<bool> HasManagedContentAsync(PresentationDbContext db, CancellationToken ct)
+    {
+        return await db.Profiles.IgnoreQueryFilters().AnyAsync(ct) ||
         await db.Experiences.IgnoreQueryFilters().AnyAsync(ct) ||
         await db.Projects.IgnoreQueryFilters().AnyAsync(ct) ||
         await db.SkillCategories.IgnoreQueryFilters().AnyAsync(ct) ||
         await db.Skills.IgnoreQueryFilters().AnyAsync(ct) ||
         await db.Technologies.IgnoreQueryFilters().AnyAsync(ct);
+    }
 
     private static Profile CreateProfile(SeedClock clock)
     {
@@ -75,8 +90,9 @@ public static class DevelopmentSeedData
         return profile;
     }
 
-    private static List<Technology> CreateTechnologies(SeedClock clock) =>
-    [
+    private static List<Technology> CreateTechnologies(SeedClock clock)
+    {
+        return [
         Technology(".NET", clock), Technology("C#", clock), Technology("PostgreSQL", clock),
         Technology("React", clock), Technology("RabbitMQ", clock), Technology("MongoDB", clock),
         Technology("ConfigCat", clock), Technology("AWS", clock), Technology("Azure", clock),
@@ -86,18 +102,22 @@ public static class DevelopmentSeedData
         Technology("Microsoft Office", clock), Technology("Windows", clock), Technology("Java", clock),
         Technology("MySQL", clock)
     ];
+    }
 
-    private static List<SkillCategory> CreateSkillCategories(SeedClock clock) =>
-    [
+    private static List<SkillCategory> CreateSkillCategories(SeedClock clock)
+    {
+        return [
         Category("Backend Engineering", ["C#", ".NET", "Backend APIs", "Microservices"], clock),
         Category("Architecture & Integration", ["Event-Driven Architecture", "Domain-Driven Design", "RabbitMQ", "Webhooks", "SAP", "Qlik Replicate"], clock),
         Category("Cloud & Delivery", ["AWS", "Azure", "AWS S3", "Azure Key Vault", "CI/CD", "ConfigCat"], clock),
         Category("Data", ["SQL", "PostgreSQL", "Oracle Database", "MongoDB", "MySQL"], clock),
         Category("Frontend & Other Languages", ["React", "Java"], clock)
     ];
+    }
 
-    private static List<Experience> CreateExperiences(SeedClock clock, IReadOnlyDictionary<string, Technology> technologies) =>
-    [
+    private static List<Experience> CreateExperiences(SeedClock clock, IReadOnlyDictionary<string, Technology> technologies)
+    {
+        return [
         Experience("Self-Employed", "Senior Software Engineer Consultant", new(2026, 7, 1), null,
             "Leading the design and delivery of a scalable digital platform for an automotive parts and vehicle-maintenance business using .NET, React, PostgreSQL, microservices, RabbitMQ, and event-driven workflows.",
             [
@@ -148,22 +168,31 @@ public static class DevelopmentSeedData
                 "Assisted senior technicians with hardware maintenance and end-user support."
             ], ["Windows", "Microsoft Office", "Active Directory"], technologies, clock)
     ];
+    }
 
-    private static List<Project> CreateProjects(SeedClock clock, IReadOnlyDictionary<string, Technology> technologies) =>
-    [
+    private static List<Project> CreateProjects(SeedClock clock, IReadOnlyDictionary<string, Technology> technologies)
+    {
+        return [
         Project("E-commerce Image Platform", "A centralized .NET and AWS S3 media platform that reduced storage by 60%, removed up to 3 TB of database usage, and shortened image publishing from 36 hours to about 5 minutes.", [".NET", "AWS S3", "PostgreSQL", "Oracle Database", "WebP", "Qlik Replicate"], technologies, clock),
         Project("Product Registration Platform", "An in-house event-driven product platform delivered by a five-person team in under two months, integrating SAP, PostgreSQL, and Oracle while replacing a subscription service.", [".NET", "Domain-Driven Design", "SAP", "PostgreSQL", "Oracle Database"], technologies, clock),
         Project("Getnet Payment Integration", "A high-throughput asynchronous payment integration spanning four .NET APIs, supporting Mexican rental operations and an estimated R$200K in monthly processing-cost savings.", [".NET", "RabbitMQ", "MongoDB", "AWS"], technologies, clock),
         Project("Automotive Operations Platform", "A scalable full-stack platform centralizing automotive products, inventory, sales, customers, suppliers, permissions, reporting, auditing, and vehicle-maintenance scheduling.", [".NET", "React", "PostgreSQL", "RabbitMQ"], technologies, clock)
     ];
+    }
 
-    private static Technology Technology(string name, SeedClock clock) => Stamp(new Technology { Name = name, NormalizedName = name.Trim().ToUpperInvariant() }, clock.Next());
+    private static Technology Technology(string name, SeedClock clock)
+    {
+        return Stamp(new Technology { Name = name, NormalizedName = name.Trim().ToUpperInvariant() }, clock.Next());
+    }
 
     private static SkillCategory Category(string name, IReadOnlyList<string> skills, SeedClock clock)
     {
         var category = Stamp(new SkillCategory { Name = name, NormalizedName = name.ToUpperInvariant() }, clock.Next());
         foreach (var skillName in skills)
+        {
             category.Skills.Add(Stamp(new Skill { Name = skillName, NormalizedName = skillName.ToUpperInvariant(), CategoryId = category.Id }, clock.Next()));
+        }
+
         return category;
     }
 
@@ -172,9 +201,15 @@ public static class DevelopmentSeedData
     {
         var experience = Stamp(new Experience { Company = company, Role = role, StartDate = startDate, EndDate = endDate, Summary = summary }, clock.Next());
         foreach (var highlight in highlights)
+        {
             experience.Highlights.Add(new ExperienceHighlight { ExperienceId = experience.Id, Text = highlight, CreatedAt = clock.Next() });
+        }
+
         foreach (var technologyName in technologyNames)
+        {
             experience.Technologies.Add(new ExperienceTechnology { ExperienceId = experience.Id, TechnologyId = technologies[technologyName].Id });
+        }
+
         return experience;
     }
 
@@ -183,7 +218,10 @@ public static class DevelopmentSeedData
     {
         var project = Stamp(new Project { Name = name, Summary = summary, IsFeatured = true }, clock.Next());
         foreach (var technologyName in technologyNames)
+        {
             project.Technologies.Add(new ProjectTechnology { ProjectId = project.Id, TechnologyId = technologies[technologyName].Id });
+        }
+
         return project;
     }
 
@@ -198,7 +236,10 @@ public static class DevelopmentSeedData
     private sealed class SeedClock(DateTimeOffset value)
     {
         private DateTimeOffset _value = value;
-        public DateTimeOffset Next() => _value = _value.AddTicks(1);
+        public DateTimeOffset Next()
+        {
+            return _value = _value.AddTicks(1);
+        }
     }
 
 }

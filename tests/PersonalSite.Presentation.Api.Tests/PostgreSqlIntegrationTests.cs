@@ -34,6 +34,8 @@ public sealed class PostgresFactAttribute : FactAttribute
     public PostgresFactAttribute()
     {
         if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PRESENTATION_TEST_CONNECTION_STRING")))
+        {
             Skip = "Set PRESENTATION_TEST_CONNECTION_STRING to a disposable PostgreSQL database to run persistence verification.";
+        }
     }
 }

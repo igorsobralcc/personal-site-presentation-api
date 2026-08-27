@@ -11,7 +11,8 @@ public sealed class ContractTests
     [Fact]
     public async Task Generated_and_checked_in_contracts_expose_the_same_routes()
     {
-        await using var factory = new ApiFactory(); using var client = factory.CreateClient();
+        await using var factory = new ApiFactory();
+        using var client = factory.CreateClient();
         var response = await client.GetAsync("/openapi/v1.json");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var generated = (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("paths")

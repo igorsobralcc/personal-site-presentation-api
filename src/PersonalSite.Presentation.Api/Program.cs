@@ -34,7 +34,10 @@ if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("SeedDat
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors();
-if (app.Environment.IsDevelopment()) app.MapOpenApi();
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
 
 app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy", checks = Array.Empty<object>() }))
     .AllowAnonymous();
@@ -46,6 +49,6 @@ app.MapGet("/health/ready", async (HealthCheckService healthChecks, HttpContext 
 }).AllowAnonymous();
 
 app.MapPresentationApi();
-app.Run();
+await app.RunAsync();
 
 public partial class Program;
