@@ -4,6 +4,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <!-- Generated EF/OpenAPI code is validated structurally, not counted as executable product coverage. -->
+    <ExcludeByFile>**/Data/Migrations/*.cs,**/*.generated.cs</ExcludeByFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="6.0.4">
