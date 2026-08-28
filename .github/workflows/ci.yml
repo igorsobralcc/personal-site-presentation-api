@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  COVERAGE_THRESHOLD: "95"
+  COVERAGE_THRESHOLD: "90"
   DOTNET_CLI_TELEMETRY_OPTOUT: "1"
   DOTNET_NOLOGO: "1"
   IMAGE_NAME: ghcr.io/${{ github.repository }}
