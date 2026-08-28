@@ -196,7 +196,25 @@ public static class NamedResourceEndpoints
 
     private static async Task<IResult> Delete(Guid id, PresentationDbContext db, HttpContext http, bool category, CancellationToken ct)
     {
-        var entity = category ? (ManagedEntity?)await db.SkillCategories.IgnoreQueryFilters().SingleOrDefaultAsync(x => x.Id == id, ct) : await db.Technologies.IgnoreQueryFilters().SingleOrDefaultAsync(x => x.Id == id, ct);
+        await using var transaction = !category && db.Database.IsRelational()
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
+        ManagedEntity? entity;
+        if (category)
+        {
+            entity = await db.SkillCategories.IgnoreQueryFilters().SingleOrDefaultAsync(x => x.Id == id, ct);
+        }
+        else if (db.Database.IsRelational())
+        {
+            entity = await db.Technologies
+                .FromSqlInterpolated($"SELECT * FROM presentation.technologies WHERE id = {id} FOR UPDATE")
+                .IgnoreQueryFilters()
+                .SingleOrDefaultAsync(ct);
+        }
+        else
+        {
+            entity = await db.Technologies.IgnoreQueryFilters().SingleOrDefaultAsync(x => x.Id == id, ct);
+        }
         if (entity is null)
         {
             return NotFound(http);
@@ -228,6 +246,10 @@ public static class NamedResourceEndpoints
         entity.Version++;
         entity.PublicUpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(ct);
+        if (transaction is not null)
+        {
+            await transaction.CommitAsync(ct);
+        }
         HttpConcurrency.Set(http.Response, entity.Version);
         return Results.NoContent();
     }

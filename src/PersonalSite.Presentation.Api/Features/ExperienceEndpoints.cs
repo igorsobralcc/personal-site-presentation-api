@@ -53,6 +53,9 @@ public static class ExperienceEndpoints
             return ApiProblems.Validation(http, errors);
         }
 
+        await using var transaction = db.Database.IsRelational()
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
         if (!await TechnologyIdsAreActive(db, request.TechnologyIds!, ct))
         {
             return TechnologyError(http);
@@ -61,6 +64,10 @@ public static class ExperienceEndpoints
         var value = Build(request);
         db.Experiences.Add(value);
         await db.SaveChangesAsync(ct);
+        if (transaction is not null)
+        {
+            await transaction.CommitAsync(ct);
+        }
         HttpConcurrency.Set(http.Response, value.Version);
         return Results.Created($"/api/v1/admin/experiences/{value.Id}", value.ToResponse());
     }
@@ -85,6 +92,10 @@ public static class ExperienceEndpoints
         {
             return precondition;
         }
+
+        await using var transaction = db.Database.IsRelational()
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
 
         var patch = new MergePatch(document);
         var request = new ExperienceRequest(patch.Has("company") ? patch.Read<string>("company") : value.Company, patch.Has("role") ? patch.Read<string>("role") : value.Role,
@@ -126,6 +137,10 @@ public static class ExperienceEndpoints
         }
 
         await db.SaveChangesAsync(ct);
+        if (transaction is not null)
+        {
+            await transaction.CommitAsync(ct);
+        }
         HttpConcurrency.Set(http.Response, value.Version);
         return Results.Ok(value.ToResponse());
     }
@@ -174,6 +189,10 @@ public static class ExperienceEndpoints
             return precondition;
         }
 
+        await using var transaction = db.Database.IsRelational()
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
+
         if (!await TechnologyIdsAreActive(db, value.Technologies.Select(x => x.TechnologyId).ToList(), ct))
         {
             return ApiProblems.Create(http, 409, "Experience references a deleted technology");
@@ -183,6 +202,10 @@ public static class ExperienceEndpoints
         value.Version++;
         value.PublicUpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(ct);
+        if (transaction is not null)
+        {
+            await transaction.CommitAsync(ct);
+        }
         HttpConcurrency.Set(http.Response, value.Version);
         return Results.NoContent();
     }
@@ -203,6 +226,20 @@ public static class ExperienceEndpoints
 
     internal static async Task<bool> TechnologyIdsAreActive(PresentationDbContext db, List<Guid> ids, CancellationToken ct)
     {
+        if (ids.Count == 0)
+        {
+            return true;
+        }
+
+        if (db.Database.IsRelational() && db.Database.CurrentTransaction is not null)
+        {
+            var lockedIds = await db.Technologies
+                .FromSqlInterpolated($"SELECT * FROM presentation.technologies WHERE id = ANY ({ids.ToArray()}) ORDER BY id FOR UPDATE")
+                .Select(x => x.Id)
+                .ToListAsync(ct);
+            return lockedIds.Count == ids.Count;
+        }
+
         return await db.Technologies.CountAsync(x => ids.Contains(x.Id), ct) == ids.Count;
     }
 

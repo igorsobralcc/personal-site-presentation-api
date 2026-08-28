@@ -48,6 +48,9 @@ public static class ProjectEndpoints
             return ApiProblems.Validation(http, errors);
         }
 
+        await using var transaction = db.Database.IsRelational()
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
         if (!await ExperienceEndpoints.TechnologyIdsAreActive(db, request.TechnologyIds!, ct))
         {
             return TechnologyError(http);
@@ -56,6 +59,10 @@ public static class ProjectEndpoints
         var value = Build(request);
         db.Projects.Add(value);
         await db.SaveChangesAsync(ct);
+        if (transaction is not null)
+        {
+            await transaction.CommitAsync(ct);
+        }
         HttpConcurrency.Set(http.Response, value.Version);
         return Results.Created($"/api/v1/admin/projects/{value.Id}", value.ToResponse());
     }
@@ -80,6 +87,10 @@ public static class ProjectEndpoints
         {
             return precondition;
         }
+
+        await using var transaction = db.Database.IsRelational()
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
 
         var patch = new MergePatch(document);
         ProjectImageRequest? currentImage = value.ImageUrl is null ? null : new(value.ImageUrl, value.ImageAlt, value.ImageWidth, value.ImageHeight);
@@ -107,6 +118,10 @@ public static class ProjectEndpoints
         value.Version++;
         value.PublicUpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(ct);
+        if (transaction is not null)
+        {
+            await transaction.CommitAsync(ct);
+        }
         HttpConcurrency.Set(http.Response, value.Version);
         return Results.Ok(value.ToResponse());
     }
@@ -155,6 +170,10 @@ public static class ProjectEndpoints
             return precondition;
         }
 
+        await using var transaction = db.Database.IsRelational()
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
+
         if (!await ExperienceEndpoints.TechnologyIdsAreActive(db, value.Technologies.Select(x => x.TechnologyId).ToList(), ct))
         {
             return ApiProblems.Create(http, 409, "Project references a deleted technology");
@@ -164,6 +183,10 @@ public static class ProjectEndpoints
         value.Version++;
         value.PublicUpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(ct);
+        if (transaction is not null)
+        {
+            await transaction.CommitAsync(ct);
+        }
         HttpConcurrency.Set(http.Response, value.Version);
         return Results.NoContent();
     }
