@@ -1,6 +1,6 @@
 # Presentation API application-flow specification index
 
-- Status: Draft
+- Status: Implemented
 - Owner: Igor
 - Last updated: 2026-08-28
 
@@ -70,3 +70,20 @@ a delivery flow rather than an application runtime flow.
 A flow is test-complete only when every non-characterization case in its owning
 specification has automated evidence and every characterization case has either
 been accepted into the product contract or replaced by the decided behavior.
+
+## Implementation evidence
+
+- Every one of the 183 non-characterization case IDs is referenced by an
+  automated test or theory through a `Spec` trait.
+- The 14 characterization cases remain intentionally undecided and are not
+  counted as missing automated behavior.
+- Fast HTTP, validation, projection, health, seed, logging, and degraded
+  dependency tests run without external infrastructure.
+- Nine PostgreSQL tests verify migrations, constraints, exception translation,
+  optimistic concurrency, aggregate rollback, seed rollback/concurrency, and
+  technology-deletion races when `PRESENTATION_TEST_CONNECTION_STRING` points
+  to a disposable database.
+- Evidence (2026-08-28): without that opt-in connection, 109 tests pass and the
+  nine PostgreSQL tests skip; the Release build has no warnings. CI-style
+  Coverlet measurement reports 91.31% executable line coverage after excluding
+  generated EF migration and OpenAPI source-generator files.
