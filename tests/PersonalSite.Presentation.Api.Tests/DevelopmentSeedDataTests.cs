@@ -11,6 +11,10 @@ namespace PersonalSite.Presentation.Api.Tests;
 public sealed class DevelopmentSeedDataTests
 {
     [Fact]
+    [Trait("Spec", "SD-001")]
+    [Trait("Spec", "SD-002")]
+    [Trait("Spec", "SD-013")]
+    [Trait("Spec", "SD-014")]
     public async Task Seeds_the_complete_resume_dataset_once()
     {
         await using var db = CreateDatabase();
@@ -57,6 +61,8 @@ public sealed class DevelopmentSeedDataTests
     }
 
     [Fact]
+    [Trait("Spec", "SD-003")]
+    [Trait("Spec", "SD-005")]
     public async Task Preserves_a_non_empty_database_without_supplementing_it()
     {
         await using var db = CreateDatabase();
@@ -73,6 +79,7 @@ public sealed class DevelopmentSeedDataTests
     }
 
     [Fact]
+    [Trait("Spec", "SD-015")]
     public async Task Development_configuration_seeds_public_content_in_expected_order()
     {
         await using var factory = new ApiFactory(seedDataEnabled: true);
@@ -91,6 +98,7 @@ public sealed class DevelopmentSeedDataTests
     }
 
     [Fact]
+    [Trait("Spec", "SD-007")]
     public async Task Production_never_runs_the_development_seeder()
     {
         await using var factory = new ApiFactory(seedDataEnabled: true, environment: "Production");
@@ -99,6 +107,123 @@ public sealed class DevelopmentSeedDataTests
             BaseAddress = new Uri("https://localhost")
         });
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/api/v1/presentation")).StatusCode);
+    }
+
+    [Fact]
+    [Trait("Spec", "SD-006")]
+    public async Task Development_with_seed_disabled_does_not_initialize_content()
+    {
+        await using var factory = new ApiFactory(seedDataEnabled: false);
+        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        Assert.Equal(HttpStatusCode.NotFound,
+            (await client.GetAsync("/api/v1/presentation")).StatusCode);
+    }
+
+    [Theory]
+    [InlineData("profile")]
+    [InlineData("experience")]
+    [InlineData("project")]
+    [InlineData("category")]
+    [InlineData("skill")]
+    [InlineData("technology")]
+    [Trait("Spec", "SD-004")]
+    [Trait("Spec", "SD-005")]
+    public async Task A_deleted_row_in_any_managed_table_prevents_all_seeding(string resource)
+    {
+        await using var db = CreateDatabase();
+        var deletedAt = DateTimeOffset.UtcNow;
+        switch (resource)
+        {
+            case "profile":
+                db.Profiles.Add(new Profile
+                {
+                    FullName = "Deleted", Headline = "Deleted", Biography = "Deleted", DeletedAt = deletedAt
+                });
+                break;
+            case "experience":
+                db.Experiences.Add(new Experience
+                {
+                    Company = "Deleted", Role = "Deleted", Summary = "Deleted",
+                    StartDate = new(2020, 1, 1), DeletedAt = deletedAt
+                });
+                break;
+            case "project":
+                db.Projects.Add(new Project
+                {
+                    Name = "Deleted", Summary = "Deleted", DeletedAt = deletedAt
+                });
+                break;
+            case "category":
+                db.SkillCategories.Add(new SkillCategory
+                {
+                    Name = "Deleted", NormalizedName = "DELETED", DeletedAt = deletedAt
+                });
+                break;
+            case "skill":
+                db.Skills.Add(new Skill
+                {
+                    Name = "Deleted", NormalizedName = "DELETED", CategoryId = Guid.NewGuid(),
+                    DeletedAt = deletedAt
+                });
+                break;
+            case "technology":
+                db.Technologies.Add(new Technology
+                {
+                    Name = "Deleted", NormalizedName = "DELETED", DeletedAt = deletedAt
+                });
+                break;
+        }
+        await db.SaveChangesAsync();
+
+        await DevelopmentSeedData.SeedAsync(db);
+
+        var total = await db.Profiles.IgnoreQueryFilters().CountAsync()
+            + await db.Experiences.IgnoreQueryFilters().CountAsync()
+            + await db.Projects.IgnoreQueryFilters().CountAsync()
+            + await db.SkillCategories.IgnoreQueryFilters().CountAsync()
+            + await db.Skills.IgnoreQueryFilters().CountAsync()
+            + await db.Technologies.IgnoreQueryFilters().CountAsync();
+        Assert.Equal(1, total);
+    }
+
+    [Fact]
+    [Trait("Spec", "SD-008")]
+    public async Task Relational_migration_failure_aborts_seeding()
+    {
+        var options = new DbContextOptionsBuilder<PresentationDbContext>()
+            .UseNpgsql("Host=127.0.0.1;Port=1;Database=missing;Username=none;Password=secret;Timeout=1")
+            .Options;
+        await using var db = new PresentationDbContext(options);
+        await Assert.ThrowsAnyAsync<Exception>(() => DevelopmentSeedData.SeedAsync(db));
+    }
+
+    [Fact]
+    [Trait("Spec", "SD-012")]
+    public async Task Precancelled_seed_operation_stops_without_inserting_content()
+    {
+        await using var db = CreateDatabase();
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            DevelopmentSeedData.SeedAsync(db, cancellation.Token));
+        Assert.Equal(0, await db.Profiles.IgnoreQueryFilters().CountAsync());
+    }
+
+    [Fact]
+    [Trait("Spec", "SD-016")]
+    public async Task Seeder_source_and_seeded_values_contain_no_operational_secrets_or_local_paths()
+    {
+        var sourcePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..",
+            "src", "PersonalSite.Presentation.Api", "Data", "DevelopmentSeedData.cs"));
+        var source = await File.ReadAllTextAsync(sourcePath);
+        Assert.DoesNotContain("Admin:Key", source, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("ConnectionStrings", source, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("C:\\Users\\", source, StringComparison.OrdinalIgnoreCase);
+
+        await using var db = CreateDatabase();
+        await DevelopmentSeedData.SeedAsync(db);
+        var serialized = System.Text.Json.JsonSerializer.Serialize(await db.Profiles.ToListAsync());
+        Assert.DoesNotContain("Password=", serialized, StringComparison.OrdinalIgnoreCase);
     }
 
     private static PresentationDbContext CreateDatabase()
