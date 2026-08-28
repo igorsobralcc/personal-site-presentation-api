@@ -2,7 +2,7 @@
 
 - Status: Implemented
 - Owner: Igor
-- Last updated: 2026-08-24
+- Last updated: 2026-08-27
 
 ## Outcome
 
@@ -67,6 +67,30 @@ its ordered social links.
 - Given the client has the current ETag
 - When it patches only `currentFocus`
 - Then all omitted fields and social links remain unchanged
+
+## Pessimistic test matrix
+
+| Case | Class | Given / When | Then |
+|---|---|---|---|
+| PR-001 | Success | No profile exists and the minimum valid aggregate is initialized | `201`, singleton location, version 1 ETag, trimmed persisted values |
+| PR-002 | Success | Complete valid profile with 20 ordered social links is initialized | All fields round-trip and link order is preserved publicly/admin |
+| PR-003 | Failure | Required text is null, empty, whitespace, or maximum + 1 | `400` per field; no profile or links inserted |
+| PR-004 | Failure | Optional text/email is invalid or maximum + 1 | `400`; no profile or links inserted |
+| PR-005 | Failure | Social links are null, exceed 20, have bad label/URL, or duplicate trimmed case-insensitive labels | `400 socialLinks`; no partial aggregate |
+| PR-006 | Characterization | Social URL exceeds the database 2,048 limit | Capture current persistence outcome; desired client error is `400` |
+| PR-007 | Failure | Active profile already exists | `409`; original profile and version unchanged |
+| PR-008 | Race | Two valid initializations pass the precheck on PostgreSQL | One `201`, one controlled `409`, exactly one complete aggregate |
+| PR-009 | Success | Profile GET follows successful initialization | `200`, current ETag, complete ordered aggregate |
+| PR-010 | Failure | Profile GET/PATCH runs before initialization | `404`; PATCH does not prioritize a missing precondition over absence |
+| PR-011 | Success | Patch changes one public scalar with current ETag | `200`, omitted fields/links retained, version and public ETag change |
+| PR-012 | Success | Patch explicitly nulls every nullable profile field | `200`; fields clear and null properties are omitted from JSON |
+| PR-013 | Success | Patch supplies a replacement social-link list or `[]` | Old rows are physically removed; new exact order or empty list persists |
+| PR-014 | Failure | Patch sets social links to null or supplies an invalid replacement | `400`; root and original links remain unchanged |
+| PR-015 | Failure | Patch lacks/currently misses ETag requirements | `428` when absent, `412` when stale; no state change |
+| PR-016 | Race | Two profile patches use the same current ETag | One complete aggregate wins; the other is `412`; children never mix |
+| PR-017 | Failure | Link replacement fails during persistence | Root fields, version, removed links, and new links all roll back |
+| PR-018 | Characterization | Empty or unknown-only object is patched | Capture unconditional version/public ETag change pending no-op decision |
+| PR-019 | Characterization | Profile initialization hits a non-singleton `DbUpdateException` | Capture misleading `Profile already exists` mapping pending refinement |
 
 ## Test evidence
 

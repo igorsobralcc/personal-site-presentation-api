@@ -2,7 +2,7 @@
 
 - Status: Implemented
 - Owner: Igor
-- Last updated: 2026-08-24
+- Last updated: 2026-08-27
 
 ## Outcome
 
@@ -76,6 +76,31 @@ request without receiving deleted or administrative-only data.
 - Given a client sends the current ETag in `If-None-Match`
 - When no visible content has changed
 - Then the API returns `304` without a response body
+
+## Pessimistic test matrix
+
+| Case | Class | Given / When | Then |
+|---|---|---|---|
+| PP-001 | Failure | No active profile exists, regardless of other data | `404` Problem Details with uninitialized-profile detail and trace ID |
+| PP-002 | Success | Only profile exists | `200`; all optional collections are empty arrays; cache headers/ETag present |
+| PP-003 | Success | Complete active dataset exists | Exact public fields only, with all ordering and grouping rules |
+| PP-004 | Success | Featured and unfeatured projects coexist | Only featured active projects appear |
+| PP-005 | Success | Every resource type has an active and deleted record | No deleted root/child/metadata leaks into response |
+| PP-006 | Success | Admin-only experience fields are populated | Location, highlights, technology IDs, versions, and timestamps are absent |
+| PP-007 | Success | Admin normalized names/deletion/version metadata exist | None appears anywhere in public JSON |
+| PP-008 | Success | Experience dates tie in each ordering dimension | Start/current/end/ID tie-breakers are deterministic |
+| PP-009 | Success | Projects/categories/skills/social links share timestamps | Creation-time then ID tie-breakers are deterministic |
+| PP-010 | Success | Featured project technologies have name/ID ties | Technologies order by name then ID deterministically |
+| PP-011 | Success | `If-None-Match` exactly matches current ETag | `304`, no representation body, revalidation headers retained as intended |
+| PP-012 | Success | Validator is absent or does not match | `200` with full body and current strong ETag |
+| PP-013 | Success | Visible field/category/skill/featured-project/technology changes | Body, aggregate updatedAt where defined, and ETag change |
+| PP-014 | Success | Only hidden experience data or unrelated technology changes | Serialized response and ETag remain identical |
+| PP-015 | Success | A record is deleted, restored, featured, or unfeatured | Projection changes immediately and deterministically |
+| PP-016 | Characterization | `If-None-Match` is wildcard, weak, multiple, or comma-combined | Capture exact-match-only behavior before adopting full HTTP semantics |
+| PP-017 | Characterization | Newest visible record is removed/unfeatured | Capture potentially decreasing aggregate `updatedAt`; ETag still matches body |
+| PP-018 | Failure | Database query fails before or during projection | `500` Problem Details with trace ID; no sensitive database detail |
+| PP-019 | Failure | Request is cancelled during database access/serialization | Work stops, no misleading successful/cacheable response |
+| PP-020 | Success | Anonymous request includes no admin key | Same public result; no authentication challenge or secret dependency |
 
 ## Test evidence
 

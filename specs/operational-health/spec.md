@@ -2,7 +2,7 @@
 
 - Status: Implemented
 - Owner: Igor
-- Last updated: 2026-08-24
+- Last updated: 2026-08-27
 
 ## Outcome
 
@@ -48,6 +48,22 @@ of serving database-backed traffic.
 - Given the API process is running but PostgreSQL is unavailable
 - When readiness and liveness are requested
 - Then readiness returns `503` while liveness returns `200`
+
+## Pessimistic test matrix
+
+| Case | Class | Given / When | Then |
+|---|---|---|---|
+| OH-001 | Success | Process handles anonymous liveness request | `200`, Healthy, empty checks, no database call |
+| OH-002 | Success | Database `CanConnectAsync` succeeds | Readiness `200`; named check and aggregate are Healthy |
+| OH-003 | Failure | Database returns false | Readiness `503` Unhealthy; liveness remains `200` |
+| OH-004 | Failure | Database throws connection/authentication/SQL exception | Readiness `503`; response omits exception/topology/credentials |
+| OH-005 | Failure | Database check exceeds three seconds | Linked timeout cancels it; readiness becomes `503` promptly |
+| OH-006 | Failure | Caller cancels readiness request | Work is cancelled without changing liveness or exposing diagnostics |
+| OH-007 | Success | Admin key is absent or invalid | Both health endpoints remain anonymous and unchanged |
+| OH-008 | Success | Multiple health checks include non-ready tags | Readiness reports only checks tagged `ready` |
+| OH-009 | Failure | One of multiple ready checks is unhealthy | Aggregate is Unhealthy/`503`; individual names/statuses are accurate |
+| OH-010 | Success | Health response is inspected | Stable JSON/media type; no connection string, host, stack, or SQL text |
+| OH-011 | Success | Repeated healthy probes occur | No information-level success-log noise |
 
 ## Test evidence
 

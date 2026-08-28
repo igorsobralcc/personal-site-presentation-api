@@ -21,3 +21,8 @@ specs/
 Use `_template/spec.md`. Specifications are permanent product documentation,
 not temporary planning notes, and evolve through `Draft`, `Approved`, and
 `Implemented` states.
+
+Runtime application-flow coverage and pessimistic test conventions are indexed
+in [`application-flow-index.md`](application-flow-index.md). Each runtime flow
+is specified in the owning feature specification rather than duplicated in a
+separate test-only contract.

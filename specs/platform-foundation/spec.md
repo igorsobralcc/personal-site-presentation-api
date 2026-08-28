@@ -2,7 +2,7 @@
 
 - Status: Implemented
 - Owner: Igor
-- Last updated: 2026-08-24
+- Last updated: 2026-08-27
 
 ## Outcome
 
@@ -94,6 +94,42 @@ without coupling their feature-specific behavior.
 - Given more records exist than the requested page size
 - When valid pagination headers are supplied
 - Then the response reports the requested page and complete pagination metadata
+
+## Pessimistic test matrix
+
+| Case | Class | Given / When | Then |
+|---|---|---|---|
+| PF-001 | Success | HTTPS admin request has the configured key | Handler executes and the key is absent from response and logs |
+| PF-002 | Failure | Key is absent, empty, incorrect, or configuration is empty | Same `401` Problem Details shape; no handler or database call |
+| PF-003 | Failure | Non-Development admin request uses HTTP, with or without a valid key | `400 HTTPS required` before authentication or persistence |
+| PF-004 | Success | Development admin request uses HTTP with a valid key | Request is permitted by the transport gate |
+| PF-005 | Success | Pagination headers are omitted | Page 1, size 20, active records only |
+| PF-006 | Success | Page/page-size are at valid minima/maxima and include-deleted is either Boolean value | Exact requested metadata and visibility |
+| PF-007 | Failure | Any pagination header is malformed or outside its range | `400` lists every invalid header; query is not executed |
+| PF-008 | Success | Requested page is beyond the collection | `200`, empty items, requested page, correct totals |
+| PF-009 | Characterization | Valid extreme page causes skip arithmetic overflow | Capture current response, then decide a safe maximum page contract |
+| PF-010 | Success | Merge patch omits a property or nulls a nullable property | Omitted value is retained; nullable value is cleared |
+| PF-011 | Failure | Patch body is non-object, malformed JSON, or has an incompatible property type | Controlled `400` Problem Details; no mutation |
+| PF-031 | Failure | Patch uses a media type other than `application/merge-patch+json` | `415 Unsupported Media Type`; no mutation |
+| PF-012 | Characterization | Patch is `{}` or contains only unknown fields | Capture version/public-cache mutation before deciding no-op semantics |
+| PF-013 | Failure | Mutable operation omits `If-Match` | `428`, unchanged version and state |
+| PF-014 | Failure | `If-Match` is stale, malformed, weak, or otherwise not the exact current ETag | `412`, unchanged state |
+| PF-015 | Success | `If-Match` exactly matches current version | Atomic mutation, version + 1, new ETag |
+| PF-016 | Race | Two updates start from the same version and both pass the HTTP precheck | One commits; the other receives `412`; no lost update |
+| PF-017 | Success | Active resource is deleted with current ETag | `204`, soft-deleted, version + 1, new ETag, hidden by default |
+| PF-018 | Success | Already-deleted resource is deleted with any present ETag | Idempotent `204`; no version/timestamp change |
+| PF-019 | Failure | Already-deleted resource is deleted without `If-Match` | `428`; no change |
+| PF-020 | Failure | PostgreSQL unique/FK violation occurs after an application precheck | `409 Persistence conflict` with trace ID; transaction rolled back |
+| PF-021 | Failure | Non-translated database/application exception occurs | `500` Problem Details with trace ID; no sensitive detail |
+| PF-022 | Failure | Child/join replacement fails after root changes are tracked | Entire unit of work rolls back; original aggregate remains |
+| PF-023 | Success | Allowed CORS origin performs actual/preflight request | Only configured origin receives expected allow headers/methods |
+| PF-024 | Failure | Unconfigured origin performs actual/preflight request | No cross-origin access grant |
+| PF-025 | Success | Management operation succeeds or returns a business error | Log has operation/resource/id/outcome/duration/trace, not key/body |
+| PF-026 | Failure | Management handler throws, including concurrency | Failure is logged once; concurrency entity types are diagnostic-only |
+| PF-027 | Failure | Invalid GUID route or unsupported HTTP method is requested | Framework `404`/`405`; no handler or persistence call |
+| PF-028 | Success | Problem Details is returned by any application error family | Correct status/media type/title and nonempty request trace ID |
+| PF-029 | Success | Relational schema is migrated | Presentation objects/history stay in `presentation`; FKs never cascade |
+| PF-030 | Failure | Direct write attempts nonpositive version or restricted deletion | PostgreSQL constraint rejects it without corrupting related state |
 
 ## Test evidence
 

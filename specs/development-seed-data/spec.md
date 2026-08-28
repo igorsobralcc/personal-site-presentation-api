@@ -2,7 +2,7 @@
 
 - Status: Implemented
 - Owner: Igor
-- Last updated: 2026-08-24
+- Last updated: 2026-08-27
 
 ## Outcome
 
@@ -72,6 +72,27 @@ portfolio content derived from Igor Sobral's generated resume.
 - Given the application runs outside Development
 - When it starts regardless of seed configuration
 - Then no seed operation is attempted
+
+## Pessimistic test matrix
+
+| Case | Class | Given / When | Then |
+|---|---|---|---|
+| SD-001 | Success | Development + enabled + every managed table empty | Migrations/creation run; exact complete linked dataset commits once |
+| SD-002 | Success | Seeder runs again after successful seed | No IDs, values, counts, ordering, versions, or timestamps change |
+| SD-003 | Success | Any one managed table contains an active row | Entire seed is skipped; nothing is supplemented or overwritten |
+| SD-004 | Success | Any one managed table contains only a deleted row | Query filters are ignored; entire seed is still skipped |
+| SD-005 | Success | Repeat SD-003/004 for profile, experience, project, category, skill, and technology | Every independently managed table gates the whole seed |
+| SD-006 | Success | Development but seed flag is false/missing | No migration or seed operation from startup seeding path |
+| SD-007 | Success | Production/non-Development with flag true | Seeder is never invoked and existing database is untouched |
+| SD-008 | Failure | Relational migration fails | Startup fails before inserts; failure is surfaced |
+| SD-009 | Failure | Insert/save fails after graph construction | Serializable transaction rolls back every root, child, and join |
+| SD-010 | Failure | Commit fails | Startup fails; no successful/partially committed seed is reported |
+| SD-011 | Race | Two Development instances seed the same empty PostgreSQL schema | Serializable/constraint behavior yields one complete dataset, never duplicates/partial data |
+| SD-012 | Failure | Request/process cancellation occurs during migration or seed | Operation cancels and uncommitted transaction rolls back |
+| SD-013 | Success | Seeded managed entities are inspected | UUIDv7, version 1, active state, UTC ordered timestamps |
+| SD-014 | Success | Seed relationships/content are inspected | Exact profile/links, 5 experiences/29 highlights, 4 projects, 5 categories/23 skills, 21 technologies, and expected joins |
+| SD-015 | Success | Seeded public endpoint is requested | Chronology, category/skill, links, and reverse project creation order match product rules |
+| SD-016 | Failure | Logs/build artifacts are inspected after seeding | No admin key, DB credential, local source path, or source document content |
 
 ## Test evidence
 
