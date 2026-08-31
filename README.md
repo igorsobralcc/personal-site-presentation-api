@@ -5,9 +5,6 @@ cacheable public presentation and secured administration endpoints for profile,
 experience, projects, skills, categories, and technologies, with optimistic
 concurrency, soft deletion, health checks, tests, and container delivery.
 
-> Repository description (350 characters maximum): the paragraph above is 305
-> characters including spaces and punctuation.
-
 Blog articles and series are intentionally owned by the separate Blog API.
 
 ## Architecture
