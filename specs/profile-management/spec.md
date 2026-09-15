@@ -77,7 +77,7 @@ its ordered social links.
 | PR-003 | Failure | Required text is null, empty, whitespace, or maximum + 1 | `400` per field; no profile or links inserted |
 | PR-004 | Failure | Optional text/email is invalid or maximum + 1 | `400`; no profile or links inserted |
 | PR-005 | Failure | Social links are null, exceed 20, have bad label/URL, or duplicate trimmed case-insensitive labels | `400 socialLinks`; no partial aggregate |
-| PR-006 | Characterization | Social URL exceeds the database 2,048 limit | Capture current persistence outcome; desired client error is `400` |
+| PR-006 | Failure | Social URL exceeds the database 2,048 limit | Social URL lengths over 2048 return keyed socialLinks 400 before persistence |
 | PR-007 | Failure | Active profile already exists | `409`; original profile and version unchanged |
 | PR-008 | Race | Two valid initializations pass the precheck on PostgreSQL | One `201`, one controlled `409`, exactly one complete aggregate |
 | PR-009 | Success | Profile GET follows successful initialization | `200`, current ETag, complete ordered aggregate |
@@ -89,8 +89,8 @@ its ordered social links.
 | PR-015 | Failure | Patch lacks/currently misses ETag requirements | `428` when absent, `412` when stale; no state change |
 | PR-016 | Race | Two profile patches use the same current ETag | One complete aggregate wins; the other is `412`; children never mix |
 | PR-017 | Failure | Link replacement fails during persistence | Root fields, version, removed links, and new links all roll back |
-| PR-018 | Characterization | Empty or unknown-only object is patched | Capture unconditional version/public ETag change pending no-op decision |
-| PR-019 | Characterization | Profile initialization hits a non-singleton `DbUpdateException` | Capture misleading `Profile already exists` mapping pending refinement |
+| PR-018 | Success | Empty or unknown-only object is patched | 200 current representation after lookup and If-Match validation; no version/timestamp/child/public-cache change |
+| PR-019 | Failure | Profile initialization hits a non-singleton `DbUpdateException` | Only the singleton unique index gets profile-specific 409; unexpected errors receive generic 500 or central translation |
 
 ## Test evidence
 
@@ -102,3 +102,13 @@ its ordered social links.
 ## Decisions and open questions
 
 - Decision: profile content becomes public immediately.
+
+## Completion review — 2026-09-15
+
+The implemented baseline remains supported by existing acceptance evidence. Outstanding characterization decisions are tracked in [Mutation and validation edge semantics](../mutation-validation/spec.md), except public validator/timestamp behavior owned by [Public presentation](../public-presentation/spec.md).
+
+[Persistence and contract verification](../persistence-contract-verification/spec.md) owns missing real-role and full-schema evidence; [engineering quality](../engineering-quality/spec.md) owns local/CI formatting, analyzer, traceability, and coverage gates. No undecided characterization is silently changed by this documentation update. Reopen this owning feature and update OpenAPI when a successor behavioral decision is approved.
+
+## Adopted edge-contract successor — 2026-09-15
+
+The characterization rows above now state the adopted behavior under [adopted mutation/cache decision](../mutation-validation/decisions/DR-001-edge-semantics.md). Earlier proposals and historical evidence remain dated. See [current implementation evidence](../../docs/implementation-evidence.md) for the new verification boundary.

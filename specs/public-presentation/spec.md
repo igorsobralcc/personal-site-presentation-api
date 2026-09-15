@@ -2,7 +2,7 @@
 
 - Status: Implemented
 - Owner: Igor
-- Last updated: 2026-08-27
+- Last updated: 2026-09-15
 
 ## Outcome
 
@@ -96,8 +96,8 @@ request without receiving deleted or administrative-only data.
 | PP-013 | Success | Visible field/category/skill/featured-project/technology changes | Body, aggregate updatedAt where defined, and ETag change |
 | PP-014 | Success | Only hidden experience data or unrelated technology changes | Serialized response and ETag remain identical |
 | PP-015 | Success | A record is deleted, restored, featured, or unfeatured | Projection changes immediately and deterministically |
-| PP-016 | Characterization | `If-None-Match` is wildcard, weak, multiple, or comma-combined | Capture exact-match-only behavior before adopting full HTTP semantics |
-| PP-017 | Characterization | Newest visible record is removed/unfeatured | Capture potentially decreasing aggregate `updatedAt`; ETag still matches body |
+| PP-016 | Success | `If-None-Match` is wildcard, weak, multiple, or comma-combined | Weak/list/wildcard GET validators match using weak comparison; invalid syntax is ignored; matching 304 retains headers without a body |
+| PP-017 | Success | Newest visible record is removed/unfeatured | updatedAt is the maximum current visible timestamp and can decrease; ETag identifies the current full representation |
 | PP-018 | Failure | Database query fails before or during projection | `500` Problem Details with trace ID; no sensitive database detail |
 | PP-019 | Failure | Request is cancelled during database access/serialization | Work stops, no misleading successful/cacheable response |
 | PP-020 | Success | Anonymous request includes no admin key | Same public result; no authentication challenge or secret dependency |
@@ -116,3 +116,44 @@ request without receiving deleted or administrative-only data.
   exists.
 - Decision: experience highlights and technologies remain administratively
   managed but are omitted from this public response.
+
+## Completion review — 2026-09-15
+
+Previous lifecycle state: Implemented. This revision is Draft; existing evidence does not establish completion of the added requirements. Earlier decisions remain historical where explicitly superseded below.
+
+The previously implemented normal projections, privacy, exact-match cache behavior, and ordering retain their historical evidence. This Draft revision extends cache policy review; it does not silently adopt RFC validator behavior or monotonic timestamp semantics.
+
+### PPC-001: Decide and verify conditional validator semantics
+
+- Given PP-016 has wildcard, weak, separate multiple, or comma-combined If-None-Match values
+- When the cache policy is approved and verified
+- Then the accepted 200/304 behavior is stated for every form, responses retain required cache headers, and 304 has no representation body.
+- Evidence: approved decision record plus HTTP contract matrix. Until approval, exact-match-only behavior remains the baseline characterization.
+
+### PPC-002: Define aggregate updatedAt semantics
+
+- Given PP-017 removes or unfeatures the newest visible record
+- When the timestamp policy is approved
+- Then updatedAt either remains the maximum timestamp of current visible data or follows an explicitly approved monotonic model; ETag continues to identify the actual full representation.
+- Evidence: decision plus delete/visibility/cache tests. A monotonic model requires an explicit persistence design and migration assessment.
+
+### PPC-003: Verify hidden and visible cache effects
+
+- Given hidden-only edits, visible edits, and lifecycle changes
+- When the representation is reread
+- Then accepted public field ordering/privacy remains intact, visible changes alter the representation validator, and hidden-only edits do not invalidate equivalent public content.
+- Evidence: HTTP plus PostgreSQL projection checks and [full contract verification](../persistence-contract-verification/spec.md).
+
+Open questions: choose the supported validator semantics and aggregate timestamp model before approval. [Mutation edge semantics](../mutation-validation/spec.md) owns the other characterization choices.
+
+## Implementation revision — 2026-09-15
+
+The owner subsequently requested implementation of the pending scopes. [adopted mutation/cache decision](../mutation-validation/decisions/DR-001-edge-semantics.md) and [implementation/verification DR-002](../documentation-reconciliation/decisions/DR-002-implementation-and-verification.md) govern this revision. Earlier authoring-only and undecided statements above are historical; they do not describe the new implementation scope.
+
+[Current implementation evidence](../../docs/implementation-evidence.md) records local results and explicitly pending external evidence. [Acceptance dispositions](../../scripts/acceptance-evidence.json) and [exact executable mappings](../../scripts/feature-acceptance-map.json) retain stable IDs. This revision must not be marked Implemented while mandatory evidence remains pending.
+
+The open mutation/cache choices above are resolved by the adopted decision: no-op empty/unknown-only patches; 2048-character URL limit; trimmed case-insensitive highlight uniqueness; singleton-index-specific diagnosis; validated Int32 pagination offsets; weak/list/wildcard conditional GET; maximum-current-visible updatedAt. No model or migration changes are needed.
+
+## Verified completion — 2026-09-15
+
+All scenarios owned by this revision have local evidence in [the implementation record](../../docs/implementation-evidence.md). The final chain passed 158 tests with no skips, including twelve PostgreSQL cases; all governed feature boundaries exceed 90% line coverage. External CI/container/settings/recovery scopes remain visibly owned by their separate Approved specifications.
