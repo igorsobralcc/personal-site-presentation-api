@@ -1,8 +1,8 @@
 # Feature: Secure container delivery
 
-- Status: Implemented
+- Status: Approved
 - Owner: Igor Sobral
-- Last updated: 2026-08-24
+- Last updated: 2026-09-15
 
 ## Outcome
 
@@ -153,3 +153,43 @@ runtime connection string and does not apply migrations outside Development.
   prevent an administrator from bypassing repository policy.
 - Open question: choose the long-term hosting provider and TLS termination
   before exposing the container publicly.
+
+## Completion review — 2026-09-15
+
+Previous lifecycle state: Implemented. This revision is Draft; existing evidence does not establish completion of the added requirements. Earlier decisions remain historical where explicitly superseded below.
+
+The original non-root image, pinned actions/images, runtime-only secrets, manual protected deployment, and separate migrator decisions remain unchanged. This Draft revision adds production verification evidence; it does not claim provisioning, TLS, backup, or live settings were completed.
+
+### PCD-001: Verify runtime health prerequisites
+
+- Given the actual built runtime image and configured database
+- When disposable-host smoke checks run
+- Then the non-root identity, application port, installed health-check executable, liveness, and bounded database readiness work in that image.
+- Evidence: container build/runtime and dependency-failure checks. Liveness health alone does not establish database readiness.
+
+### PCD-002: Promote only with deployment prerequisites
+
+- Given a proposed public deployment
+- When the release checklist is reviewed
+- Then selected hosting/TLS, public origin/CORS, runtime secrets, separately privileged migration sequence, schema privilege grants, and [repository/environment protections](../repository-policy/spec.md) have dated secret-free verification records.
+- Evidence: deployment checklist, role tests, and settings/run references. Long-term host and TLS remain open choices.
+
+### PCD-003: Verify rollback and interruption honestly
+
+- Given the previous compatible container is healthy
+- When replacement fails startup or readiness
+- Then the replacement is removed and the previous instance is restored; any service interruption and schema compatibility/rollback limitations are documented and tested.
+- Evidence: disposable-host failure injection. The existing stop/rename/start strategy must not be described as uninterrupted deployment.
+
+### PCD-004: Document data recovery prerequisites
+
+- Given a schema-changing release or data loss incident
+- When production readiness is assessed
+- Then a named operator, backup/restore procedure, recovery objectives, and migration rollback limits are recorded and a recovery exercise reference is available before public production claims.
+- Evidence: operational prerequisites checklist. Choose the objectives/provider separately; provisioning and production migrations remain outside automatic workflow scope.
+
+## Implementation revision — 2026-09-15
+
+The owner subsequently requested implementation of the pending scopes. [adopted mutation/cache decision](../mutation-validation/decisions/DR-001-edge-semantics.md) and [implementation/verification DR-002](../documentation-reconciliation/decisions/DR-002-implementation-and-verification.md) govern this revision. Earlier authoring-only and undecided statements above are historical; they do not describe the new implementation scope.
+
+[Current implementation evidence](../../docs/implementation-evidence.md) records local results and explicitly pending external evidence. [Acceptance dispositions](../../scripts/acceptance-evidence.json) and [exact executable mappings](../../scripts/feature-acceptance-map.json) retain stable IDs. This revision must not be marked Implemented while mandatory evidence remains pending.

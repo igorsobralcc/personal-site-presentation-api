@@ -92,6 +92,11 @@ public static class SkillEndpoints
         }
 
         var patch = new MergePatch(document);
+        if (!patch.HasAny("name", "categoryId"))
+        {
+            HttpConcurrency.Set(http.Response, value.Version);
+            return Results.Ok(value.ToResponse());
+        }
         var request = new SkillRequest(patch.Has("name") ? patch.Read<string>("name") : value.Name,
             patch.Has("categoryId") ? patch.Read<Guid?>("categoryId") : value.CategoryId);
         var errors = InputValidation.Skill(request);

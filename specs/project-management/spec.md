@@ -77,7 +77,7 @@ in the public composite presentation.
 | PJ-002 | Success | Complete featured project uses valid URLs, image, and 40 active technologies | Aggregate persists and complete public project appears |
 | PJ-003 | Failure | Name/summary is null/blank/maximum + 1 | `400`; no root or joins |
 | PJ-004 | Failure | Repository/live URL is relative, HTTP, malformed, or unsupported scheme | `400` for each invalid field; no mutation |
-| PJ-005 | Characterization | Repository/live/image URL exceeds database length 2,048 | Capture persistence outcome; desired client error is `400` |
+| PJ-005 | Failure | Repository/live/image URL exceeds database length 2,048 | Repository/live/image URL lengths over 2048 return keyed 400 before persistence |
 | PJ-006 | Failure | Technology list is null/over limit/empty-ID/duplicate or contains inactive ID | `400 technologyIds`; no partial aggregate |
 | PJ-007 | Failure | `isFeatured` is null | `400`; no root or joins |
 | PJ-008 | Success | Image is null or complete with positive dimensions and boundary alt | Accepted; null stores no partial image columns |
@@ -95,7 +95,7 @@ in the public composite presentation.
 | PJ-020 | Recovery | Deleted project references only active technologies | Restore `204`; featured project returns publicly, unfeatured stays hidden |
 | PJ-021 | Failure | Any attached technology is deleted at restore | `409`; project remains deleted with joins intact |
 | PJ-022 | Failure | Root/join persistence fails during create/patch | No partial root, join, image, version, or public change |
-| PJ-023 | Characterization | Empty or unknown-only patch is submitted | Capture version/public ETag change pending no-op decision |
+| PJ-023 | Success | Empty or unknown-only patch is submitted | 200 current representation after lookup and If-Match validation; no version/timestamp/child/public-cache change |
 
 ## Test evidence
 
@@ -108,3 +108,15 @@ in the public composite presentation.
 ## Decisions and open questions
 
 - Decision: the unused long description field is removed.
+
+## Completion review — 2026-09-15
+
+The implemented baseline remains supported by existing acceptance evidence. Outstanding characterization decisions are tracked in [Mutation and validation edge semantics](../mutation-validation/spec.md), except public validator/timestamp behavior owned by [Public presentation](../public-presentation/spec.md).
+
+[Persistence and contract verification](../persistence-contract-verification/spec.md) owns missing real-role and full-schema evidence; [engineering quality](../engineering-quality/spec.md) owns local/CI formatting, analyzer, traceability, and coverage gates. No undecided characterization is silently changed by this documentation update. Reopen this owning feature and update OpenAPI when a successor behavioral decision is approved.
+
+## Adopted edge-contract successor — 2026-09-15
+
+The characterization rows above now state the adopted behavior under [adopted mutation/cache decision](../mutation-validation/decisions/DR-001-edge-semantics.md). Earlier proposals and historical evidence remain dated. See [current implementation evidence](../../docs/implementation-evidence.md) for the new verification boundary.
+
+JSON image dimensions require numeric JSON values, as the reviewed integer contract states; numeric strings return 400 without writes. The request metadata guard checks DTO field/type/item compatibility before adding manual header/filter metadata.

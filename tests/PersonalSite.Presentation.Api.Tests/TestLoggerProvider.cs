@@ -10,13 +10,26 @@ internal sealed class TestLoggerProvider : ILoggerProvider
     private readonly ConcurrentQueue<TestLogEntry> _entries = new();
     public IReadOnlyCollection<TestLogEntry> Entries => _entries.ToArray();
 
-    public ILogger CreateLogger(string categoryName) => new TestLogger(categoryName, _entries);
-    public void Dispose() { }
+    public ILogger CreateLogger(string categoryName)
+    {
+        return new TestLogger(categoryName, _entries);
+    }
+
+    public void Dispose()
+    {
+    }
 
     private sealed class TestLogger(string category, ConcurrentQueue<TestLogEntry> entries) : ILogger
     {
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-        public bool IsEnabled(LogLevel logLevel) => true;
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull
+        {
+            return null;
+        }
+
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return true;
+        }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
             Exception? exception, Func<TState, Exception?, string> formatter)

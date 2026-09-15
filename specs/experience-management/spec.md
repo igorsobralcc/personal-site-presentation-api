@@ -80,7 +80,7 @@ them in professional chronology rather than insertion order.
 | EX-004 | Failure | Start date missing or end date precedes start date | `400`; no root/children |
 | EX-005 | Success | End equals start or is null | Accepted and ordered by defined chronology |
 | EX-006 | Failure | Highlights are null, over limit, blank, oversized, or case-insensitive duplicates | `400 highlights`; no partial aggregate |
-| EX-007 | Characterization | Highlights differ before trim but become equal after trim | Capture accepted duplicate-normalization behavior pending decision |
+| EX-007 | Failure | Highlights differ before trim but become equal after trim | Highlights equal after trim and ordinal case-insensitive comparison return keyed 400 |
 | EX-008 | Failure | Technology list is null/over limit/has empty or duplicate ID | `400 technologyIds`; no aggregate |
 | EX-009 | Failure | Any technology ID is missing/deleted among otherwise valid IDs | `400 technologyIds`; no joins/root change |
 | EX-010 | Success | List/get exercise paging and every chronology tie-breaker | Deterministic order; complete admin aggregate and ETag |
@@ -97,7 +97,7 @@ them in professional chronology rather than insertion order.
 | EX-021 | Failure | Any attached technology is deleted at restore | `409`, experience remains deleted with joins intact |
 | EX-022 | Failure | Get/patch/restore/delete target or precondition is invalid | Correct operation-specific `404`/`428`/`412`; no change |
 | EX-023 | Failure | Child/join replacement save fails | Transaction restores original root, highlights, joins, and version |
-| EX-024 | Characterization | Empty or unknown-only patch is submitted | Version changes while public ETag remains stable; decide no-op contract |
+| EX-024 | Success | Empty or unknown-only patch is submitted | 200 current representation after lookup and If-Match validation; no version/timestamp/child/public-cache change |
 
 ## Test evidence
 
@@ -110,3 +110,13 @@ them in professional chronology rather than insertion order.
 
 - Decision: highlights and technologies remain in admin storage and contracts
   but are omitted from the public composite response.
+
+## Completion review — 2026-09-15
+
+The implemented baseline remains supported by existing acceptance evidence. Outstanding characterization decisions are tracked in [Mutation and validation edge semantics](../mutation-validation/spec.md), except public validator/timestamp behavior owned by [Public presentation](../public-presentation/spec.md).
+
+[Persistence and contract verification](../persistence-contract-verification/spec.md) owns missing real-role and full-schema evidence; [engineering quality](../engineering-quality/spec.md) owns local/CI formatting, analyzer, traceability, and coverage gates. No undecided characterization is silently changed by this documentation update. Reopen this owning feature and update OpenAPI when a successor behavioral decision is approved.
+
+## Adopted edge-contract successor — 2026-09-15
+
+The characterization rows above now state the adopted behavior under [adopted mutation/cache decision](../mutation-validation/decisions/DR-001-edge-semantics.md). Earlier proposals and historical evidence remain dated. See [current implementation evidence](../../docs/implementation-evidence.md) for the new verification boundary.

@@ -29,22 +29,34 @@ public sealed class CatalogAndSkillFlowTests
         await using var factory = new ApiFactory();
         using var client = factory.CreateApiClient();
         var boundaryName = new string('a', 80);
-        var first = await client.PostAsJsonAsync(collection, new { name = $" {boundaryName} " });
+        var first = await client.PostAsJsonAsync(collection, new
+        {
+            name = $" {boundaryName} "
+        });
         Assert.Equal(HttpStatusCode.BadRequest, first.StatusCode); // Raw input length is validated before trim.
 
-        var created = await client.PostAsJsonAsync(collection, new { name = boundaryName });
+        var created = await client.PostAsJsonAsync(collection, new
+        {
+            name = boundaryName
+        });
         Assert.Equal(HttpStatusCode.Created, created.StatusCode);
         Assert.Equal("\"1\"", created.Headers.ETag?.Tag);
         Assert.Equal(boundaryName, (await created.JsonAsync()).GetProperty("name").GetString());
 
         foreach (var invalid in new string?[] { null, string.Empty, "   ", new string('x', 81) })
         {
-            var response = await client.PostAsJsonAsync(collection, new { name = invalid });
+            var response = await client.PostAsJsonAsync(collection, new
+            {
+                name = invalid
+            });
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         var duplicate = await client.PostAsJsonAsync(collection,
-            new { name = boundaryName.ToUpperInvariant() });
+            new
+            {
+                name = boundaryName.ToUpperInvariant()
+            });
         Assert.Equal(HttpStatusCode.Conflict, duplicate.StatusCode);
     }
 
@@ -89,7 +101,10 @@ public sealed class CatalogAndSkillFlowTests
         using var idempotent = FlowTestSupport.Delete($"{collection}/{value.Id}", "\"stale\"");
         Assert.Equal(HttpStatusCode.NoContent, (await client.SendAsync(idempotent)).StatusCode);
 
-        var replacement = await client.PostAsJsonAsync(collection, new { name = "renamed" });
+        var replacement = await client.PostAsJsonAsync(collection, new
+        {
+            name = "renamed"
+        });
         Assert.Equal(HttpStatusCode.Created, replacement.StatusCode);
         using var conflict = FlowTestSupport.Restore($"{collection}/{value.Id}", deleted.Headers.ETag!.Tag);
         Assert.Equal(HttpStatusCode.Conflict, (await client.SendAsync(conflict)).StatusCode);
@@ -111,7 +126,11 @@ public sealed class CatalogAndSkillFlowTests
         var category = await FlowTestSupport.CreateNamedAsync(client,
             "/api/v1/admin/skill-categories", "Backend");
         var skillResponse = await client.PostAsJsonAsync("/api/v1/admin/skills",
-            new { name = "C#", categoryId = category.Id });
+            new
+            {
+                name = "C#",
+                categoryId = category.Id
+            });
         var skill = await skillResponse.JsonAsync();
         var skillId = skill.GetProperty("id").GetGuid();
 
@@ -159,16 +178,36 @@ public sealed class CatalogAndSkillFlowTests
             "/api/v1/admin/skill-categories", "Frontend");
 
         var first = await client.PostAsJsonAsync("/api/v1/admin/skills",
-            new { name = "C#", categoryId = backend.Id });
+            new
+            {
+                name = "C#",
+                categoryId = backend.Id
+            });
         Assert.Equal(HttpStatusCode.Created, first.StatusCode);
         Assert.Equal(HttpStatusCode.Conflict, (await client.PostAsJsonAsync("/api/v1/admin/skills",
-            new { name = " c# ", categoryId = backend.Id })).StatusCode);
+            new
+            {
+                name = " c# ",
+                categoryId = backend.Id
+            })).StatusCode);
         Assert.Equal(HttpStatusCode.Created, (await client.PostAsJsonAsync("/api/v1/admin/skills",
-            new { name = "C#", categoryId = frontend.Id })).StatusCode);
+            new
+            {
+                name = "C#",
+                categoryId = frontend.Id
+            })).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsJsonAsync("/api/v1/admin/skills",
-            new { name = "Orphan", categoryId = Guid.NewGuid() })).StatusCode);
+            new
+            {
+                name = "Orphan",
+                categoryId = Guid.NewGuid()
+            })).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsJsonAsync("/api/v1/admin/skills",
-            new { name = "Invalid", categoryId = Guid.Empty })).StatusCode);
+            new
+            {
+                name = "Invalid",
+                categoryId = Guid.Empty
+            })).StatusCode);
     }
 
     [Fact]
@@ -186,7 +225,11 @@ public sealed class CatalogAndSkillFlowTests
         var frontend = await FlowTestSupport.CreateNamedAsync(client,
             "/api/v1/admin/skill-categories", "Frontend");
         var skillResponse = await client.PostAsJsonAsync("/api/v1/admin/skills",
-            new { name = "C#", categoryId = backend.Id });
+            new
+            {
+                name = "C#",
+                categoryId = backend.Id
+            });
         var id = (await skillResponse.JsonAsync()).GetProperty("id").GetGuid();
 
         using var move = FlowTestSupport.Patch($"/api/v1/admin/skills/{id}",
@@ -197,7 +240,11 @@ public sealed class CatalogAndSkillFlowTests
         Assert.Equal(frontend.Id, (await moved.JsonAsync()).GetProperty("categoryId").GetGuid());
 
         await client.PostAsJsonAsync("/api/v1/admin/skills",
-            new { name = "C#", categoryId = backend.Id });
+            new
+            {
+                name = "C#",
+                categoryId = backend.Id
+            });
         using var conflict = FlowTestSupport.Patch($"/api/v1/admin/skills/{id}",
             $"{{\"name\":\"C#\",\"categoryId\":\"{backend.Id}\"}}",
             moved.Headers.ETag!.Tag);
@@ -217,12 +264,20 @@ public sealed class CatalogAndSkillFlowTests
         var category = await FlowTestSupport.CreateNamedAsync(client,
             "/api/v1/admin/skill-categories", "Backend");
         var original = await client.PostAsJsonAsync("/api/v1/admin/skills",
-            new { name = "C#", categoryId = category.Id });
+            new
+            {
+                name = "C#",
+                categoryId = category.Id
+            });
         var id = (await original.JsonAsync()).GetProperty("id").GetGuid();
         using var delete = FlowTestSupport.Delete($"/api/v1/admin/skills/{id}",
             original.Headers.ETag!.Tag);
         var deleted = await client.SendAsync(delete);
-        await client.PostAsJsonAsync("/api/v1/admin/skills", new { name = " c# ", categoryId = category.Id });
+        await client.PostAsJsonAsync("/api/v1/admin/skills", new
+        {
+            name = " c# ",
+            categoryId = category.Id
+        });
 
         using var noMatch = FlowTestSupport.Restore($"/api/v1/admin/skills/{id}");
         Assert.Equal((HttpStatusCode)428, (await client.SendAsync(noMatch)).StatusCode);

@@ -13,7 +13,7 @@ change.
    the specification `Draft`.
 2. **Review** — resolve open questions and mark it `Approved` before production
    implementation begins.
-3. **Contract** — update `docs/openapi.yaml` first for HTTP changes. Define data,
+3. **Contract** — update `docs/openapi.json` (canonical; generate YAML/client with `python scripts/contract-artifacts.py`) first for HTTP changes. Define data,
    security, validation, errors, caching, and migration effects.
 4. **Prove** — add integration tests mapped to the acceptance scenarios and
    initially failing for the missing behavior.
@@ -101,3 +101,13 @@ cannot prevent an administrator from bypassing an unprotected branch.
 GitHub Actions dependencies must be pinned to immutable 40-character commit
 SHAs with a version comment. Never make production secrets available to pull
 request jobs or use them as Docker build arguments.
+
+## Pending-specification implementation — 2026-09-15
+
+Run `dotnet tool restore`, then `./scripts/verify.ps1` with the governed SDK, Python 3.10+, Docker and a disposable PostgreSQL 18 connection supplied through `PRESENTATION_TEST_CONNECTION_STRING`. The chain checks source policy, validator fixtures, generated contract/client drift, read-only formatting, analyzer-clean Release build, real HTTP/schema/persistence tests, repository and changed-feature coverage, migration drift/idempotent SQL, publish and actual image smoke. Local `-SkipContainer`/`-SkipPostgres` explicitly leave required infrastructure verification incomplete.
+
+Refresh exact test-method traceability with `python scripts/generate-acceptance-map.py` after reviewing changed behavioral assertions. Existing grouped-type exceptions are inventoried in `scripts/source-policy-baseline.json`; new violations fail and resolved exceptions must be removed. Generated code/migrations/entry points are exempt.
+
+Empty/unknown-only merge patches preserve state after If-Match validation. Stored URLs are limited to 2048 characters, highlights are unique after trim ignoring case, and pagination offsets must fit Int32. Public GET validators support weak/list/wildcard matches; updatedAt remains the maximum current visible timestamp and can decrease. See the [adopted decision](specs/mutation-validation/decisions/DR-001-edge-semantics.md).
+
+[Implementation evidence](docs/implementation-evidence.md) records the actual local boundary. [Operations and recovery prerequisites](docs/operations.md) list pending host/TLS/CORS, secrets, migrator grants, GitHub protections and restore exercise records. Deployment checks readiness as well as liveness and causes service interruption during stop/rename/start; container rollback cannot undo incompatible migrations. Source files and fixtures do not establish live enforcement.

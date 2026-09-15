@@ -93,6 +93,11 @@ public static class ProjectEndpoints
             : null;
 
         var patch = new MergePatch(document);
+        if (!patch.HasAny("name", "summary", "repositoryUrl", "liveUrl", "technologyIds", "isFeatured", "image"))
+        {
+            HttpConcurrency.Set(http.Response, value.Version);
+            return Results.Ok(value.ToResponse());
+        }
         ProjectImageRequest? currentImage = value.ImageUrl is null ? null : new(value.ImageUrl, value.ImageAlt, value.ImageWidth, value.ImageHeight);
         var request = new ProjectRequest(patch.Has("name") ? patch.Read<string>("name") : value.Name, patch.Has("summary") ? patch.Read<string>("summary") : value.Summary,
             patch.Has("repositoryUrl") ? patch.Read<string?>("repositoryUrl") : value.RepositoryUrl, patch.Has("liveUrl") ? patch.Read<string?>("liveUrl") : value.LiveUrl,

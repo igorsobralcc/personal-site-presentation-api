@@ -107,11 +107,11 @@ without coupling their feature-specific behavior.
 | PF-006 | Success | Page/page-size are at valid minima/maxima and include-deleted is either Boolean value | Exact requested metadata and visibility |
 | PF-007 | Failure | Any pagination header is malformed or outside its range | `400` lists every invalid header; query is not executed |
 | PF-008 | Success | Requested page is beyond the collection | `200`, empty items, requested page, correct totals |
-| PF-009 | Characterization | Valid extreme page causes skip arithmetic overflow | Capture current response, then decide a safe maximum page contract |
+| PF-009 | Failure | Valid extreme page causes skip arithmetic overflow | Unsafe pagination offsets return keyed X-Page 400; safe beyond-last pages remain empty |
 | PF-010 | Success | Merge patch omits a property or nulls a nullable property | Omitted value is retained; nullable value is cleared |
 | PF-011 | Failure | Patch body is non-object, malformed JSON, or has an incompatible property type | Controlled `400` Problem Details; no mutation |
 | PF-031 | Failure | Patch uses a media type other than `application/merge-patch+json` | `415 Unsupported Media Type`; no mutation |
-| PF-012 | Characterization | Patch is `{}` or contains only unknown fields | Capture version/public-cache mutation before deciding no-op semantics |
+| PF-012 | Success | Patch is `{}` or contains only unknown fields | 200 current representation after lookup and If-Match validation; no version/timestamp/child/public-cache change |
 | PF-013 | Failure | Mutable operation omits `If-Match` | `428`, unchanged version and state |
 | PF-014 | Failure | `If-Match` is stale, malformed, weak, or otherwise not the exact current ETag | `412`, unchanged state |
 | PF-015 | Success | `If-Match` exactly matches current version | Atomic mutation, version + 1, new ETag |
@@ -145,3 +145,13 @@ without coupling their feature-specific behavior.
 - Decision: one logical database may host both APIs, but schemas, principals,
   tables, migrations, and runtime access remain independent.
 - Decision: no Presentation revision-history tables are required.
+
+## Completion review — 2026-09-15
+
+The implemented baseline remains supported by existing acceptance evidence. Outstanding characterization decisions are tracked in [Mutation and validation edge semantics](../mutation-validation/spec.md), except public validator/timestamp behavior owned by [Public presentation](../public-presentation/spec.md).
+
+[Persistence and contract verification](../persistence-contract-verification/spec.md) owns missing real-role and full-schema evidence; [engineering quality](../engineering-quality/spec.md) owns local/CI formatting, analyzer, traceability, and coverage gates. No undecided characterization is silently changed by this documentation update. Reopen this owning feature and update OpenAPI when a successor behavioral decision is approved.
+
+## Adopted edge-contract successor — 2026-09-15
+
+The characterization rows above now state the adopted behavior under [adopted mutation/cache decision](../mutation-validation/decisions/DR-001-edge-semantics.md). Earlier proposals and historical evidence remain dated. See [current implementation evidence](../../docs/implementation-evidence.md) for the new verification boundary.

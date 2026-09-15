@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/main'
     name: Deploy production container
     environment: production
     runs-on: [self-hosted, linux, presentation-production]
@@ -51,27 +52,34 @@ jobs:
           previous_name="${app_name}-previous"
           image_name="ghcr.io/${GITHUB_REPOSITORY,,}"
           image_tag="${REQUESTED_TAG:-sha-${GITHUB_SHA}}"
+          [[ "$image_tag" =~ ^sha-[a-f0-9]{40}$ ]] || { echo 'Deployment requires an immutable sha-<40-character commit> tag.' >&2; exit 1; }
           image_ref="${image_name}:${image_tag}"
           had_previous='false'
+          replacement_created='false'
 
           docker pull "$image_ref"
           docker rm --force "$previous_name" >/dev/null 2>&1 || true
 
           rollback() {
-            docker rm --force "$app_name" >/dev/null 2>&1 || true
+            if [[ "$replacement_created" == 'true' ]]; then
+              docker rm --force "$app_name" >/dev/null 2>&1 || true
+            fi
             if [[ "$had_previous" == 'true' ]]; then
-              docker rename "$previous_name" "$app_name"
+              if docker container inspect "$previous_name" >/dev/null 2>&1; then
+                docker rename "$previous_name" "$app_name"
+              fi
               docker start "$app_name"
             fi
           }
-          trap rollback ERR
+          trap 'rollback; exit 1' ERR INT TERM
 
           if docker container inspect "$app_name" >/dev/null 2>&1; then
+            had_previous='true'
             docker stop "$app_name"
             docker rename "$app_name" "$previous_name"
-            had_previous='true'
           fi
 
+          replacement_created='true'
           docker run --detach \
             --name "$app_name" \
             --restart unless-stopped \
@@ -83,19 +91,18 @@ jobs:
 
           for attempt in $(seq 1 30); do
             health="$(docker inspect --format '{{.State.Health.Status}}' "$app_name")"
-            if [[ "$health" == 'healthy' ]]; then
-              trap - ERR
+            if [[ "$health" == 'healthy' ]] && docker exec "$app_name" \
+              wget --quiet --timeout=4 --tries=1 --spider http://127.0.0.1:8080/health/ready; then
+              trap - ERR INT TERM
               docker rm --force "$previous_name" >/dev/null 2>&1 || true
               echo "Deployment succeeded with image tag $image_tag."
               exit 0
             fi
             if [[ "$health" == 'unhealthy' ]]; then
-              docker logs --tail 100 "$app_name"
               false
             fi
             sleep 2
           done
 
-          docker logs --tail 100 "$app_name"
           echo "Container did not become healthy before the timeout." >&2
           false

@@ -153,6 +153,11 @@ public static class NamedResourceEndpoints
         }
 
         var patch = new MergePatch(document);
+        if (!patch.HasAny("name"))
+        {
+            HttpConcurrency.Set(http.Response, entity.Version);
+            return Results.Ok(category ? ((SkillCategory)entity).ToResponse() : ((Technology)entity).ToResponse());
+        }
         var current = category ? ((SkillCategory)entity).Name : ((Technology)entity).Name;
         var name = patch.Has("name") ? patch.Read<string>("name") : current;
         var errors = InputValidation.Named(name);

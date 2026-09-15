@@ -87,3 +87,13 @@ been accepted into the product contract or replaced by the decided behavior.
   nine PostgreSQL tests skip; the Release build has no warnings. CI-style
   Coverlet measurement reports 91.31% executable line coverage after excluding
   generated EF migration and OpenAPI source-generator files.
+
+## Completion review â€” 2026-09-15
+
+The 183 non-characterization mappings and 109 passing / nine skipped local tests remain the observed baseline. Nine PostgreSQL scenarios must execute in the required CI lane; source configuration is not proof of a passing run.
+
+The 14 characterization IDs are now explicitly assigned to [mutation/validation](mutation-validation/spec.md) and [public cache](public-presentation/spec.md). They remain undecided until approved behavior and executable evidence replace them. [Persistence/contract verification](persistence-contract-verification/spec.md) reviews the strength of existing mappings, and [engineering quality](engineering-quality/spec.md) defines completion gates.
+
+## Adopted implementation successor — 2026-09-15
+
+The 14 historical characterizations now have decided matrix rows and executable evidence: 197 permanent feature case IDs in total. [Exact test-method mappings](../scripts/feature-acceptance-map.json) accompany [completion evidence/dispositions](../scripts/acceptance-evidence.json). [Current implementation evidence](../docs/implementation-evidence.md) supersedes historical local pass/skip/coverage counts; actual adapter and external boundaries remain explicit.

@@ -17,7 +17,10 @@ public sealed class PlatformFlowTests
     public async Task Admin_gate_rejects_every_invalid_key_without_touching_the_handler(string? supplied)
     {
         await using var factory = new ApiFactory();
-        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var client = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
         if (supplied is not null)
         {
             client.DefaultRequestHeaders.TryAddWithoutValidation("X-Admin-Key", supplied);
@@ -34,7 +37,10 @@ public sealed class PlatformFlowTests
     public async Task Admin_gate_is_closed_when_no_key_is_configured()
     {
         await using var factory = new ApiFactory(adminKey: null);
-        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var client = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
         client.DefaultRequestHeaders.Add("X-Admin-Key", "integration-secret");
         Assert.Equal(HttpStatusCode.Unauthorized,
             (await client.GetAsync("/api/v1/admin/profile")).StatusCode);
@@ -48,7 +54,8 @@ public sealed class PlatformFlowTests
         await using var development = new ApiFactory();
         using var developmentClient = development.CreateClient(new()
         {
-            BaseAddress = new Uri("http://localhost"), AllowAutoRedirect = false
+            BaseAddress = new Uri("http://localhost"),
+            AllowAutoRedirect = false
         });
         developmentClient.DefaultRequestHeaders.Add("X-Admin-Key", "integration-secret");
         Assert.Equal(HttpStatusCode.NotFound,
@@ -57,7 +64,8 @@ public sealed class PlatformFlowTests
         await using var production = new ApiFactory(environment: "Production");
         using var productionClient = production.CreateClient(new()
         {
-            BaseAddress = new Uri("http://localhost"), AllowAutoRedirect = false
+            BaseAddress = new Uri("http://localhost"),
+            AllowAutoRedirect = false
         });
         productionClient.DefaultRequestHeaders.Add("X-Admin-Key", "integration-secret");
         Assert.Equal(HttpStatusCode.BadRequest,
@@ -72,7 +80,10 @@ public sealed class PlatformFlowTests
     {
         await using var factory = new ApiFactory();
         using var client = factory.CreateApiClient();
-        await client.PostAsJsonAsync("/api/v1/admin/technologies", new { name = "One" });
+        await client.PostAsJsonAsync("/api/v1/admin/technologies", new
+        {
+            name = "One"
+        });
 
         var defaults = await (await client.GetAsync("/api/v1/admin/technologies")).JsonAsync();
         Assert.Equal(1, defaults.GetProperty("page").GetInt32());
@@ -160,7 +171,10 @@ public sealed class PlatformFlowTests
         Assert.Equal(HttpStatusCode.NotFound,
             (await client.GetAsync("/api/v1/admin/technologies/not-a-guid")).StatusCode);
         Assert.Equal(HttpStatusCode.MethodNotAllowed,
-            (await client.PutAsJsonAsync("/api/v1/admin/technologies", new { name = "No" })).StatusCode);
+            (await client.PutAsJsonAsync("/api/v1/admin/technologies", new
+            {
+                name = "No"
+            })).StatusCode);
     }
 
     [Fact]
@@ -173,7 +187,10 @@ public sealed class PlatformFlowTests
             services.AddCors(options => options.AddDefaultPolicy(policy =>
                 policy.WithOrigins("https://allowed.example").AllowAnyHeader().AllowAnyMethod()));
         });
-        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var client = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
 
         using var allowed = new HttpRequestMessage(HttpMethod.Options, "/api/v1/presentation");
         allowed.Headers.Add("Origin", "https://allowed.example");

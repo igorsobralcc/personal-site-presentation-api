@@ -5,6 +5,7 @@ COPY src/PersonalSite.Presentation.Api/PersonalSite.Presentation.Api.csproj src/
 RUN dotnet restore src/PersonalSite.Presentation.Api/PersonalSite.Presentation.Api.csproj
 
 COPY src/PersonalSite.Presentation.Api/ src/PersonalSite.Presentation.Api/
+COPY docs/openapi.json docs/openapi.json
 RUN dotnet publish src/PersonalSite.Presentation.Api/PersonalSite.Presentation.Api.csproj \
     --configuration Release \
     --no-restore \

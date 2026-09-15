@@ -30,13 +30,21 @@ public sealed class PublicAndHealthFlowTests
         var timestamp = DateTimeOffset.Parse("2026-01-01T00:00:00Z");
         var technologyA = new Technology
         {
-            Id = Guid.Parse("00000000-0000-7000-8000-000000000001"), Name = "Same", NormalizedName = "SAME-A",
-            CreatedAt = timestamp, UpdatedAt = timestamp, PublicUpdatedAt = timestamp
+            Id = Guid.Parse("00000000-0000-7000-8000-000000000001"),
+            Name = "Same",
+            NormalizedName = "SAME-A",
+            CreatedAt = timestamp,
+            UpdatedAt = timestamp,
+            PublicUpdatedAt = timestamp
         };
         var technologyB = new Technology
         {
-            Id = Guid.Parse("00000000-0000-7000-8000-000000000002"), Name = "Same", NormalizedName = "SAME-B",
-            CreatedAt = timestamp, UpdatedAt = timestamp, PublicUpdatedAt = timestamp
+            Id = Guid.Parse("00000000-0000-7000-8000-000000000002"),
+            Name = "Same",
+            NormalizedName = "SAME-B",
+            CreatedAt = timestamp,
+            UpdatedAt = timestamp,
+            PublicUpdatedAt = timestamp
         };
         await factory.ExecuteDbAsync(async db =>
         {
@@ -44,45 +52,77 @@ public sealed class PublicAndHealthFlowTests
             db.Experiences.AddRange(
                 new Experience
                 {
-                    Id = Guid.Parse("00000000-0000-7000-8000-000000000011"), Company = "Current",
-                    Role = "Role", StartDate = new(2024, 1, 1), Summary = "Current",
-                    CreatedAt = timestamp, UpdatedAt = timestamp, PublicUpdatedAt = timestamp
+                    Id = Guid.Parse("00000000-0000-7000-8000-000000000011"),
+                    Company = "Current",
+                    Role = "Role",
+                    StartDate = new(2024, 1, 1),
+                    Summary = "Current",
+                    CreatedAt = timestamp,
+                    UpdatedAt = timestamp,
+                    PublicUpdatedAt = timestamp
                 },
                 new Experience
                 {
-                    Id = Guid.Parse("00000000-0000-7000-8000-000000000012"), Company = "Ended later",
-                    Role = "Role", StartDate = new(2024, 1, 1), EndDate = new(2025, 1, 1), Summary = "Ended",
-                    CreatedAt = timestamp, UpdatedAt = timestamp, PublicUpdatedAt = timestamp
+                    Id = Guid.Parse("00000000-0000-7000-8000-000000000012"),
+                    Company = "Ended later",
+                    Role = "Role",
+                    StartDate = new(2024, 1, 1),
+                    EndDate = new(2025, 1, 1),
+                    Summary = "Ended",
+                    CreatedAt = timestamp,
+                    UpdatedAt = timestamp,
+                    PublicUpdatedAt = timestamp
                 },
                 new Experience
                 {
-                    Id = Guid.Parse("00000000-0000-7000-8000-000000000013"), Company = "Ended earlier",
-                    Role = "Role", StartDate = new(2024, 1, 1), EndDate = new(2024, 6, 1), Summary = "Ended",
-                    CreatedAt = timestamp, UpdatedAt = timestamp, PublicUpdatedAt = timestamp
+                    Id = Guid.Parse("00000000-0000-7000-8000-000000000013"),
+                    Company = "Ended earlier",
+                    Role = "Role",
+                    StartDate = new(2024, 1, 1),
+                    EndDate = new(2024, 6, 1),
+                    Summary = "Ended",
+                    CreatedAt = timestamp,
+                    UpdatedAt = timestamp,
+                    PublicUpdatedAt = timestamp
                 });
             var categoryA = new SkillCategory
             {
-                Id = Guid.Parse("00000000-0000-7000-8000-000000000021"), Name = "Category A",
-                NormalizedName = "CATEGORY A", CreatedAt = timestamp, UpdatedAt = timestamp,
+                Id = Guid.Parse("00000000-0000-7000-8000-000000000021"),
+                Name = "Category A",
+                NormalizedName = "CATEGORY A",
+                CreatedAt = timestamp,
+                UpdatedAt = timestamp,
                 PublicUpdatedAt = timestamp
             };
             categoryA.Skills.Add(new Skill
             {
-                Id = Guid.Parse("00000000-0000-7000-8000-000000000022"), Name = "Skill B",
-                NormalizedName = "SKILL B", CategoryId = categoryA.Id, CreatedAt = timestamp,
-                UpdatedAt = timestamp, PublicUpdatedAt = timestamp
+                Id = Guid.Parse("00000000-0000-7000-8000-000000000022"),
+                Name = "Skill B",
+                NormalizedName = "SKILL B",
+                CategoryId = categoryA.Id,
+                CreatedAt = timestamp,
+                UpdatedAt = timestamp,
+                PublicUpdatedAt = timestamp
             });
             categoryA.Skills.Add(new Skill
             {
-                Id = Guid.Parse("00000000-0000-7000-8000-000000000021"), Name = "Skill A",
-                NormalizedName = "SKILL A", CategoryId = categoryA.Id, CreatedAt = timestamp,
-                UpdatedAt = timestamp, PublicUpdatedAt = timestamp
+                Id = Guid.Parse("00000000-0000-7000-8000-000000000021"),
+                Name = "Skill A",
+                NormalizedName = "SKILL A",
+                CategoryId = categoryA.Id,
+                CreatedAt = timestamp,
+                UpdatedAt = timestamp,
+                PublicUpdatedAt = timestamp
             });
             db.SkillCategories.Add(categoryA);
             db.Projects.Add(new Project
             {
-                Id = Guid.Parse("00000000-0000-7000-8000-000000000031"), Name = "Project",
-                Summary = "Summary", IsFeatured = true, CreatedAt = timestamp, UpdatedAt = timestamp,
+                Id = Guid.Parse("00000000-0000-7000-8000-000000000031"),
+                Name = "Project",
+                Summary = "Summary",
+                IsFeatured = true,
+                CreatedAt = timestamp,
+                UpdatedAt = timestamp,
                 PublicUpdatedAt = timestamp,
                 Technologies =
                 [
@@ -110,7 +150,10 @@ public sealed class PublicAndHealthFlowTests
     public async Task Cancelled_public_request_does_not_return_a_cacheable_success()
     {
         await using var factory = new ApiFactory();
-        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var client = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
@@ -127,7 +170,10 @@ public sealed class PublicAndHealthFlowTests
             db.Projects.Add(new Project { Name = "Orphan", Summary = "Hidden", IsFeatured = true });
             await db.SaveChangesAsync();
         });
-        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var client = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
         var response = await client.GetAsync("/api/v1/presentation");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         var problem = await response.JsonAsync();
@@ -144,7 +190,10 @@ public sealed class PublicAndHealthFlowTests
         await using var factory = new ApiFactory();
         using var admin = factory.CreateApiClient();
         await admin.PutAsJsonAsync("/api/v1/admin/profile", FlowTestSupport.Profile());
-        using var visitor = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var visitor = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
         var response = await visitor.GetAsync("/api/v1/presentation");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(response.Headers.ETag);
@@ -174,7 +223,11 @@ public sealed class PublicAndHealthFlowTests
             "/api/v1/admin/technologies", ".NET");
         var category = await FlowTestSupport.CreateNamedAsync(client,
             "/api/v1/admin/skill-categories", "Backend");
-        await client.PostAsJsonAsync("/api/v1/admin/skills", new { name = "C#", categoryId = category.Id });
+        await client.PostAsJsonAsync("/api/v1/admin/skills", new
+        {
+            name = "C#",
+            categoryId = category.Id
+        });
         await client.PostAsJsonAsync("/api/v1/admin/experiences", FlowTestSupport.Experience(
             location: "Secret office", highlights: ["Admin only"], technologyIds: [technology.Id]));
         await client.PostAsJsonAsync("/api/v1/admin/projects",
@@ -185,12 +238,16 @@ public sealed class PublicAndHealthFlowTests
         {
             db.Experiences.Add(new Experience
             {
-                Company = "Deleted", Role = "Role", StartDate = new(2020, 1, 1), Summary = "No",
+                Company = "Deleted",
+                Role = "Role",
+                StartDate = new(2020, 1, 1),
+                Summary = "No",
                 DeletedAt = DateTimeOffset.UtcNow
             });
             db.SkillCategories.Add(new SkillCategory
             {
-                Name = "Deleted category", NormalizedName = "DELETED CATEGORY",
+                Name = "Deleted category",
+                NormalizedName = "DELETED CATEGORY",
                 DeletedAt = DateTimeOffset.UtcNow
             });
             await db.SaveChangesAsync();
@@ -262,7 +319,10 @@ public sealed class PublicAndHealthFlowTests
             services.AddDbContext<PresentationDbContext>(options => options.UseNpgsql(
                 "Host=127.0.0.1;Port=1;Database=missing;Username=none;Password=secret;Timeout=1"));
         });
-        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var client = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
         var response = await client.GetAsync("/api/v1/presentation");
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
         var text = await response.Content.ReadAsStringAsync();
@@ -278,7 +338,10 @@ public sealed class PublicAndHealthFlowTests
     public async Task Health_success_is_anonymous_minimal_and_named()
     {
         await using var factory = new ApiFactory();
-        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var client = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
         var live = await client.GetAsync("/health/live");
         Assert.Equal(HttpStatusCode.OK, live.StatusCode);
         Assert.Empty((await live.JsonAsync()).GetProperty("checks").EnumerateArray());
@@ -309,7 +372,10 @@ public sealed class PublicAndHealthFlowTests
                     new FixedHealthCheck(HealthCheckResult.Unhealthy()), null, ["other"]));
             });
         });
-        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var client = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
         var ready = await client.GetAsync("/health/ready");
         Assert.Equal(HttpStatusCode.ServiceUnavailable, ready.StatusCode);
         var checks = (await ready.JsonAsync()).GetProperty("checks");
@@ -322,11 +388,17 @@ public sealed class PublicAndHealthFlowTests
 internal sealed class FixedHealthCheck(HealthCheckResult result) : IHealthCheck
 {
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = default) => Task.FromResult(result);
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(result);
+    }
 }
 
 internal sealed class ThrowingHealthCheck : IHealthCheck
 {
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = default) => throw new InvalidOperationException("Sensitive detail");
+        CancellationToken cancellationToken = default)
+    {
+        throw new InvalidOperationException("Sensitive detail");
+    }
 }

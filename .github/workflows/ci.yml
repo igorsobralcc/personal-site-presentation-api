@@ -87,6 +87,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
+      PRESENTATION_REQUIRE_POSTGRES: "true"
       PRESENTATION_TEST_CONNECTION_STRING: Host=localhost;Port=5432;Database=presentation_test;Username=postgres;Password=postgres;SSL Mode=Disable
     steps:
       - name: Check out source
@@ -96,24 +97,12 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
         with:
-          dotnet-version: 10.0.x
-      - name: Restore
-        run: dotnet restore PersonalSite.Presentation.slnx
-      - name: Build
-        run: dotnet build PersonalSite.Presentation.slnx --configuration Release --no-restore --warnaserror
-      - name: Test and enforce code coverage
-        run: >-
-          dotnet test PersonalSite.Presentation.slnx
-          --configuration Release
-          --no-build
-          --no-restore
-          --logger "trx;LogFileName=tests.trx"
-          /p:CollectCoverage=true
-          /p:CoverletOutput=../../TestResults/coverage/
-          /p:CoverletOutputFormat=cobertura
-          /p:Threshold=${{ env.COVERAGE_THRESHOLD }}
-          /p:ThresholdType=line
-          /p:ThresholdStat=total
+          global-json-file: global.json
+      - name: Restore governed tools
+        run: dotnet tool restore
+      - name: Verify application, contracts, migrations and coverage
+        shell: pwsh
+        run: ./scripts/verify.ps1 -SkipContainer
 
   container:
     name: Build container
@@ -133,9 +122,12 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
+          load: true
           tags: personal-site-presentation-api:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Verify runtime identity, health and database failure
+        run: bash scripts/smoke-container.sh personal-site-presentation-api:ci
 
   publish:
     name: Publish container

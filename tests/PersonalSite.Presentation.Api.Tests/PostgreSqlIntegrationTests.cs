@@ -101,7 +101,8 @@ public sealed class PostgreSqlIntegrationTests
             .AddInterceptors(new FailFirstInsertInterceptor()).Options;
         await using (var failingDb = new PresentationDbContext(failingOptions))
         {
-            await Assert.ThrowsAsync<InvalidOperationException>(() => DevelopmentSeedData.SeedAsync(failingDb));
+            var failure = await Assert.ThrowsAsync<DbUpdateException>(() => DevelopmentSeedData.SeedAsync(failingDb));
+            Assert.IsType<InvalidOperationException>(failure.InnerException);
         }
 
         await using var verification = new PresentationDbContext(migrationOptions);
@@ -188,18 +189,24 @@ public sealed class PostgreSqlIntegrationTests
         {
             var profile = new Profile
             {
-                FullName = "Original", Headline = "Headline", Biography = "Biography",
+                FullName = "Original",
+                Headline = "Headline",
+                Biography = "Biography",
                 SocialLinks = [new ProfileSocialLink { Label = "Old", Url = "https://example.com/old" }]
             };
             var experience = new Experience
             {
-                Company = "Original", Role = "Role", Summary = "Summary", StartDate = new(2020, 1, 1),
+                Company = "Original",
+                Role = "Role",
+                Summary = "Summary",
+                StartDate = new(2020, 1, 1),
                 Highlights = [new ExperienceHighlight { Text = "Old" }]
             };
             var technology = new Technology { Name = "Technology", NormalizedName = "TECHNOLOGY" };
             var project = new Project
             {
-                Name = "Original", Summary = "Summary",
+                Name = "Original",
+                Summary = "Summary",
                 Technologies = [new ProjectTechnology { TechnologyId = technology.Id }]
             };
             setup.AddRange(profile, experience, technology, project);
@@ -213,7 +220,11 @@ public sealed class PostgreSqlIntegrationTests
             var value = await db.Profiles.Include(x => x.SocialLinks).SingleAsync(x => x.Id == profileId);
             db.ProfileSocialLinks.RemoveRange(value.SocialLinks);
             db.ProfileSocialLinks.Add(new ProfileSocialLink
-                { ProfileId = value.Id, Label = "New", Url = "https://example.com/new" });
+            {
+                ProfileId = value.Id,
+                Label = "New",
+                Url = "https://example.com/new"
+            });
             value.FullName = "Changed";
             value.Version++;
         });
@@ -315,7 +326,10 @@ public sealed class PostgreSqlIntegrationTests
                 await ResetAsync(connection);
             }
             var technologyResponse = await client.PostAsJsonAsync("/api/v1/admin/technologies",
-                new { name = $"Technology for {resource}" });
+                new
+                {
+                    name = $"Technology for {resource}"
+                });
             var technologyId = (await technologyResponse.Content.ReadFromJsonAsync<JsonElement>())
                 .GetProperty("id").GetGuid();
             var createTask = resource == "experiences"
@@ -337,8 +351,10 @@ public sealed class PostgreSqlIntegrationTests
         }
     }
 
-    private static string RequiredConnectionString() =>
-        Environment.GetEnvironmentVariable("PRESENTATION_TEST_CONNECTION_STRING")!;
+    private static string RequiredConnectionString()
+    {
+        return Environment.GetEnvironmentVariable("PRESENTATION_TEST_CONNECTION_STRING")!;
+    }
 
     private static async Task<NpgsqlConnection> OpenConnectionAsync()
     {
@@ -350,17 +366,21 @@ public sealed class PostgreSqlIntegrationTests
         return connection;
     }
 
-    private static DbContextOptions<PresentationDbContext> Options(DbConnection connection) =>
-        new DbContextOptionsBuilder<PresentationDbContext>()
+    private static DbContextOptions<PresentationDbContext> Options(DbConnection connection)
+    {
+        return new DbContextOptionsBuilder<PresentationDbContext>()
             .UseNpgsql(connection, npgsql => npgsql.MigrationsHistoryTable(
                 "__ef_migrations_history", PresentationDbContext.Schema))
             .UseSnakeCaseNamingConvention().Options;
+    }
 
-    private static DbContextOptions<PresentationDbContext> Options(string connectionString) =>
-        new DbContextOptionsBuilder<PresentationDbContext>()
+    private static DbContextOptions<PresentationDbContext> Options(string connectionString)
+    {
+        return new DbContextOptionsBuilder<PresentationDbContext>()
             .UseNpgsql(connectionString, npgsql => npgsql.MigrationsHistoryTable(
                 "__ef_migrations_history", PresentationDbContext.Schema))
             .UseSnakeCaseNamingConvention().Options;
+    }
 
     private static async Task ResetAsync(NpgsqlConnection connection)
     {
@@ -396,7 +416,8 @@ public sealed class PostgreSqlIntegrationTests
             .AddInterceptors(new FailCommandContainingInterceptor(tableFragment)).Options;
         await using var db = new PresentationDbContext(options);
         await mutate(db);
-        await Assert.ThrowsAsync<InvalidOperationException>(() => db.SaveChangesAsync());
+        var failure = await Assert.ThrowsAsync<DbUpdateException>(() => db.SaveChangesAsync());
+        Assert.IsType<InvalidOperationException>(failure.InnerException);
     }
 }
 
@@ -422,7 +443,8 @@ internal sealed class FailCommandContainingInterceptor(string fragment) : DbComm
 {
     private void ThrowIfMatched(DbCommand command)
     {
-        if (command.CommandText.Contains(fragment, StringComparison.OrdinalIgnoreCase))
+        if (!command.CommandText.TrimStart().StartsWith("SELECT", StringComparison.OrdinalIgnoreCase)
+            && command.CommandText.Contains(fragment, StringComparison.OrdinalIgnoreCase))
         {
             throw new InvalidOperationException($"Forced command failure for {fragment}.");
         }
@@ -449,8 +471,10 @@ internal sealed class FailCommitInterceptor : DbTransactionInterceptor
 {
     public override ValueTask<InterceptionResult> TransactionCommittingAsync(DbTransaction transaction,
         TransactionEventData eventData, InterceptionResult result,
-        CancellationToken cancellationToken = default) =>
-        ValueTask.FromException<InterceptionResult>(new InvalidOperationException("Forced commit failure."));
+        CancellationToken cancellationToken = default)
+    {
+        return ValueTask.FromException<InterceptionResult>(new InvalidOperationException("Forced commit failure."));
+    }
 }
 
 internal sealed class PostgreSqlApiFactory(string connectionString) : WebApplicationFactory<Program>
@@ -466,10 +490,7 @@ internal sealed class PostgreSqlApiFactory(string connectionString) : WebApplica
 
     public HttpClient CreateApiClient()
     {
-        var client = CreateClient(new WebApplicationFactoryClientOptions
-        {
-            BaseAddress = new Uri("https://localhost"), AllowAutoRedirect = false
-        });
+        var client = CreateDefaultClient(new Uri("https://localhost"), new ContractResponseHandler());
         client.DefaultRequestHeaders.Add("X-Admin-Key", "integration-secret");
         return client;
     }
@@ -479,7 +500,8 @@ public sealed class PostgresFactAttribute : FactAttribute
 {
     public PostgresFactAttribute()
     {
-        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PRESENTATION_TEST_CONNECTION_STRING")))
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PRESENTATION_TEST_CONNECTION_STRING"))
+            && Environment.GetEnvironmentVariable("PRESENTATION_REQUIRE_POSTGRES") != "true")
         {
             Skip = "Set PRESENTATION_TEST_CONNECTION_STRING to a disposable PostgreSQL database to run persistence verification.";
         }

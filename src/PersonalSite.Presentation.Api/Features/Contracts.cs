@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using PersonalSite.Presentation.Api.Data;
 
 namespace PersonalSite.Presentation.Api.Features;
@@ -99,12 +100,12 @@ public static class InputValidation
                 errors["socialLinks"] = ["Must contain at most 20 items."];
             }
 
-            if (request.SocialLinks.Any(x => string.IsNullOrWhiteSpace(x.Label) || x.Label.Length > 40 || !IsAbsoluteHttp(x.Url)))
+            if (request.SocialLinks.Any(x => x is null || string.IsNullOrWhiteSpace(x.Label) || x.Label.Length > 40 || !IsAbsoluteHttp(x.Url)))
             {
                 errors["socialLinks"] = ["Each link requires a label up to 40 characters and an absolute HTTP or HTTPS URL."];
             }
 
-            if (request.SocialLinks.Where(x => x.Label is not null).GroupBy(x => x.Label!.Trim(), StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
+            if (request.SocialLinks.Where(x => x is not null && x.Label is not null).GroupBy(x => x.Label!.Trim(), StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
             {
                 errors["socialLinks"] = ["Link labels must be unique."];
             }
@@ -151,7 +152,7 @@ public static class InputValidation
         {
             errors["highlights"] = ["Is required."];
         }
-        else if (request.Highlights.Count > 20 || request.Highlights.Any(x => string.IsNullOrWhiteSpace(x) || x.Length > 500) || request.Highlights.Distinct(StringComparer.OrdinalIgnoreCase).Count() != request.Highlights.Count)
+        else if (request.Highlights.Count > 20 || request.Highlights.Any(x => string.IsNullOrWhiteSpace(x) || x.Length > 500) || request.Highlights.Select(x => x.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).Count() != request.Highlights.Count)
         {
             errors["highlights"] = ["Must contain at most 20 unique, non-empty values up to 500 characters."];
         }
@@ -181,7 +182,7 @@ public static class InputValidation
             errors["isFeatured"] = ["Is required."];
         }
 
-        if (request.Image is { } image && (!IsAbsoluteHttps(image.Url) || string.IsNullOrWhiteSpace(image.Alt) || image.Alt.Length > 500 || image.Width <= 0 || image.Height <= 0))
+        if (request.Image is { } image && (!IsAbsoluteHttps(image.Url) || string.IsNullOrWhiteSpace(image.Alt) || image.Alt.Length > 500 || image.Width is not > 0 || image.Height is not > 0))
         {
             errors["image"] = ["Requires an HTTPS URL, alternative text, and positive width and height."];
         }
@@ -191,12 +192,12 @@ public static class InputValidation
 
     public static bool IsAbsoluteHttps(string? value)
     {
-        return Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps;
+        return value is { Length: <= 2048 } && Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps;
     }
 
     public static bool IsAbsoluteHttp(string? value)
     {
-        return Uri.TryCreate(value, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+        return value is { Length: <= 2048 } && Uri.TryCreate(value, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 
     public static string Normalize(string value)
@@ -233,6 +234,11 @@ public static class InputValidation
 
 public sealed class MergePatch(JsonElement root)
 {
+    public bool HasAny(params string[] names)
+    {
+        return names.Any(Has);
+    }
+
     public bool Has(string name)
     {
         return root.ValueKind == JsonValueKind.Object && root.TryGetProperty(name, out _);
@@ -240,13 +246,18 @@ public sealed class MergePatch(JsonElement root)
 
     public T? Read<T>(string name)
     {
-        return root.TryGetProperty(name, out var value) ? value.Deserialize<T>(JsonOptions) : default;
+        try
+        {
+            return root.TryGetProperty(name, out var value) ? value.Deserialize<T>(JsonOptions) : default;
+        }
+        catch (JsonException)
+        {
+            throw new BadHttpRequestException("The merge patch contains an invalid field type.", StatusCodes.Status400BadRequest);
+        }
     }
 
-    public bool IsNull(string name)
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
-        return root.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Null;
-    }
-
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+        NumberHandling = JsonNumberHandling.Strict
+    };
 }

@@ -80,7 +80,7 @@ public display.
 | SK-015 | Failure | Replacement same-name skill exists in original category | `409 Skill cannot be restored`; remains deleted |
 | SK-016 | Failure | Restore target/state/precondition is invalid | Correct `404`/`428`/`412`; no change |
 | SK-017 | Race | Category is deleted or duplicate created between restore checks/write | PostgreSQL restrict/unique failure is controlled; skill remains deleted |
-| SK-018 | Characterization | Empty or unknown-only patch is submitted | Capture metadata/public ETag mutation pending no-op decision |
+| SK-018 | Success | Empty or unknown-only patch is submitted | 200 current representation after lookup and If-Match validation; no version/timestamp/child/public-cache change |
 
 ## Test evidence
 
@@ -92,3 +92,13 @@ public display.
 ## Decisions and open questions
 
 - Decision: no unused proficiency field is stored or exposed.
+
+## Completion review — 2026-09-15
+
+The implemented baseline remains supported by existing acceptance evidence. Outstanding characterization decisions are tracked in [Mutation and validation edge semantics](../mutation-validation/spec.md), except public validator/timestamp behavior owned by [Public presentation](../public-presentation/spec.md).
+
+[Persistence and contract verification](../persistence-contract-verification/spec.md) owns missing real-role and full-schema evidence; [engineering quality](../engineering-quality/spec.md) owns local/CI formatting, analyzer, traceability, and coverage gates. No undecided characterization is silently changed by this documentation update. Reopen this owning feature and update OpenAPI when a successor behavioral decision is approved.
+
+## Adopted edge-contract successor — 2026-09-15
+
+The characterization rows above now state the adopted behavior under [adopted mutation/cache decision](../mutation-validation/decisions/DR-001-edge-semantics.md). Earlier proposals and historical evidence remain dated. See [current implementation evidence](../../docs/implementation-evidence.md) for the new verification boundary.

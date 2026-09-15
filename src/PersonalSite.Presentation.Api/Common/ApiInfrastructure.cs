@@ -105,7 +105,7 @@ public static class ApiProblems
 {
     public static IResult Create(HttpContext http, int status, string title, string? detail = null)
     {
-        return Results.Problem(statusCode: status, title: title, detail: detail,
+        return Results.Problem(statusCode: status, title: title, detail: detail, type: "about:blank",
             extensions: new Dictionary<string, object?> { ["traceId"] = http.TraceIdentifier });
     }
 
@@ -127,6 +127,11 @@ public readonly record struct PageRequest(int Page, int PageSize, bool IncludeDe
         if (request.Headers.TryGetValue("X-Include-Deleted", out var raw) && !bool.TryParse(raw, out includeDeleted))
         {
             errors["X-Include-Deleted"] = ["Must be true or false."];
+        }
+
+        if ((long)(pageNumber - 1) * pageSize > int.MaxValue)
+        {
+            errors["X-Page"] = ["The page offset must not exceed 2147483647."];
         }
 
         page = new(pageNumber, pageSize, includeDeleted);

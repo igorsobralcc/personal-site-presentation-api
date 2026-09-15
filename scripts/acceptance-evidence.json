@@ -1,0 +1,503 @@
+{
+  "PMV-001": {
+    "disposition": "local",
+    "boundary": "local HTTP and PostgreSQL; adopted decision",
+    "assertions": [
+      "No-op responses preserve versions, timestamps, child IDs, serialized representations and public ETags"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs"
+    ],
+    "date": "2026-09-15"
+  },
+  "PMV-002": {
+    "disposition": "local",
+    "boundary": "local HTTP and PostgreSQL; adopted decision",
+    "assertions": [
+      "Exact 2048 URL lengths round-trip; 2049 lengths reject before writing"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs"
+    ],
+    "date": "2026-09-15"
+  },
+  "PMV-003": {
+    "disposition": "local",
+    "boundary": "local HTTP and PostgreSQL; adopted decision",
+    "assertions": [
+      "Case/trim highlight duplicates reject with keyed errors and unchanged state"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs"
+    ],
+    "date": "2026-09-15"
+  },
+  "PMV-004": {
+    "disposition": "local",
+    "boundary": "local HTTP and PostgreSQL; adopted decision",
+    "assertions": [
+      "Injected singleton, other unique, FK and unexpected failures distinguish diagnoses without database details"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/InitializationFailureTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/InitializationFailureInterceptor.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs"
+    ],
+    "date": "2026-09-15"
+  },
+  "PMV-005": {
+    "disposition": "local",
+    "boundary": "local HTTP and PostgreSQL; adopted decision",
+    "assertions": [
+      "Safe Int32 offsets return empty pages; overflow offsets return keyed X-Page 400 for every collection"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs"
+    ],
+    "date": "2026-09-15"
+  },
+  "PMV-006": {
+    "disposition": "local",
+    "boundary": "local HTTP and PostgreSQL; adopted decision",
+    "assertions": [
+      "Fourteen former characterization IDs have decided owning matrix rows and exact executable method mappings"
+    ],
+    "references": [
+      "scripts/validate-repository.py",
+      "scripts/feature-acceptance-map.json",
+      "specs/mutation-validation/decisions/DR-001-edge-semantics.md",
+      "docs/openapi.json"
+    ],
+    "date": "2026-09-15"
+  },
+  "PPC-001": {
+    "disposition": "local",
+    "boundary": "local HTTP and PostgreSQL",
+    "assertions": [
+      "Weak, list, separate and wildcard validators return bodyless 304 with retained headers; malformed syntax returns 200"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs",
+      "specs/mutation-validation/decisions/DR-001-edge-semantics.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PPC-002": {
+    "disposition": "local",
+    "boundary": "local HTTP and PostgreSQL",
+    "assertions": [
+      "Removing/unfeaturing newest visible project decreases aggregate timestamp and changes ETag"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs",
+      "specs/mutation-validation/decisions/DR-001-edge-semantics.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PPC-003": {
+    "disposition": "local",
+    "boundary": "local HTTP and PostgreSQL",
+    "assertions": [
+      "Hidden experience edits preserve ETag; category/visibility mutations change projection and validator"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs",
+      "specs/mutation-validation/decisions/DR-001-edge-semantics.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PQG-001": {
+    "disposition": "pending",
+    "boundary": "local checks and CI source configuration",
+    "assertions": [
+      "One local/CI chain propagates restore, format, build, tests, coverage, migration, publish and container failures"
+    ],
+    "references": [
+      "scripts/verify.ps1",
+      "scripts/validate-repository.py",
+      "scripts/test_validators.py",
+      ".github/workflows/ci.yml",
+      "docs/implementation-evidence.md"
+    ],
+    "date": "2026-09-15",
+    "reason": "Actual dated CI/container run evidence is pending; local source/fixture evidence does not prove Actions execution."
+  },
+  "PQG-002": {
+    "disposition": "local",
+    "boundary": "local checks and CI source configuration",
+    "assertions": [
+      "New organization violations fail; existing violations are inventoried; braces and analyzers are enforced by repository config"
+    ],
+    "references": [
+      "scripts/verify.ps1",
+      "scripts/validate-repository.py",
+      "scripts/test_validators.py",
+      ".github/workflows/ci.yml",
+      "docs/implementation-evidence.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PQG-003": {
+    "disposition": "local",
+    "boundary": "local checks and CI source configuration",
+    "assertions": [
+      "Unmapped required cases and missing references fail; pending evidence cannot claim Implemented"
+    ],
+    "references": [
+      "scripts/verify.ps1",
+      "scripts/validate-repository.py",
+      "scripts/test_validators.py",
+      ".github/workflows/ci.yml",
+      "docs/implementation-evidence.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PQG-004": {
+    "disposition": "local",
+    "boundary": "local checks and CI source configuration",
+    "assertions": [
+      "Each changed class includes async state machines and lambdas at 90%; missing or failing thresholds fail"
+    ],
+    "references": [
+      "scripts/verify.ps1",
+      "scripts/validate-repository.py",
+      "scripts/test_validators.py",
+      ".github/workflows/ci.yml",
+      "docs/implementation-evidence.md",
+      "scripts/check-feature-coverage.py",
+      "scripts/feature-coverage.json"
+    ],
+    "date": "2026-09-15"
+  },
+  "PQG-005": {
+    "disposition": "pending",
+    "boundary": "local checks and CI source configuration",
+    "assertions": [
+      "Required PostgreSQL facts cannot silently skip; protected CI uses disposable credentials"
+    ],
+    "references": [
+      "scripts/verify.ps1",
+      "scripts/validate-repository.py",
+      "scripts/test_validators.py",
+      ".github/workflows/ci.yml",
+      "docs/implementation-evidence.md"
+    ],
+    "date": "2026-09-15",
+    "reason": "Actual dated CI/container run evidence is pending; local source/fixture evidence does not prove Actions execution."
+  },
+  "PQG-006": {
+    "disposition": "pending",
+    "boundary": "local checks and CI source configuration",
+    "assertions": [
+      "Deliberate method/media/schema/traceability/workflow/coverage faults fail nonzero and publishing depends on required jobs"
+    ],
+    "references": [
+      "scripts/verify.ps1",
+      "scripts/validate-repository.py",
+      "scripts/test_validators.py",
+      ".github/workflows/ci.yml",
+      "docs/implementation-evidence.md"
+    ],
+    "date": "2026-09-15",
+    "reason": "Actual dated CI/container run evidence is pending; local source/fixture evidence does not prove Actions execution."
+  },
+  "PCV-001": {
+    "disposition": "pending",
+    "boundary": "local PostgreSQL and HTTP; CI source",
+    "assertions": [
+      "All relational migration/constraint/race/rollback/exception cases execute with persisted-state assertions"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs"
+    ],
+    "date": "2026-09-15",
+    "reason": "A dated passing CI PostgreSQL run is still required."
+  },
+  "PCV-002": {
+    "disposition": "local",
+    "boundary": "local PostgreSQL and HTTP; CI source",
+    "assertions": [
+      "Disposable runtime role executes Presentation DML and cannot read blog/write history/perform DDL; migrator can use history and perform schema DDL"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs"
+    ],
+    "date": "2026-09-15"
+  },
+  "PCV-003": {
+    "disposition": "local",
+    "boundary": "local PostgreSQL and HTTP; CI source",
+    "assertions": [
+      "Generated operations and reviewed metadata agree; independent real responses validate status/media/schema/headers/body; drift fixtures fail"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/ContractTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/ContractResponseHandler.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/JsonSchemaAssertions.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/GeneratedClientTests.cs",
+      "scripts/contract-artifacts.py"
+    ],
+    "date": "2026-09-15"
+  },
+  "PCV-004": {
+    "disposition": "local",
+    "boundary": "local PostgreSQL and HTTP; CI source",
+    "assertions": [
+      "Exact methods and descriptive behavioral assertions accompany every feature case mapping; relational guarantees remain adapter-scoped"
+    ],
+    "references": [
+      "scripts/feature-acceptance-map.json",
+      "scripts/generate-acceptance-map.py",
+      "scripts/validate-repository.py",
+      "docs/implementation-evidence.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PCV-005": {
+    "disposition": "local",
+    "boundary": "local PostgreSQL and HTTP; CI source",
+    "assertions": [
+      "Generated public/admin client compiles and handles real errors, create, read, merge patch and conditional 304; artifact drift fails"
+    ],
+    "references": [
+      "tests/PersonalSite.Presentation.Api.Tests/ContractTests.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/ContractResponseHandler.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/JsonSchemaAssertions.cs",
+      "tests/PersonalSite.Presentation.Api.Tests/GeneratedClientTests.cs",
+      "scripts/contract-artifacts.py"
+    ],
+    "date": "2026-09-15"
+  },
+  "PDR-001": {
+    "disposition": "local",
+    "boundary": "local documentation validation",
+    "assertions": [
+      "Current owners, dependency order, statuses and links are indexed"
+    ],
+    "references": [
+      "docs/implementation-evidence.md",
+      "docs/operations.md",
+      "specs/README.md",
+      "specs/application-flow-index.md",
+      "scripts/validate-repository.py",
+      "specs/documentation-reconciliation/decisions/DR-002-implementation-and-verification.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PDR-002": {
+    "disposition": "local",
+    "boundary": "local documentation validation",
+    "assertions": [
+      "Historical scope and evidence remain dated with an explicit adopted successor decision"
+    ],
+    "references": [
+      "docs/implementation-evidence.md",
+      "docs/operations.md",
+      "specs/README.md",
+      "specs/application-flow-index.md",
+      "scripts/validate-repository.py",
+      "specs/documentation-reconciliation/decisions/DR-002-implementation-and-verification.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PDR-003": {
+    "disposition": "local",
+    "boundary": "local documentation validation",
+    "assertions": [
+      "Base revision, date, actual environment, results and external gaps are recorded without secrets"
+    ],
+    "references": [
+      "docs/implementation-evidence.md",
+      "docs/operations.md",
+      "specs/README.md",
+      "specs/application-flow-index.md",
+      "scripts/validate-repository.py",
+      "specs/documentation-reconciliation/decisions/DR-002-implementation-and-verification.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PDR-004": {
+    "disposition": "local",
+    "boundary": "local documentation validation",
+    "assertions": [
+      "README, CONTRIBUTING, OpenAPI/YAML, flow maps, evidence and operations agree; links and artifacts validate"
+    ],
+    "references": [
+      "docs/implementation-evidence.md",
+      "docs/operations.md",
+      "specs/README.md",
+      "specs/application-flow-index.md",
+      "scripts/validate-repository.py",
+      "specs/documentation-reconciliation/decisions/DR-002-implementation-and-verification.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PDR-005": {
+    "disposition": "local",
+    "boundary": "local documentation validation",
+    "assertions": [
+      "Partial scopes retain Approved with pending evidence; Implemented is forbidden where required evidence is pending"
+    ],
+    "references": [
+      "docs/implementation-evidence.md",
+      "docs/operations.md",
+      "specs/README.md",
+      "specs/application-flow-index.md",
+      "scripts/validate-repository.py",
+      "specs/documentation-reconciliation/decisions/DR-002-implementation-and-verification.md"
+    ],
+    "date": "2026-09-15"
+  },
+  "PRP-001": {
+    "disposition": "pending",
+    "boundary": "workflow source and deterministic fixtures",
+    "assertions": [
+      "Required merge checks have exact documented names and required-check settings remain externally verifiable"
+    ],
+    "references": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/deploy.yml",
+      "docs/operations.md",
+      "scripts/test_validators.py",
+      "scripts/test_deployment.py"
+    ],
+    "date": "2026-09-15",
+    "reason": "Owner-approved main protections were applied and independently verified on 2026-09-15: four strict checks, administrator enforcement, force-push/deletion disabled. Actual failing-PR evidence remains required."
+  },
+  "PRP-002": {
+    "disposition": "local",
+    "boundary": "workflow source and deterministic fixtures",
+    "assertions": [
+      "Actions are immutable; PR secrets/permissions/triggers are restricted; source negative fixtures fail"
+    ],
+    "references": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/deploy.yml",
+      "docs/operations.md",
+      "scripts/test_validators.py",
+      "scripts/test_deployment.py"
+    ],
+    "date": "2026-09-15"
+  },
+  "PRP-003": {
+    "disposition": "pending",
+    "boundary": "workflow source and deterministic fixtures",
+    "assertions": [
+      "Production promotion is main-only and immutable-tag-only with readiness/rollback source checks"
+    ],
+    "references": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/deploy.yml",
+      "docs/operations.md",
+      "scripts/test_validators.py",
+      "scripts/test_deployment.py"
+    ],
+    "date": "2026-09-15",
+    "reason": "Owner-approved production reviewer and main-only ref policies were applied and independently verified on 2026-09-15; self-review and existing administrator bypass are documented. Protected deployment exercise and dedicated runner ownership evidence remain pending."
+  },
+  "PRP-004": {
+    "disposition": "pending",
+    "boundary": "workflow source and deterministic fixtures",
+    "assertions": [
+      "Source validation is separated from live check enforcement and dated run/settings evidence"
+    ],
+    "references": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/deploy.yml",
+      "docs/operations.md",
+      "scripts/test_validators.py",
+      "scripts/test_deployment.py"
+    ],
+    "date": "2026-09-15",
+    "reason": "Settings were inspected and are unmet; recent application CI runs failed on other revisions. This uncommitted implementation has no live Actions run."
+  },
+  "PRP-005": {
+    "disposition": "local",
+    "boundary": "workflow source and deterministic fixtures",
+    "assertions": [
+      "Policy/traceability/generation/coverage validators have deterministic positive and negative fixtures"
+    ],
+    "references": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/deploy.yml",
+      "docs/operations.md",
+      "scripts/test_validators.py",
+      "scripts/test_deployment.py"
+    ],
+    "date": "2026-09-15"
+  },
+  "PCD-001": {
+    "disposition": "pending",
+    "boundary": "source/fixture evidence only; actual host pending",
+    "assertions": [
+      "Actual image smoke verifies UID, port, wget, liveness, readiness and database failure"
+    ],
+    "references": [
+      "scripts/smoke-container.sh",
+      "scripts/test_deployment.py",
+      ".github/workflows/deploy.yml",
+      "docs/operations.md"
+    ],
+    "date": "2026-09-15",
+    "reason": "Docker unavailable locally; real CI/disposable-host smoke evidence remains required."
+  },
+  "PCD-002": {
+    "disposition": "pending",
+    "boundary": "source/fixture evidence only; actual host pending",
+    "assertions": [
+      "Promotion requires host/TLS/origin/CORS/secrets/migrator grants and repository/environment records"
+    ],
+    "references": [
+      "scripts/smoke-container.sh",
+      "scripts/test_deployment.py",
+      ".github/workflows/deploy.yml",
+      "docs/operations.md"
+    ],
+    "date": "2026-09-15",
+    "reason": "Hosting/TLS/origin/secrets/settings choices and external verification are pending."
+  },
+  "PCD-003": {
+    "disposition": "pending",
+    "boundary": "source/fixture evidence only; actual host pending",
+    "assertions": [
+      "Startup/health/readiness/interruption fixture failures restore previous container; interruption/schema limits are documented"
+    ],
+    "references": [
+      "scripts/smoke-container.sh",
+      "scripts/test_deployment.py",
+      ".github/workflows/deploy.yml",
+      "docs/operations.md"
+    ],
+    "date": "2026-09-15",
+    "reason": "Exact-shell Docker fixtures pass; real disposable-host rollback execution remains pending."
+  },
+  "PCD-004": {
+    "disposition": "pending",
+    "boundary": "source/fixture evidence only; actual host pending",
+    "assertions": [
+      "Named recovery operator, provider procedure, RPO/RTO/retention and restore exercise are production prerequisites"
+    ],
+    "references": [
+      "scripts/smoke-container.sh",
+      "scripts/test_deployment.py",
+      ".github/workflows/deploy.yml",
+      "docs/operations.md"
+    ],
+    "date": "2026-09-15",
+    "reason": "Operator/provider/recovery objective choices and a dated actual restore exercise remain pending."
+  }
+}

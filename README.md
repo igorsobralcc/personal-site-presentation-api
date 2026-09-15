@@ -388,7 +388,21 @@ Protect `main` with pull requests, blocked force-push/deletion, and the required
 ## Development workflow
 
 Behavior changes are spec-driven: update an approved file under `specs/`, update
-`docs/openapi.yaml` before HTTP implementation, add acceptance tests, implement,
+`docs/openapi.json` (canonical; generate YAML/client with `python scripts/contract-artifacts.py`) before HTTP implementation, add acceptance tests, implement,
 and verify. Commits must follow Conventional Commits and remain small, coherent,
 buildable, secret-free, and independently revertible. See
 [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Completion review — 2026-09-15
+
+The [current specification index](specs/README.md) separates implemented baseline behavior from the 2026-09-15 completion drafts. It identifies owners for nonfunctional requirements, tests, contracts, local/CI quality, deployment verification, and outstanding decisions. New specs are documentation only; they do not establish passing implementation or external protection settings.
+
+## Pending-specification implementation — 2026-09-15
+
+Run `dotnet tool restore`, then `./scripts/verify.ps1` with the governed SDK, Python 3.10+, Docker and a disposable PostgreSQL 18 connection supplied through `PRESENTATION_TEST_CONNECTION_STRING`. The chain checks source policy, validator fixtures, generated contract/client drift, read-only formatting, analyzer-clean Release build, real HTTP/schema/persistence tests, repository and changed-feature coverage, migration drift/idempotent SQL, publish and actual image smoke. Local `-SkipContainer`/`-SkipPostgres` explicitly leave required infrastructure verification incomplete.
+
+Refresh exact test-method traceability with `python scripts/generate-acceptance-map.py` after reviewing changed behavioral assertions. Existing grouped-type exceptions are inventoried in `scripts/source-policy-baseline.json`; new violations fail and resolved exceptions must be removed. Generated code/migrations/entry points are exempt.
+
+Empty/unknown-only merge patches preserve state after If-Match validation. Stored URLs are limited to 2048 characters, highlights are unique after trim ignoring case, and pagination offsets must fit Int32. Public GET validators support weak/list/wildcard matches; updatedAt remains the maximum current visible timestamp and can decrease. See the [adopted decision](specs/mutation-validation/decisions/DR-001-edge-semantics.md).
+
+[Implementation evidence](docs/implementation-evidence.md) records the actual local boundary. [Operations and recovery prerequisites](docs/operations.md) list pending host/TLS/CORS, secrets, migrator grants, GitHub protections and restore exercise records. Deployment checks readiness as well as liveness and causes service interruption during stop/rename/start; container rollback cannot undo incompatible migrations. Source files and fixtures do not establish live enforcement.

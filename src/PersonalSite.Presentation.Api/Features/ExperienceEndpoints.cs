@@ -98,6 +98,11 @@ public static class ExperienceEndpoints
             : null;
 
         var patch = new MergePatch(document);
+        if (!patch.HasAny("company", "role", "location", "startDate", "endDate", "summary", "highlights", "technologyIds"))
+        {
+            HttpConcurrency.Set(http.Response, value.Version);
+            return Results.Ok(value.ToResponse());
+        }
         var request = new ExperienceRequest(patch.Has("company") ? patch.Read<string>("company") : value.Company, patch.Has("role") ? patch.Read<string>("role") : value.Role,
             patch.Has("location") ? patch.Read<string?>("location") : value.Location, patch.Has("startDate") ? patch.Read<DateOnly?>("startDate") : value.StartDate,
             patch.Has("endDate") ? patch.Read<DateOnly?>("endDate") : value.EndDate, patch.Has("summary") ? patch.Read<string>("summary") : value.Summary,
