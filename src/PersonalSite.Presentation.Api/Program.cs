@@ -10,9 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
 });
 builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = context =>
     context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier);
+builder.Services.AddExceptionHandler<RequestBindingExceptionHandler>();
 builder.Services.AddExceptionHandler<DatabaseExceptionHandler>();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PresentationDbContext>(options =>
@@ -32,6 +34,11 @@ if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("SeedDat
     await DevelopmentSeedData.SeedAsync(scope.ServiceProvider.GetRequiredService<PresentationDbContext>());
 }
 app.UseExceptionHandler();
+app.UseStatusCodePages(async context =>
+{
+    await ApiProblems.Create(context.HttpContext, context.HttpContext.Response.StatusCode,
+        "Request failed").ExecuteAsync(context.HttpContext);
+});
 app.UseHttpsRedirection();
 app.UseCors();
 if (app.Environment.IsDevelopment())

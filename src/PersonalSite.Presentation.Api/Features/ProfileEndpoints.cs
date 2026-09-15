@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using PersonalSite.Presentation.Api.Common;
 using PersonalSite.Presentation.Api.Data;
 
@@ -57,7 +58,11 @@ public static class ProfileEndpoints
         {
             await db.SaveChangesAsync(ct);
         }
-        catch (DbUpdateException) { return ApiProblems.Create(http, 409, "Profile already exists"); }
+        catch (DbUpdateException exception) when (exception.InnerException is PostgresException
+        { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: "ix_profiles_singleton_key" })
+        {
+            return ApiProblems.Create(http, 409, "Profile already exists");
+        }
         HttpConcurrency.Set(http.Response, profile.Version);
         return Results.Created("/api/v1/admin/profile", profile.ToResponse());
     }
@@ -85,6 +90,11 @@ public static class ProfileEndpoints
         }
 
         var patch = new MergePatch(document);
+        if (!patch.HasAny("fullName", "headline", "biography", "shortSummary", "location", "email", "availability", "currentFocus", "socialLinks"))
+        {
+            HttpConcurrency.Set(http.Response, profile.Version);
+            return Results.Ok(profile.ToResponse());
+        }
         var request = new ProfileRequest(
             patch.Has("fullName") ? patch.Read<string>("fullName") : profile.FullName,
             patch.Has("headline") ? patch.Read<string>("headline") : profile.Headline,
