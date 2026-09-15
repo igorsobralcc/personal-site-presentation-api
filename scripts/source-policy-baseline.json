@@ -1,0 +1,78 @@
+{
+  "src/PersonalSite.Presentation.Api/Common/ApiInfrastructure.cs": [
+    "AdminKeyFilter",
+    "OperationLoggingFilter",
+    "DatabaseExceptionHandler",
+    "ApiProblems",
+    "PageRequest",
+    "PageResponse",
+    "HttpConcurrency",
+    "PresentationDatabaseHealthCheck",
+    "HealthResponseWriter"
+  ],
+  "src/PersonalSite.Presentation.Api/Data/Entities.cs": [
+    "ManagedEntity",
+    "Profile",
+    "ProfileSocialLink",
+    "Experience",
+    "ExperienceHighlight",
+    "Project",
+    "SkillCategory",
+    "Skill",
+    "Technology",
+    "ExperienceTechnology",
+    "ProjectTechnology"
+  ],
+  "src/PersonalSite.Presentation.Api/Features/Contracts.cs": [
+    "SocialLinkRequest",
+    "ProfileRequest",
+    "NamedRequest",
+    "SkillRequest",
+    "ExperienceRequest",
+    "ProjectImageRequest",
+    "ProjectRequest",
+    "ResourceMetadata",
+    "SocialLinkResponse",
+    "ProfileResponse",
+    "NamedResponse",
+    "SkillResponse",
+    "ExperienceResponse",
+    "ProjectImageResponse",
+    "ProjectResponse",
+    "ContractMappings",
+    "InputValidation",
+    "MergePatch"
+  ],
+  "src/PersonalSite.Presentation.Api/Features/PublicPresentationEndpoints.cs": [
+    "PublicPresentationEndpoints",
+    "PublicPresentation",
+    "PublicProfile",
+    "PublicExperience",
+    "PublicProject",
+    "TechnologySummary",
+    "PublicSkillCategory",
+    "PublicSkill"
+  ],
+  "tests/PersonalSite.Presentation.Api.Tests/ApiFactory.cs": [
+    "ApiFactory",
+    "FailingHealthCheck"
+  ],
+  "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs": [
+    "PostgreSqlIntegrationTests",
+    "PostgreSqlCollection",
+    "FailFirstInsertInterceptor",
+    "FailCommandContainingInterceptor",
+    "FailCommitInterceptor",
+    "PostgreSqlApiFactory",
+    "PostgresFactAttribute"
+  ],
+  "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs": [
+    "PublicAndHealthFlowTests",
+    "FixedHealthCheck",
+    "ThrowingHealthCheck"
+  ],
+  "tests/PersonalSite.Presentation.Api.Tests/TestLoggerProvider.cs": [
+    "TestLogEntry",
+    "TestLoggerProvider"
+  ]
+}

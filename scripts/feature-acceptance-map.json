@@ -1,0 +1,1342 @@
+{
+  "EX-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_minimum_create_get_and_list_are_complete_and_chronological",
+      "assertions": "Experience minimum create get and list are complete and chronological"
+    }
+  ],
+  "EX-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_accepts_collection_limits_and_rejects_one_inactive_reference",
+      "assertions": "Experience accepts collection limits and rejects one inactive reference"
+    }
+  ],
+  "EX-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_rejects_invalid_aggregate_members_without_inserting_rows",
+      "assertions": "Experience rejects invalid aggregate members without inserting rows"
+    }
+  ],
+  "EX-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_rejects_invalid_aggregate_members_without_inserting_rows",
+      "assertions": "Experience rejects invalid aggregate members without inserting rows"
+    }
+  ],
+  "EX-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_minimum_create_get_and_list_are_complete_and_chronological",
+      "assertions": "Experience minimum create get and list are complete and chronological"
+    }
+  ],
+  "EX-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_rejects_invalid_aggregate_members_without_inserting_rows",
+      "assertions": "Experience rejects invalid aggregate members without inserting rows"
+    }
+  ],
+  "EX-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#Highlights_use_trimmed_case_insensitive_uniqueness",
+      "assertions": "Highlights use trimmed case insensitive uniqueness"
+    }
+  ],
+  "EX-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_rejects_invalid_aggregate_members_without_inserting_rows",
+      "assertions": "Experience rejects invalid aggregate members without inserting rows"
+    }
+  ],
+  "EX-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_accepts_collection_limits_and_rejects_one_inactive_reference",
+      "assertions": "Experience accepts collection limits and rejects one inactive reference"
+    }
+  ],
+  "EX-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_minimum_create_get_and_list_are_complete_and_chronological",
+      "assertions": "Experience minimum create get and list are complete and chronological"
+    }
+  ],
+  "EX-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_patch_replaces_children_atomically_and_distinguishes_public_from_hidden_changes",
+      "assertions": "Experience patch replaces children atomically and distinguishes public from hidden changes"
+    }
+  ],
+  "EX-012": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_patch_replaces_children_atomically_and_distinguishes_public_from_hidden_changes",
+      "assertions": "Experience patch replaces children atomically and distinguishes public from hidden changes"
+    }
+  ],
+  "EX-013": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_patch_replaces_children_atomically_and_distinguishes_public_from_hidden_changes",
+      "assertions": "Experience patch replaces children atomically and distinguishes public from hidden changes"
+    }
+  ],
+  "EX-014": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Technology_delete_and_aggregate_create_never_both_succeed",
+      "assertions": "Technology delete and aggregate create never both succeed"
+    }
+  ],
+  "EX-015": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Every_aggregate_concurrency_token_prevents_a_lost_update",
+      "assertions": "Every aggregate concurrency token prevents a lost update"
+    }
+  ],
+  "EX-016": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_patch_replaces_children_atomically_and_distinguishes_public_from_hidden_changes",
+      "assertions": "Experience patch replaces children atomically and distinguishes public from hidden changes"
+    }
+  ],
+  "EX-017": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_patch_replaces_children_atomically_and_distinguishes_public_from_hidden_changes",
+      "assertions": "Experience patch replaces children atomically and distinguishes public from hidden changes"
+    }
+  ],
+  "EX-018": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_and_technology_recover_in_dependency_order",
+      "assertions": "Experience and technology recover in dependency order"
+    }
+  ],
+  "EX-019": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_and_technology_recover_in_dependency_order",
+      "assertions": "Experience and technology recover in dependency order"
+    }
+  ],
+  "EX-020": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_and_technology_recover_in_dependency_order",
+      "assertions": "Experience and technology recover in dependency order"
+    }
+  ],
+  "EX-021": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_and_technology_recover_in_dependency_order",
+      "assertions": "Experience and technology recover in dependency order"
+    }
+  ],
+  "EX-022": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_operations_reject_missing_targets_and_invalid_preconditions_without_state_change",
+      "assertions": "Experience operations reject missing targets and invalid preconditions without state change"
+    }
+  ],
+  "EX-023": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Failed_child_replacements_roll_back_root_and_owned_rows",
+      "assertions": "Failed child replacements roll back root and owned rows"
+    }
+  ],
+  "EX-024": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#No_op_patches_preserve_representations_children_timestamps_and_validators",
+      "assertions": "No op patches preserve representations children timestamps and validators"
+    }
+  ],
+  "OH-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Health_success_is_anonymous_minimal_and_named",
+      "assertions": "Health success is anonymous minimal and named"
+    }
+  ],
+  "OH-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Health_success_is_anonymous_minimal_and_named",
+      "assertions": "Health success is anonymous minimal and named"
+    }
+  ],
+  "OH-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Any_failed_or_throwing_ready_check_makes_only_readiness_unhealthy",
+      "assertions": "Any failed or throwing ready check makes only readiness unhealthy"
+    }
+  ],
+  "OH-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Any_failed_or_throwing_ready_check_makes_only_readiness_unhealthy",
+      "assertions": "Any failed or throwing ready check makes only readiness unhealthy"
+    }
+  ],
+  "OH-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/OperationalEdgeFlowTests.cs#Database_health_check_bounds_failure_and_handles_caller_cancellation_as_unhealthy",
+      "assertions": "Database health check bounds failure and handles caller cancellation as unhealthy"
+    }
+  ],
+  "OH-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/OperationalEdgeFlowTests.cs#Database_health_check_bounds_failure_and_handles_caller_cancellation_as_unhealthy",
+      "assertions": "Database health check bounds failure and handles caller cancellation as unhealthy"
+    }
+  ],
+  "OH-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Health_success_is_anonymous_minimal_and_named",
+      "assertions": "Health success is anonymous minimal and named"
+    }
+  ],
+  "OH-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Any_failed_or_throwing_ready_check_makes_only_readiness_unhealthy",
+      "assertions": "Any failed or throwing ready check makes only readiness unhealthy"
+    }
+  ],
+  "OH-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Any_failed_or_throwing_ready_check_makes_only_readiness_unhealthy",
+      "assertions": "Any failed or throwing ready check makes only readiness unhealthy"
+    }
+  ],
+  "OH-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Health_success_is_anonymous_minimal_and_named",
+      "assertions": "Health success is anonymous minimal and named"
+    }
+  ],
+  "OH-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/OperationalEdgeFlowTests.cs#Success_and_business_failure_logs_are_structured_without_secrets_or_probe_noise",
+      "assertions": "Success and business failure logs are structured without secrets or probe noise"
+    }
+  ],
+  "PCV-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs#Http_edges_round_trip_storage_and_translate_extreme_pagination",
+      "assertions": "Http edges round trip storage and translate extreme pagination"
+    }
+  ],
+  "PCV-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs#Disposable_runtime_and_migrator_roles_enforce_schema_and_DDL_boundaries",
+      "assertions": "Disposable runtime and migrator roles enforce schema and DDL boundaries"
+    }
+  ],
+  "PCV-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ContractTests.cs#Generated_contract_preserves_all_operations_schemas_statuses_parameters_media_and_headers",
+      "assertions": "Generated contract preserves all operations schemas statuses parameters media and headers"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ContractTests.cs#Runtime_operation_and_binding_drift_fails_document_generation",
+      "assertions": "Runtime operation and binding drift fails document generation"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/GeneratedClientTests.cs#Deliberate_runtime_payload_schema_mismatches_fail",
+      "assertions": "Deliberate runtime payload schema mismatches fail"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationRejectionTests.cs#Image_dimensions_cannot_be_absent_or_null",
+      "assertions": "Image dimensions cannot be absent or null"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationRejectionTests.cs#Image_dimensions_require_JSON_numbers_as_documented",
+      "assertions": "Image dimensions require JSON numbers as documented"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationRejectionTests.cs#Null_social_link_items_are_keyed_validation_errors",
+      "assertions": "Null social link items are keyed validation errors"
+    }
+  ],
+  "PCV-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/GeneratedClientTests.cs#Generated_public_and_admin_client_handles_real_errors_creation_patch_and_revalidation",
+      "assertions": "Generated public and admin client handles real errors creation patch and revalidation"
+    }
+  ],
+  "PF-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Initialization_trims_and_round_trips_the_complete_ordered_aggregate",
+      "assertions": "Initialization trims and round trips the complete ordered aggregate"
+    }
+  ],
+  "PF-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Admin_gate_is_closed_when_no_key_is_configured",
+      "assertions": "Admin gate is closed when no key is configured"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Admin_gate_rejects_every_invalid_key_without_touching_the_handler",
+      "assertions": "Admin gate rejects every invalid key without touching the handler"
+    }
+  ],
+  "PF-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Admin_transport_gate_allows_development_http_but_rejects_production_http",
+      "assertions": "Admin transport gate allows development http but rejects production http"
+    }
+  ],
+  "PF-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Admin_transport_gate_allows_development_http_but_rejects_production_http",
+      "assertions": "Admin transport gate allows development http but rejects production http"
+    }
+  ],
+  "PF-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Collections_apply_defaults_boundaries_and_beyond_last_page",
+      "assertions": "Collections apply defaults boundaries and beyond last page"
+    }
+  ],
+  "PF-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Collections_apply_defaults_boundaries_and_beyond_last_page",
+      "assertions": "Collections apply defaults boundaries and beyond last page"
+    }
+  ],
+  "PF-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Collections_reject_invalid_pagination_headers",
+      "assertions": "Collections reject invalid pagination headers"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Collections_return_all_invalid_pagination_headers_together",
+      "assertions": "Collections return all invalid pagination headers together"
+    }
+  ],
+  "PF-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Collections_apply_defaults_boundaries_and_beyond_last_page",
+      "assertions": "Collections apply defaults boundaries and beyond last page"
+    }
+  ],
+  "PF-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#Pagination_rejects_only_offsets_that_exceed_Int32",
+      "assertions": "Pagination rejects only offsets that exceed Int32"
+    }
+  ],
+  "PF-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Patch_preserves_omissions_clears_nullable_values_and_replaces_links",
+      "assertions": "Patch preserves omissions clears nullable values and replaces links"
+    }
+  ],
+  "PF-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Merge_patch_rejects_non_object_documents",
+      "assertions": "Merge patch rejects non object documents"
+    }
+  ],
+  "PF-012": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#No_op_patches_preserve_representations_children_timestamps_and_validators",
+      "assertions": "No op patches preserve representations children timestamps and validators"
+    }
+  ],
+  "PF-013": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Invalid_link_replacement_and_preconditions_leave_profile_unchanged",
+      "assertions": "Invalid link replacement and preconditions leave profile unchanged"
+    }
+  ],
+  "PF-014": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Invalid_link_replacement_and_preconditions_leave_profile_unchanged",
+      "assertions": "Invalid link replacement and preconditions leave profile unchanged"
+    }
+  ],
+  "PF-015": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Patch_preserves_omissions_clears_nullable_values_and_replaces_links",
+      "assertions": "Patch preserves omissions clears nullable values and replaces links"
+    }
+  ],
+  "PF-016": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#PostgreSql_enforces_partial_uniqueness_and_concurrency_tokens",
+      "assertions": "PostgreSql enforces partial uniqueness and concurrency tokens"
+    }
+  ],
+  "PF-017": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_and_technology_recover_in_dependency_order",
+      "assertions": "Experience and technology recover in dependency order"
+    }
+  ],
+  "PF-018": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_and_technology_recover_in_dependency_order",
+      "assertions": "Experience and technology recover in dependency order"
+    }
+  ],
+  "PF-019": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_restore_is_blocked_until_its_deleted_technology_is_restored",
+      "assertions": "Project restore is blocked until its deleted technology is restored"
+    }
+  ],
+  "PF-020": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DatabaseExceptionHandlerTests.cs#Unique_and_foreign_key_database_failures_are_traceable_conflicts",
+      "assertions": "Unique and foreign key database failures are traceable conflicts"
+    }
+  ],
+  "PF-021": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_database_failure_is_a_traceable_non_disclosing_500",
+      "assertions": "Public database failure is a traceable non disclosing 500"
+    }
+  ],
+  "PF-022": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Failed_seed_insert_rolls_back_every_table",
+      "assertions": "Failed seed insert rolls back every table"
+    }
+  ],
+  "PF-023": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Cors_grants_only_the_configured_origin",
+      "assertions": "Cors grants only the configured origin"
+    }
+  ],
+  "PF-024": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Cors_grants_only_the_configured_origin",
+      "assertions": "Cors grants only the configured origin"
+    }
+  ],
+  "PF-025": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/OperationalEdgeFlowTests.cs#Success_and_business_failure_logs_are_structured_without_secrets_or_probe_noise",
+      "assertions": "Success and business failure logs are structured without secrets or probe noise"
+    }
+  ],
+  "PF-026": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/OperationalEdgeFlowTests.cs#Management_exception_is_logged_without_database_credentials",
+      "assertions": "Management exception is logged without database credentials"
+    }
+  ],
+  "PF-027": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Invalid_route_and_method_never_reach_a_feature_handler",
+      "assertions": "Invalid route and method never reach a feature handler"
+    }
+  ],
+  "PF-028": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Admin_gate_rejects_every_invalid_key_without_touching_the_handler",
+      "assertions": "Admin gate rejects every invalid key without touching the handler"
+    }
+  ],
+  "PF-029": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Migrations_are_schema_isolated_and_foreign_keys_never_cascade",
+      "assertions": "Migrations are schema isolated and foreign keys never cascade"
+    }
+  ],
+  "PF-030": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Migrations_are_schema_isolated_and_foreign_keys_never_cascade",
+      "assertions": "Migrations are schema isolated and foreign keys never cascade"
+    }
+  ],
+  "PF-031": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PlatformFlowTests.cs#Merge_patch_rejects_an_unsupported_media_type",
+      "assertions": "Merge patch rejects an unsupported media type"
+    }
+  ],
+  "PJ-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_minimum_and_complete_aggregates_follow_admin_and_public_visibility_rules",
+      "assertions": "Project minimum and complete aggregates follow admin and public visibility rules"
+    }
+  ],
+  "PJ-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_minimum_and_complete_aggregates_follow_admin_and_public_visibility_rules",
+      "assertions": "Project minimum and complete aggregates follow admin and public visibility rules"
+    }
+  ],
+  "PJ-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_rejects_missing_required_text",
+      "assertions": "Project rejects missing required text"
+    }
+  ],
+  "PJ-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_rejects_invalid_urls_and_missing_feature_flag",
+      "assertions": "Project rejects invalid urls and missing feature flag"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationRejectionTests.cs#Image_dimensions_cannot_be_absent_or_null",
+      "assertions": "Image dimensions cannot be absent or null"
+    }
+  ],
+  "PJ-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#Url_storage_boundaries_are_validated_before_writing",
+      "assertions": "Url storage boundaries are validated before writing"
+    }
+  ],
+  "PJ-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_rejects_duplicate_empty_and_inactive_technology_identifiers",
+      "assertions": "Project rejects duplicate empty and inactive technology identifiers"
+    }
+  ],
+  "PJ-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_rejects_invalid_urls_and_missing_feature_flag",
+      "assertions": "Project rejects invalid urls and missing feature flag"
+    }
+  ],
+  "PJ-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_minimum_and_complete_aggregates_follow_admin_and_public_visibility_rules",
+      "assertions": "Project minimum and complete aggregates follow admin and public visibility rules"
+    }
+  ],
+  "PJ-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_rejects_each_invalid_image_component",
+      "assertions": "Project rejects each invalid image component"
+    }
+  ],
+  "PJ-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_minimum_and_complete_aggregates_follow_admin_and_public_visibility_rules",
+      "assertions": "Project minimum and complete aggregates follow admin and public visibility rules"
+    }
+  ],
+  "PJ-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_patch_can_publish_replace_and_clear_aggregate_parts",
+      "assertions": "Project patch can publish replace and clear aggregate parts"
+    }
+  ],
+  "PJ-012": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_patch_can_publish_replace_and_clear_aggregate_parts",
+      "assertions": "Project patch can publish replace and clear aggregate parts"
+    }
+  ],
+  "PJ-013": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_patch_can_publish_replace_and_clear_aggregate_parts",
+      "assertions": "Project patch can publish replace and clear aggregate parts"
+    }
+  ],
+  "PJ-014": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Technology_delete_and_aggregate_create_never_both_succeed",
+      "assertions": "Technology delete and aggregate create never both succeed"
+    }
+  ],
+  "PJ-015": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Every_aggregate_concurrency_token_prevents_a_lost_update",
+      "assertions": "Every aggregate concurrency token prevents a lost update"
+    }
+  ],
+  "PJ-016": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_patch_can_publish_replace_and_clear_aggregate_parts",
+      "assertions": "Project patch can publish replace and clear aggregate parts"
+    }
+  ],
+  "PJ-017": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_patch_can_publish_replace_and_clear_aggregate_parts",
+      "assertions": "Project patch can publish replace and clear aggregate parts"
+    }
+  ],
+  "PJ-018": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_restore_is_blocked_until_its_deleted_technology_is_restored",
+      "assertions": "Project restore is blocked until its deleted technology is restored"
+    }
+  ],
+  "PJ-019": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_restore_is_blocked_until_its_deleted_technology_is_restored",
+      "assertions": "Project restore is blocked until its deleted technology is restored"
+    }
+  ],
+  "PJ-020": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_restore_is_blocked_until_its_deleted_technology_is_restored",
+      "assertions": "Project restore is blocked until its deleted technology is restored"
+    }
+  ],
+  "PJ-021": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_restore_is_blocked_until_its_deleted_technology_is_restored",
+      "assertions": "Project restore is blocked until its deleted technology is restored"
+    }
+  ],
+  "PJ-022": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Failed_child_replacements_roll_back_root_and_owned_rows",
+      "assertions": "Failed child replacements roll back root and owned rows"
+    }
+  ],
+  "PJ-023": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#No_op_patches_preserve_representations_children_timestamps_and_validators",
+      "assertions": "No op patches preserve representations children timestamps and validators"
+    }
+  ],
+  "PMV-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#No_op_patches_preserve_representations_children_timestamps_and_validators",
+      "assertions": "No op patches preserve representations children timestamps and validators"
+    }
+  ],
+  "PMV-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#Url_storage_boundaries_are_validated_before_writing",
+      "assertions": "Url storage boundaries are validated before writing"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs#Http_edges_round_trip_storage_and_translate_extreme_pagination",
+      "assertions": "Http edges round trip storage and translate extreme pagination"
+    }
+  ],
+  "PMV-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#Highlights_use_trimmed_case_insensitive_uniqueness",
+      "assertions": "Highlights use trimmed case insensitive uniqueness"
+    }
+  ],
+  "PMV-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/InitializationFailureTests.cs#Only_the_singleton_index_receives_the_singleton_diagnosis",
+      "assertions": "Only the singleton index receives the singleton diagnosis"
+    }
+  ],
+  "PMV-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#Pagination_rejects_only_offsets_that_exceed_Int32",
+      "assertions": "Pagination rejects only offsets that exceed Int32"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs#Http_edges_round_trip_storage_and_translate_extreme_pagination",
+      "assertions": "Http edges round trip storage and translate extreme pagination"
+    }
+  ],
+  "PP-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Missing_profile_dominates_other_content_and_returns_traceable_problem",
+      "assertions": "Missing profile dominates other content and returns traceable problem"
+    }
+  ],
+  "PP-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Profile_only_presentation_is_anonymous_cacheable_and_uses_empty_arrays",
+      "assertions": "Profile only presentation is anonymous cacheable and uses empty arrays"
+    }
+  ],
+  "PP-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_projection_filters_deleted_unfeatured_and_administrative_data",
+      "assertions": "Public projection filters deleted unfeatured and administrative data"
+    }
+  ],
+  "PP-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_projection_filters_deleted_unfeatured_and_administrative_data",
+      "assertions": "Public projection filters deleted unfeatured and administrative data"
+    }
+  ],
+  "PP-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_projection_filters_deleted_unfeatured_and_administrative_data",
+      "assertions": "Public projection filters deleted unfeatured and administrative data"
+    }
+  ],
+  "PP-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_projection_filters_deleted_unfeatured_and_administrative_data",
+      "assertions": "Public projection filters deleted unfeatured and administrative data"
+    }
+  ],
+  "PP-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_projection_filters_deleted_unfeatured_and_administrative_data",
+      "assertions": "Public projection filters deleted unfeatured and administrative data"
+    }
+  ],
+  "PP-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_tie_breakers_are_deterministic_for_every_collection",
+      "assertions": "Public tie breakers are deterministic for every collection"
+    }
+  ],
+  "PP-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_tie_breakers_are_deterministic_for_every_collection",
+      "assertions": "Public tie breakers are deterministic for every collection"
+    }
+  ],
+  "PP-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_tie_breakers_are_deterministic_for_every_collection",
+      "assertions": "Public tie breakers are deterministic for every collection"
+    }
+  ],
+  "PP-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_etag_changes_only_for_visible_representation_changes",
+      "assertions": "Public etag changes only for visible representation changes"
+    }
+  ],
+  "PP-012": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_etag_changes_only_for_visible_representation_changes",
+      "assertions": "Public etag changes only for visible representation changes"
+    }
+  ],
+  "PP-013": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_etag_changes_only_for_visible_representation_changes",
+      "assertions": "Public etag changes only for visible representation changes"
+    }
+  ],
+  "PP-014": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_etag_changes_only_for_visible_representation_changes",
+      "assertions": "Public etag changes only for visible representation changes"
+    }
+  ],
+  "PP-015": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Project_patch_can_publish_replace_and_clear_aggregate_parts",
+      "assertions": "Project patch can publish replace and clear aggregate parts"
+    }
+  ],
+  "PP-016": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs#Conditional_get_uses_weak_list_and_wildcard_comparison",
+      "assertions": "Conditional get uses weak list and wildcard comparison"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs#Separate_validator_values_match_and_wildcard_does_not_hide_missing_profile",
+      "assertions": "Separate validator values match and wildcard does not hide missing profile"
+    }
+  ],
+  "PP-017": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs#Removing_newest_visible_project_can_decrease_updatedAt_and_changes_ETag",
+      "assertions": "Removing newest visible project can decrease updatedAt and changes ETag"
+    }
+  ],
+  "PP-018": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_database_failure_is_a_traceable_non_disclosing_500",
+      "assertions": "Public database failure is a traceable non disclosing 500"
+    }
+  ],
+  "PP-019": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Cancelled_public_request_does_not_return_a_cacheable_success",
+      "assertions": "Cancelled public request does not return a cacheable success"
+    }
+  ],
+  "PP-020": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Profile_only_presentation_is_anonymous_cacheable_and_uses_empty_arrays",
+      "assertions": "Profile only presentation is anonymous cacheable and uses empty arrays"
+    }
+  ],
+  "PPC-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs#Conditional_get_uses_weak_list_and_wildcard_comparison",
+      "assertions": "Conditional get uses weak list and wildcard comparison"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs#Separate_validator_values_match_and_wildcard_does_not_hide_missing_profile",
+      "assertions": "Separate validator values match and wildcard does not hide missing profile"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs#Public_projection_privacy_cache_visibility_and_hidden_edits_hold_against_PostgreSQL",
+      "assertions": "Public projection privacy cache visibility and hidden edits hold against PostgreSQL"
+    }
+  ],
+  "PPC-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs#Removing_newest_visible_project_can_decrease_updatedAt_and_changes_ETag",
+      "assertions": "Removing newest visible project can decrease updatedAt and changes ETag"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs#Public_projection_privacy_cache_visibility_and_hidden_edits_hold_against_PostgreSQL",
+      "assertions": "Public projection privacy cache visibility and hidden edits hold against PostgreSQL"
+    }
+  ],
+  "PPC-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CacheEdgeTests.cs#Removing_newest_visible_project_can_decrease_updatedAt_and_changes_ETag",
+      "assertions": "Removing newest visible project can decrease updatedAt and changes ETag"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs#Http_edges_round_trip_storage_and_translate_extreme_pagination",
+      "assertions": "Http edges round trip storage and translate extreme pagination"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlCompletionTests.cs#Public_projection_privacy_cache_visibility_and_hidden_edits_hold_against_PostgreSQL",
+      "assertions": "Public projection privacy cache visibility and hidden edits hold against PostgreSQL"
+    }
+  ],
+  "PQG-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ContractTests.cs#Runtime_operation_and_binding_drift_fails_document_generation",
+      "assertions": "Runtime operation and binding drift fails document generation"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/GeneratedClientTests.cs#Deliberate_runtime_payload_schema_mismatches_fail",
+      "assertions": "Deliberate runtime payload schema mismatches fail"
+    }
+  ],
+  "PR-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Initialization_trims_and_round_trips_the_complete_ordered_aggregate",
+      "assertions": "Initialization trims and round trips the complete ordered aggregate"
+    }
+  ],
+  "PR-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Initialization_trims_and_round_trips_the_complete_ordered_aggregate",
+      "assertions": "Initialization trims and round trips the complete ordered aggregate"
+    }
+  ],
+  "PR-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Initialization_rejects_missing_required_text",
+      "assertions": "Initialization rejects missing required text"
+    }
+  ],
+  "PR-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationRejectionTests.cs#Null_social_link_items_are_keyed_validation_errors",
+      "assertions": "Null social link items are keyed validation errors"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Initialization_rejects_invalid_email",
+      "assertions": "Initialization rejects invalid email"
+    }
+  ],
+  "PR-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Initialization_rejects_links_that_duplicate_after_trim_and_case_normalization",
+      "assertions": "Initialization rejects links that duplicate after trim and case normalization"
+    }
+  ],
+  "PR-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#Url_storage_boundaries_are_validated_before_writing",
+      "assertions": "Url storage boundaries are validated before writing"
+    }
+  ],
+  "PR-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Second_initialization_preserves_the_original_profile",
+      "assertions": "Second initialization preserves the original profile"
+    }
+  ],
+  "PR-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Singleton_and_skill_unique_constraints_resolve_write_races_with_one_winner",
+      "assertions": "Singleton and skill unique constraints resolve write races with one winner"
+    }
+  ],
+  "PR-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Initialization_trims_and_round_trips_the_complete_ordered_aggregate",
+      "assertions": "Initialization trims and round trips the complete ordered aggregate"
+    }
+  ],
+  "PR-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Missing_profile_wins_over_missing_patch_precondition",
+      "assertions": "Missing profile wins over missing patch precondition"
+    }
+  ],
+  "PR-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Patch_preserves_omissions_clears_nullable_values_and_replaces_links",
+      "assertions": "Patch preserves omissions clears nullable values and replaces links"
+    }
+  ],
+  "PR-012": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Patch_preserves_omissions_clears_nullable_values_and_replaces_links",
+      "assertions": "Patch preserves omissions clears nullable values and replaces links"
+    }
+  ],
+  "PR-013": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Patch_preserves_omissions_clears_nullable_values_and_replaces_links",
+      "assertions": "Patch preserves omissions clears nullable values and replaces links"
+    }
+  ],
+  "PR-014": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Invalid_link_replacement_and_preconditions_leave_profile_unchanged",
+      "assertions": "Invalid link replacement and preconditions leave profile unchanged"
+    }
+  ],
+  "PR-015": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ProfileFlowTests.cs#Invalid_link_replacement_and_preconditions_leave_profile_unchanged",
+      "assertions": "Invalid link replacement and preconditions leave profile unchanged"
+    }
+  ],
+  "PR-016": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Every_aggregate_concurrency_token_prevents_a_lost_update",
+      "assertions": "Every aggregate concurrency token prevents a lost update"
+    }
+  ],
+  "PR-017": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Failed_child_replacements_roll_back_root_and_owned_rows",
+      "assertions": "Failed child replacements roll back root and owned rows"
+    }
+  ],
+  "PR-018": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#No_op_patches_preserve_representations_children_timestamps_and_validators",
+      "assertions": "No op patches preserve representations children timestamps and validators"
+    }
+  ],
+  "PR-019": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/InitializationFailureTests.cs#Only_the_singleton_index_receives_the_singleton_diagnosis",
+      "assertions": "Only the singleton index receives the singleton diagnosis"
+    }
+  ],
+  "SC-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resources_trim_accept_boundaries_and_reject_invalid_or_duplicate_names",
+      "assertions": "Named resources trim accept boundaries and reject invalid or duplicate names"
+    }
+  ],
+  "SC-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resources_trim_accept_boundaries_and_reject_invalid_or_duplicate_names",
+      "assertions": "Named resources trim accept boundaries and reject invalid or duplicate names"
+    }
+  ],
+  "SC-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resources_trim_accept_boundaries_and_reject_invalid_or_duplicate_names",
+      "assertions": "Named resources trim accept boundaries and reject invalid or duplicate names"
+    }
+  ],
+  "SC-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resources_trim_accept_boundaries_and_reject_invalid_or_duplicate_names",
+      "assertions": "Named resources trim accept boundaries and reject invalid or duplicate names"
+    }
+  ],
+  "SC-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#PostgreSql_enforces_partial_uniqueness_and_concurrency_tokens",
+      "assertions": "PostgreSql enforces partial uniqueness and concurrency tokens"
+    }
+  ],
+  "SC-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "SC-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "SC-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "SC-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "SC-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Category_requires_skills_to_be_retired_and_restored_in_dependency_order",
+      "assertions": "Category requires skills to be retired and restored in dependency order"
+    }
+  ],
+  "SC-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Category_requires_skills_to_be_retired_and_restored_in_dependency_order",
+      "assertions": "Category requires skills to be retired and restored in dependency order"
+    }
+  ],
+  "SC-012": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Category_requires_skills_to_be_retired_and_restored_in_dependency_order",
+      "assertions": "Category requires skills to be retired and restored in dependency order"
+    }
+  ],
+  "SC-013": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "SC-014": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "SC-015": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "SC-016": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Category_requires_skills_to_be_retired_and_restored_in_dependency_order",
+      "assertions": "Category requires skills to be retired and restored in dependency order"
+    }
+  ],
+  "SC-017": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#No_op_patches_preserve_representations_children_timestamps_and_validators",
+      "assertions": "No op patches preserve representations children timestamps and validators"
+    }
+  ],
+  "SD-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Seeds_the_complete_resume_dataset_once",
+      "assertions": "Seeds the complete resume dataset once"
+    }
+  ],
+  "SD-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Seeds_the_complete_resume_dataset_once",
+      "assertions": "Seeds the complete resume dataset once"
+    }
+  ],
+  "SD-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Preserves_a_non_empty_database_without_supplementing_it",
+      "assertions": "Preserves a non empty database without supplementing it"
+    }
+  ],
+  "SD-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#A_deleted_row_in_any_managed_table_prevents_all_seeding",
+      "assertions": "A deleted row in any managed table prevents all seeding"
+    }
+  ],
+  "SD-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#A_deleted_row_in_any_managed_table_prevents_all_seeding",
+      "assertions": "A deleted row in any managed table prevents all seeding"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Preserves_a_non_empty_database_without_supplementing_it",
+      "assertions": "Preserves a non empty database without supplementing it"
+    }
+  ],
+  "SD-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Development_with_seed_disabled_does_not_initialize_content",
+      "assertions": "Development with seed disabled does not initialize content"
+    }
+  ],
+  "SD-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Production_never_runs_the_development_seeder",
+      "assertions": "Production never runs the development seeder"
+    }
+  ],
+  "SD-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Relational_migration_failure_aborts_seeding",
+      "assertions": "Relational migration failure aborts seeding"
+    }
+  ],
+  "SD-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Failed_seed_insert_rolls_back_every_table",
+      "assertions": "Failed seed insert rolls back every table"
+    }
+  ],
+  "SD-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Failed_seed_commit_rolls_back_the_complete_dataset",
+      "assertions": "Failed seed commit rolls back the complete dataset"
+    }
+  ],
+  "SD-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Concurrent_seeders_leave_exactly_one_complete_dataset",
+      "assertions": "Concurrent seeders leave exactly one complete dataset"
+    }
+  ],
+  "SD-012": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Precancelled_seed_operation_stops_without_inserting_content",
+      "assertions": "Precancelled seed operation stops without inserting content"
+    }
+  ],
+  "SD-013": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Seeds_the_complete_resume_dataset_once",
+      "assertions": "Seeds the complete resume dataset once"
+    }
+  ],
+  "SD-014": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Seeds_the_complete_resume_dataset_once",
+      "assertions": "Seeds the complete resume dataset once"
+    }
+  ],
+  "SD-015": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Development_configuration_seeds_public_content_in_expected_order",
+      "assertions": "Development configuration seeds public content in expected order"
+    }
+  ],
+  "SD-016": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/DevelopmentSeedDataTests.cs#Seeder_source_and_seeded_values_contain_no_operational_secrets_or_local_paths",
+      "assertions": "Seeder source and seeded values contain no operational secrets or local paths"
+    }
+  ],
+  "SK-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_creation_validates_category_and_scopes_name_uniqueness_per_category",
+      "assertions": "Skill creation validates category and scopes name uniqueness per category"
+    }
+  ],
+  "SK-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_creation_validates_category_and_scopes_name_uniqueness_per_category",
+      "assertions": "Skill creation validates category and scopes name uniqueness per category"
+    }
+  ],
+  "SK-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_creation_validates_category_and_scopes_name_uniqueness_per_category",
+      "assertions": "Skill creation validates category and scopes name uniqueness per category"
+    }
+  ],
+  "SK-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_creation_validates_category_and_scopes_name_uniqueness_per_category",
+      "assertions": "Skill creation validates category and scopes name uniqueness per category"
+    }
+  ],
+  "SK-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_creation_validates_category_and_scopes_name_uniqueness_per_category",
+      "assertions": "Skill creation validates category and scopes name uniqueness per category"
+    }
+  ],
+  "SK-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Singleton_and_skill_unique_constraints_resolve_write_races_with_one_winner",
+      "assertions": "Singleton and skill unique constraints resolve write races with one winner"
+    }
+  ],
+  "SK-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_patch_moves_public_grouping_atomically_and_rejects_destination_conflict",
+      "assertions": "Skill patch moves public grouping atomically and rejects destination conflict"
+    }
+  ],
+  "SK-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_patch_moves_public_grouping_atomically_and_rejects_destination_conflict",
+      "assertions": "Skill patch moves public grouping atomically and rejects destination conflict"
+    }
+  ],
+  "SK-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_patch_moves_public_grouping_atomically_and_rejects_destination_conflict",
+      "assertions": "Skill patch moves public grouping atomically and rejects destination conflict"
+    }
+  ],
+  "SK-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_patch_moves_public_grouping_atomically_and_rejects_destination_conflict",
+      "assertions": "Skill patch moves public grouping atomically and rejects destination conflict"
+    }
+  ],
+  "SK-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Category_requires_skills_to_be_retired_and_restored_in_dependency_order",
+      "assertions": "Category requires skills to be retired and restored in dependency order"
+    }
+  ],
+  "SK-012": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Category_requires_skills_to_be_retired_and_restored_in_dependency_order",
+      "assertions": "Category requires skills to be retired and restored in dependency order"
+    }
+  ],
+  "SK-013": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Category_requires_skills_to_be_retired_and_restored_in_dependency_order",
+      "assertions": "Category requires skills to be retired and restored in dependency order"
+    }
+  ],
+  "SK-014": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Category_requires_skills_to_be_retired_and_restored_in_dependency_order",
+      "assertions": "Category requires skills to be retired and restored in dependency order"
+    }
+  ],
+  "SK-015": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_restore_rejects_name_conflict_missing_precondition_and_stale_precondition",
+      "assertions": "Skill restore rejects name conflict missing precondition and stale precondition"
+    }
+  ],
+  "SK-016": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Skill_restore_rejects_name_conflict_missing_precondition_and_stale_precondition",
+      "assertions": "Skill restore rejects name conflict missing precondition and stale precondition"
+    }
+  ],
+  "SK-017": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#Singleton_and_skill_unique_constraints_resolve_write_races_with_one_winner",
+      "assertions": "Singleton and skill unique constraints resolve write races with one winner"
+    }
+  ],
+  "SK-018": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#No_op_patches_preserve_representations_children_timestamps_and_validators",
+      "assertions": "No op patches preserve representations children timestamps and validators"
+    }
+  ],
+  "TE-001": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resources_trim_accept_boundaries_and_reject_invalid_or_duplicate_names",
+      "assertions": "Named resources trim accept boundaries and reject invalid or duplicate names"
+    }
+  ],
+  "TE-002": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resources_trim_accept_boundaries_and_reject_invalid_or_duplicate_names",
+      "assertions": "Named resources trim accept boundaries and reject invalid or duplicate names"
+    }
+  ],
+  "TE-003": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resources_trim_accept_boundaries_and_reject_invalid_or_duplicate_names",
+      "assertions": "Named resources trim accept boundaries and reject invalid or duplicate names"
+    }
+  ],
+  "TE-004": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PostgreSqlIntegrationTests.cs#PostgreSql_enforces_partial_uniqueness_and_concurrency_tokens",
+      "assertions": "PostgreSql enforces partial uniqueness and concurrency tokens"
+    }
+  ],
+  "TE-005": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "TE-006": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "TE-007": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "TE-008": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Technology_delete_is_blocked_by_each_active_parent_type",
+      "assertions": "Technology delete is blocked by each active parent type"
+    }
+  ],
+  "TE-009": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Technology_delete_is_blocked_by_each_active_parent_type",
+      "assertions": "Technology delete is blocked by each active parent type"
+    }
+  ],
+  "TE-010": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Technology_delete_is_blocked_by_each_active_parent_type",
+      "assertions": "Technology delete is blocked by each active parent type"
+    }
+  ],
+  "TE-011": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_and_technology_recover_in_dependency_order",
+      "assertions": "Experience and technology recover in dependency order"
+    }
+  ],
+  "TE-012": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_and_technology_recover_in_dependency_order",
+      "assertions": "Experience and technology recover in dependency order"
+    }
+  ],
+  "TE-013": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "TE-014": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    },
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/ExperienceProjectFlowTests.cs#Experience_and_technology_recover_in_dependency_order",
+      "assertions": "Experience and technology recover in dependency order"
+    }
+  ],
+  "TE-015": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/CatalogAndSkillFlowTests.cs#Named_resource_lifecycle_obeys_etags_soft_delete_visibility_and_restore_conflicts",
+      "assertions": "Named resource lifecycle obeys etags soft delete visibility and restore conflicts"
+    }
+  ],
+  "TE-016": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_etag_changes_only_for_visible_representation_changes",
+      "assertions": "Public etag changes only for visible representation changes"
+    }
+  ],
+  "TE-017": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/PublicAndHealthFlowTests.cs#Public_etag_changes_only_for_visible_representation_changes",
+      "assertions": "Public etag changes only for visible representation changes"
+    }
+  ],
+  "TE-018": [
+    {
+      "reference": "tests/PersonalSite.Presentation.Api.Tests/MutationEdgeTests.cs#No_op_patches_preserve_representations_children_timestamps_and_validators",
+      "assertions": "No op patches preserve representations children timestamps and validators"
+    }
+  ]
+}

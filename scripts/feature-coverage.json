@@ -1,0 +1,19 @@
+{
+  "threshold": 90,
+  "method": "Each changed executable class independently reaches 90% covered Cobertura lines, including its compiler-generated async state machines and lambdas. Lines are deduplicated by source filename and line number. Migrations and generated clients retain the existing exclusions.",
+  "classes": [
+    "Program",
+    "PersonalSite.Presentation.Api.Common.ApiProblems",
+    "PersonalSite.Presentation.Api.Features.PresentationOpenApiTransformer",
+    "PersonalSite.Presentation.Api.Features.RequestBindingExceptionHandler",
+    "PersonalSite.Presentation.Api.Common.PageRequest",
+    "PersonalSite.Presentation.Api.Features.InputValidation",
+    "PersonalSite.Presentation.Api.Features.MergePatch",
+    "PersonalSite.Presentation.Api.Features.ProfileEndpoints",
+    "PersonalSite.Presentation.Api.Features.ExperienceEndpoints",
+    "PersonalSite.Presentation.Api.Features.ProjectEndpoints",
+    "PersonalSite.Presentation.Api.Features.NamedResourceEndpoints",
+    "PersonalSite.Presentation.Api.Features.SkillEndpoints",
+    "PersonalSite.Presentation.Api.Features.PublicPresentationEndpoints"
+  ]
+}
