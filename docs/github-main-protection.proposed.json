@@ -1,0 +1,16 @@
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": ["Commit policy", "Secret scan", "Build and test", "Build container"]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 0,
+    "dismiss_stale_reviews": true,
+    "require_code_owner_reviews": false
+  },
+  "restrictions": null,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_conversation_resolution": true
+}

@@ -1,5 +1,7 @@
 # Presentation API application flow map
 
+> Baseline flow map. Older behavior questions and test backlogs below are historical planning evidence. The [current spec index](../specs/README.md) assigns completion owners and records verified versus Draft scope. On 2026-09-15, 109 tests passed and nine PostgreSQL tests skipped locally; CI configures those tests, but no live Actions result was inspected.
+
 This document maps the behavior implemented in the Presentation API as of
 2026-08-28. It is intentionally test-oriented: each flow identifies its
 business outcome, decision points, state transitions, and exception paths.
@@ -556,3 +558,7 @@ before tests permanently lock them in:
    the skill's own deletion state.
 8. Should the maximum accepted page be capped to prevent skip arithmetic
    overflow?
+
+## Edge-contract and verification successor — 2026-09-15
+
+Empty/unknown-only patches preserve state after lookup and If-Match. URL length, trim/case highlight uniqueness, singleton-specific failures and pagination overflow use the [adopted edge decision](../specs/mutation-validation/decisions/DR-001-edge-semantics.md). Public validators accept weak/list/wildcard forms and updatedAt remains current-visible maximum. [Current evidence](implementation-evidence.md) separates local HTTP/PostgreSQL checks from live deployment/settings prerequisites. Generated OpenAPI is contract-backed with runtime operation/binding guards; independent real HTTP response validation establishes payload/header/media behavior.
