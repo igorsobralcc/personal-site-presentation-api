@@ -101,7 +101,8 @@ public sealed class PostgreSqlIntegrationTests
             .AddInterceptors(new FailFirstInsertInterceptor()).Options;
         await using (var failingDb = new PresentationDbContext(failingOptions))
         {
-            await Assert.ThrowsAsync<InvalidOperationException>(() => DevelopmentSeedData.SeedAsync(failingDb));
+            var failure = await Assert.ThrowsAsync<DbUpdateException>(() => DevelopmentSeedData.SeedAsync(failingDb));
+            Assert.IsType<InvalidOperationException>(failure.InnerException);
         }
 
         await using var verification = new PresentationDbContext(migrationOptions);
@@ -415,7 +416,8 @@ public sealed class PostgreSqlIntegrationTests
             .AddInterceptors(new FailCommandContainingInterceptor(tableFragment)).Options;
         await using var db = new PresentationDbContext(options);
         await mutate(db);
-        await Assert.ThrowsAsync<InvalidOperationException>(() => db.SaveChangesAsync());
+        var failure = await Assert.ThrowsAsync<DbUpdateException>(() => db.SaveChangesAsync());
+        Assert.IsType<InvalidOperationException>(failure.InnerException);
     }
 }
 
@@ -441,7 +443,8 @@ internal sealed class FailCommandContainingInterceptor(string fragment) : DbComm
 {
     private void ThrowIfMatched(DbCommand command)
     {
-        if (command.CommandText.Contains(fragment, StringComparison.OrdinalIgnoreCase))
+        if (!command.CommandText.TrimStart().StartsWith("SELECT", StringComparison.OrdinalIgnoreCase)
+            && command.CommandText.Contains(fragment, StringComparison.OrdinalIgnoreCase))
         {
             throw new InvalidOperationException($"Forced command failure for {fragment}.");
         }
@@ -497,7 +500,8 @@ public sealed class PostgresFactAttribute : FactAttribute
 {
     public PostgresFactAttribute()
     {
-        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PRESENTATION_TEST_CONNECTION_STRING")))
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PRESENTATION_TEST_CONNECTION_STRING"))
+            && Environment.GetEnvironmentVariable("PRESENTATION_REQUIRE_POSTGRES") != "true")
         {
             Skip = "Set PRESENTATION_TEST_CONNECTION_STRING to a disposable PostgreSQL database to run persistence verification.";
         }
