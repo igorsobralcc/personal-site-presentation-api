@@ -126,6 +126,6 @@ internal static class FlowTestSupport
 
     public static async Task<JsonElement> JsonAsync(this HttpResponseMessage response)
     {
-        return await response.Content.ReadFromJsonAsync<JsonElement>();
+        return JsonSerializer.Deserialize<JsonElement>(await response.Content.ReadAsStringAsync());
     }
 }

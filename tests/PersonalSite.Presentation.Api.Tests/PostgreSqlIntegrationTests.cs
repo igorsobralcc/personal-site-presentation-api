@@ -487,10 +487,7 @@ internal sealed class PostgreSqlApiFactory(string connectionString) : WebApplica
 
     public HttpClient CreateApiClient()
     {
-        var client = CreateClient(new WebApplicationFactoryClientOptions
-        {
-            BaseAddress = new Uri("https://localhost"), AllowAutoRedirect = false
-        });
+        var client = CreateDefaultClient(new Uri("https://localhost"), new ContractResponseHandler());
         client.DefaultRequestHeaders.Add("X-Admin-Key", "integration-secret");
         return client;
     }

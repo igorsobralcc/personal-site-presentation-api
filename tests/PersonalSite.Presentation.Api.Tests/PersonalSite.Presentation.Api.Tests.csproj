@@ -12,6 +12,10 @@
     <ExcludeByFile>**/Data/Migrations/*.cs,**/*.generated.cs</ExcludeByFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../clients/PresentationClient.generated.cs" Link="Client/PresentationClient.generated.cs" />
+    <None Include="../../docs/openapi.json" Link="openapi.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -16,7 +16,7 @@ builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = 
     context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier);
 builder.Services.AddExceptionHandler<RequestBindingExceptionHandler>();
 builder.Services.AddExceptionHandler<DatabaseExceptionHandler>();
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options => options.AddDocumentTransformer<PresentationOpenApiTransformer>());
 builder.Services.AddDbContext<PresentationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Presentation"), npgsql =>
         npgsql.MigrationsHistoryTable("__ef_migrations_history", PresentationDbContext.Schema))
