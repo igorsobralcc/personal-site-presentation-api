@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using PersonalSite.Presentation.Api.Common;
 using PersonalSite.Presentation.Api.Data;
 
@@ -44,7 +45,8 @@ public static class PublicPresentationEndpoints
         var etag = $"\"{Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant()}\"";
         http.Response.Headers.ETag = etag;
         http.Response.Headers.CacheControl = "public,max-age=60,must-revalidate";
-        if (http.Request.Headers.IfNoneMatch.Any(x => string.Equals(x, etag, StringComparison.Ordinal)))
+        if (EntityTagHeaderValue.TryParseList(http.Request.Headers.IfNoneMatch.Select(x => x ?? string.Empty).ToArray(), out var validators)
+            && validators.Any(x => x == EntityTagHeaderValue.Any || x.Compare(new EntityTagHeaderValue(etag), useStrongComparison: false)))
         {
             return Results.StatusCode(StatusCodes.Status304NotModified);
         }
