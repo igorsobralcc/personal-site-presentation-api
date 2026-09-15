@@ -114,7 +114,10 @@ public sealed class DevelopmentSeedDataTests
     public async Task Development_with_seed_disabled_does_not_initialize_content()
     {
         await using var factory = new ApiFactory(seedDataEnabled: false);
-        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost") });
+        using var client = factory.CreateClient(new()
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
         Assert.Equal(HttpStatusCode.NotFound,
             (await client.GetAsync("/api/v1/presentation")).StatusCode);
     }
@@ -137,39 +140,53 @@ public sealed class DevelopmentSeedDataTests
             case "profile":
                 db.Profiles.Add(new Profile
                 {
-                    FullName = "Deleted", Headline = "Deleted", Biography = "Deleted", DeletedAt = deletedAt
+                    FullName = "Deleted",
+                    Headline = "Deleted",
+                    Biography = "Deleted",
+                    DeletedAt = deletedAt
                 });
                 break;
             case "experience":
                 db.Experiences.Add(new Experience
                 {
-                    Company = "Deleted", Role = "Deleted", Summary = "Deleted",
-                    StartDate = new(2020, 1, 1), DeletedAt = deletedAt
+                    Company = "Deleted",
+                    Role = "Deleted",
+                    Summary = "Deleted",
+                    StartDate = new(2020, 1, 1),
+                    DeletedAt = deletedAt
                 });
                 break;
             case "project":
                 db.Projects.Add(new Project
                 {
-                    Name = "Deleted", Summary = "Deleted", DeletedAt = deletedAt
+                    Name = "Deleted",
+                    Summary = "Deleted",
+                    DeletedAt = deletedAt
                 });
                 break;
             case "category":
                 db.SkillCategories.Add(new SkillCategory
                 {
-                    Name = "Deleted", NormalizedName = "DELETED", DeletedAt = deletedAt
+                    Name = "Deleted",
+                    NormalizedName = "DELETED",
+                    DeletedAt = deletedAt
                 });
                 break;
             case "skill":
                 db.Skills.Add(new Skill
                 {
-                    Name = "Deleted", NormalizedName = "DELETED", CategoryId = Guid.NewGuid(),
+                    Name = "Deleted",
+                    NormalizedName = "DELETED",
+                    CategoryId = Guid.NewGuid(),
                     DeletedAt = deletedAt
                 });
                 break;
             case "technology":
                 db.Technologies.Add(new Technology
                 {
-                    Name = "Deleted", NormalizedName = "DELETED", DeletedAt = deletedAt
+                    Name = "Deleted",
+                    NormalizedName = "DELETED",
+                    DeletedAt = deletedAt
                 });
                 break;
         }

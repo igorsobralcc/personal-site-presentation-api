@@ -15,7 +15,9 @@ internal static class FlowTestSupport
         string? email = null,
         string? availability = null,
         string? currentFocus = null,
-        object[]? socialLinks = null) => new
+        object[]? socialLinks = null)
+    {
+        return new
         {
             fullName,
             headline,
@@ -27,6 +29,7 @@ internal static class FlowTestSupport
             currentFocus,
             socialLinks = socialLinks ?? []
         };
+    }
 
     public static object Experience(
         string? company = "Company",
@@ -36,7 +39,9 @@ internal static class FlowTestSupport
         string? endDate = null,
         string? summary = "Summary",
         string[]? highlights = null,
-        Guid[]? technologyIds = null) => new
+        Guid[]? technologyIds = null)
+    {
+        return new
         {
             company,
             role,
@@ -47,6 +52,7 @@ internal static class FlowTestSupport
             highlights = highlights ?? [],
             technologyIds = technologyIds ?? []
         };
+    }
 
     public static object Project(
         string? name = "Project",
@@ -55,7 +61,9 @@ internal static class FlowTestSupport
         string? liveUrl = null,
         Guid[]? technologyIds = null,
         bool? isFeatured = true,
-        object? image = null) => new
+        object? image = null)
+    {
+        return new
         {
             name,
             summary,
@@ -65,6 +73,7 @@ internal static class FlowTestSupport
             isFeatured,
             image
         };
+    }
 
     public static HttpRequestMessage Patch(string uri, string json, string? etag = null,
         string mediaType = "application/merge-patch+json")
@@ -106,7 +115,10 @@ internal static class FlowTestSupport
     public static async Task<(Guid Id, string ETag, JsonElement Body)> CreateNamedAsync(
         HttpClient client, string collection, string name)
     {
-        var response = await client.PostAsJsonAsync(collection, new { name });
+        var response = await client.PostAsJsonAsync(collection, new
+        {
+            name
+        });
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadFromJsonAsync<JsonElement>();
         return (body.GetProperty("id").GetGuid(), response.Headers.ETag!.Tag, body);

@@ -188,18 +188,24 @@ public sealed class PostgreSqlIntegrationTests
         {
             var profile = new Profile
             {
-                FullName = "Original", Headline = "Headline", Biography = "Biography",
+                FullName = "Original",
+                Headline = "Headline",
+                Biography = "Biography",
                 SocialLinks = [new ProfileSocialLink { Label = "Old", Url = "https://example.com/old" }]
             };
             var experience = new Experience
             {
-                Company = "Original", Role = "Role", Summary = "Summary", StartDate = new(2020, 1, 1),
+                Company = "Original",
+                Role = "Role",
+                Summary = "Summary",
+                StartDate = new(2020, 1, 1),
                 Highlights = [new ExperienceHighlight { Text = "Old" }]
             };
             var technology = new Technology { Name = "Technology", NormalizedName = "TECHNOLOGY" };
             var project = new Project
             {
-                Name = "Original", Summary = "Summary",
+                Name = "Original",
+                Summary = "Summary",
                 Technologies = [new ProjectTechnology { TechnologyId = technology.Id }]
             };
             setup.AddRange(profile, experience, technology, project);
@@ -213,7 +219,11 @@ public sealed class PostgreSqlIntegrationTests
             var value = await db.Profiles.Include(x => x.SocialLinks).SingleAsync(x => x.Id == profileId);
             db.ProfileSocialLinks.RemoveRange(value.SocialLinks);
             db.ProfileSocialLinks.Add(new ProfileSocialLink
-                { ProfileId = value.Id, Label = "New", Url = "https://example.com/new" });
+            {
+                ProfileId = value.Id,
+                Label = "New",
+                Url = "https://example.com/new"
+            });
             value.FullName = "Changed";
             value.Version++;
         });
@@ -315,7 +325,10 @@ public sealed class PostgreSqlIntegrationTests
                 await ResetAsync(connection);
             }
             var technologyResponse = await client.PostAsJsonAsync("/api/v1/admin/technologies",
-                new { name = $"Technology for {resource}" });
+                new
+                {
+                    name = $"Technology for {resource}"
+                });
             var technologyId = (await technologyResponse.Content.ReadFromJsonAsync<JsonElement>())
                 .GetProperty("id").GetGuid();
             var createTask = resource == "experiences"
@@ -337,8 +350,10 @@ public sealed class PostgreSqlIntegrationTests
         }
     }
 
-    private static string RequiredConnectionString() =>
-        Environment.GetEnvironmentVariable("PRESENTATION_TEST_CONNECTION_STRING")!;
+    private static string RequiredConnectionString()
+    {
+        return Environment.GetEnvironmentVariable("PRESENTATION_TEST_CONNECTION_STRING")!;
+    }
 
     private static async Task<NpgsqlConnection> OpenConnectionAsync()
     {
@@ -350,17 +365,21 @@ public sealed class PostgreSqlIntegrationTests
         return connection;
     }
 
-    private static DbContextOptions<PresentationDbContext> Options(DbConnection connection) =>
-        new DbContextOptionsBuilder<PresentationDbContext>()
+    private static DbContextOptions<PresentationDbContext> Options(DbConnection connection)
+    {
+        return new DbContextOptionsBuilder<PresentationDbContext>()
             .UseNpgsql(connection, npgsql => npgsql.MigrationsHistoryTable(
                 "__ef_migrations_history", PresentationDbContext.Schema))
             .UseSnakeCaseNamingConvention().Options;
+    }
 
-    private static DbContextOptions<PresentationDbContext> Options(string connectionString) =>
-        new DbContextOptionsBuilder<PresentationDbContext>()
+    private static DbContextOptions<PresentationDbContext> Options(string connectionString)
+    {
+        return new DbContextOptionsBuilder<PresentationDbContext>()
             .UseNpgsql(connectionString, npgsql => npgsql.MigrationsHistoryTable(
                 "__ef_migrations_history", PresentationDbContext.Schema))
             .UseSnakeCaseNamingConvention().Options;
+    }
 
     private static async Task ResetAsync(NpgsqlConnection connection)
     {
@@ -449,8 +468,10 @@ internal sealed class FailCommitInterceptor : DbTransactionInterceptor
 {
     public override ValueTask<InterceptionResult> TransactionCommittingAsync(DbTransaction transaction,
         TransactionEventData eventData, InterceptionResult result,
-        CancellationToken cancellationToken = default) =>
-        ValueTask.FromException<InterceptionResult>(new InvalidOperationException("Forced commit failure."));
+        CancellationToken cancellationToken = default)
+    {
+        return ValueTask.FromException<InterceptionResult>(new InvalidOperationException("Forced commit failure."));
+    }
 }
 
 internal sealed class PostgreSqlApiFactory(string connectionString) : WebApplicationFactory<Program>

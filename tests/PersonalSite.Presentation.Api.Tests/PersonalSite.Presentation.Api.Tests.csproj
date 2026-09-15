@@ -4,6 +4,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <!-- Generated EF/OpenAPI code is validated structurally, not counted as executable product coverage. -->
     <ExcludeByFile>**/Data/Migrations/*.cs,**/*.generated.cs</ExcludeByFile>
   </PropertyGroup>

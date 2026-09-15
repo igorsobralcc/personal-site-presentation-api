@@ -201,7 +201,13 @@ public sealed class ExperienceProjectFlowTests
         var complete = await client.PostAsJsonAsync("/api/v1/admin/projects", FlowTestSupport.Project(
             name: "Complete", repositoryUrl: "https://example.com/repo",
             liveUrl: "https://example.com", technologyIds: ids,
-            image: new { url = "https://example.com/image.png", alt = new string('a', 500), width = 1, height = 1 }));
+            image: new
+            {
+                url = "https://example.com/image.png",
+                alt = new string('a', 500),
+                width = 1,
+                height = 1
+            }));
         Assert.Equal(HttpStatusCode.Created, hidden.StatusCode);
         Assert.Equal(HttpStatusCode.Created, complete.StatusCode);
 
@@ -280,7 +286,13 @@ public sealed class ExperienceProjectFlowTests
         await using var factory = new ApiFactory();
         using var client = factory.CreateApiClient();
         var response = await client.PostAsJsonAsync("/api/v1/admin/projects",
-            FlowTestSupport.Project(image: new { url, alt, width, height }));
+            FlowTestSupport.Project(image: new
+            {
+                url,
+                alt,
+                width,
+                height
+            }));
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -299,7 +311,13 @@ public sealed class ExperienceProjectFlowTests
         var ids = await AddTechnologiesAsync(factory, 2);
         var created = await client.PostAsJsonAsync("/api/v1/admin/projects", FlowTestSupport.Project(
             technologyIds: [ids[0]], isFeatured: false,
-            image: new { url = "https://example.com/old.png", alt = "Old", width = 10, height = 10 }));
+            image: new
+            {
+                url = "https://example.com/old.png",
+                alt = "Old",
+                width = 10,
+                height = 10
+            }));
         var id = (await created.JsonAsync()).GetProperty("id").GetGuid();
         using var patch = FlowTestSupport.Patch($"/api/v1/admin/projects/{id}",
             $"{{\"isFeatured\":true,\"technologyIds\":[\"{ids[1]}\"],\"image\":null}}",
